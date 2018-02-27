@@ -22,10 +22,19 @@ class Player(models.Model):
 
         return self.user.username
 
+    def make_game_rating(self,ratee, rating): #Enforce many to one relation by using external helper function
+        try:
+            r = GameRating.objects.get(user=self, rated=ratee)
+            r.value = rating
+
+        except GameRating.DoesNotExist:
+            r = GameRating(user=self, rated=ratee, value = rating)
+
+        r.save()
+
 class Game(models.Model):  #
     studio = models.ForeignKey(GameStudio, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null = True, blank= True)
-    average = 0
     players = models.ManyToManyField(Player, blank= True)
 
     def __str__(self):
@@ -35,13 +44,11 @@ class Game(models.Model):  #
         query = GameRating.objects.filter(rated=self)
         count = 0
         sum = 0
-
-        for rating in query:
-            sum += rating.value
-            count += 1
         if query.exists():
-            self.average = sum/count
-            return self.average
+            for rating in query:
+                sum += rating.value
+                count += 1
+                return sum/count
         else:
             return "N/a"
 
@@ -55,19 +62,6 @@ class GameRating(models.Model):
     value = models.IntegerField()
 
     def __str__(self):
-        toString = self.user.name +  ' : ' + str(self.value)
+        toString = self.user.user.username +  ' : ' + str(self.value)
         return toString
-
-def make_rating(ratee, rater, rating):   #Enforce many to one relation by using external helper function
-
-    try:
-        r = GameRating.objects.get(user=rater, rated=ratee)
-        r.value = rating
-        ratee.average_rating()
-
-    except GameRating.DoesNotExist:
-        r = GameRating(user=rater, rated=ratee, value = rating)
-        ratee.average_rating()
-
-    r.save()
 
