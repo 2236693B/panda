@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html>
-    <head>
-          <title>Panda</title>
-    </head>
+{% extends 'panda/base.html' %}
 
-    <body>
+{% block title_block %}
+    Home
+{% endblock %}
+
+{% block body_block %}
           <div>
                {% if games %}
             <ul>
@@ -32,5 +32,5 @@
                 <strong> There are no players present.</strong>
             {%  endif %}
         </div>
-    </body>
-</html>
+
+{% endblock %}
