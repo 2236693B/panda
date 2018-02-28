@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+          <title>Panda</title>
+    </head>
+    
+    <body>
+          <div>
+               {% if games %}
+            <ul>
+                <strong> Top Five games</strong>
+                {% for game in games %}
+                    <li>{{ game.name }} : <i>{{game.rating}}</i></li>
+
+                {% endfor  %}
+            </ul>
+            {% else %}
+                <strong> There are no games present.</strong>
+            {%  endif %}
+        </div>
+    </body>
+</html>

@@ -16,7 +16,7 @@ class Player(models.Model):
     Steam = models.CharField(max_length=31, null = True, blank= True)
     PSN = models.CharField(max_length=16, null = True, blank= True)
     Xbox = models.CharField(max_length=15, null = True, blank= True)
-    Nintendo = Xbox = models.CharField(max_length=10, null = True, blank= True)
+    Nintendo = models.CharField(max_length=10, null = True, blank= True)
     average = 0
     picture = models.ImageField(upload_to='profile_images', blank=True)
 
@@ -62,6 +62,8 @@ class Game(models.Model):  #
     date = models.DateField(null = True)
     catergory = models.CharField(max_length=3, choices=CATEGORIES, default = NONE)
 
+    rating = models.FloatField(default = -1.0)
+
     Playstation = models.BooleanField(default = False)
     Xbox = models.BooleanField(default = False)
     PC = models.BooleanField(default = False)
@@ -76,13 +78,15 @@ class Game(models.Model):  #
         query = GameRating.objects.filter(rated=self)
         count = 0
         sum = 0
+        average = -1.0
         if query.exists():
             for rating in query:
                 sum += rating.value
                 count += 1
-            return sum/count
-        else:
-            return "N/a"
+            average = sum/count
+        self.rating = average
+        self.save()
+        return self.rating
 
 class GameRating(models.Model):
 
