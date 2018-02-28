@@ -17,7 +17,7 @@ class Player(models.Model):
     PSN = models.CharField(max_length=16, null = True, blank= True)
     Xbox = models.CharField(max_length=15, null = True, blank= True)
     Nintendo = models.CharField(max_length=10, null = True, blank= True)
-    average = 0
+    rating =  models.FloatField(default = -1.0)
     picture = models.ImageField(upload_to='profile_images', blank=True)
 
     def __str__(self):
@@ -26,13 +26,31 @@ class Player(models.Model):
 
     def make_game_rating(self,ratee, rating): #Enforce many to one relation by using external helper function
         try:
-            r = GameRating.objects.get(user=self, rated=ratee)
+            r = GameRating.objects.get(player=self, rated=ratee)
             r.value = rating
 
         except GameRating.DoesNotExist:
-            r = GameRating(user=self, rated=ratee, value = rating)
+            r = GameRating(player=self, rated=ratee, value = rating)
 
         r.save()
+        ratee.average_rating()
+
+    def make_player_rating(self,ratee, rating): #Enforce many to one relation by using external helper function
+        try:
+            r = PlayerRating.objects.get(player=self, rated_player=ratee)
+            r.value = rating
+
+        except PlayerRating.DoesNotExist:
+            r = PlayerRating(player=self, rated_player=ratee, value = rating)
+
+        r.save()
+        ratee.average_rating()
+
+    def average_rating(self):
+        query = PlayerRating.objects.filter(rated_player=self)
+        self.rating = average(query)
+        self.save()
+        return self.rating
 
 class Game(models.Model):  #
 
@@ -76,15 +94,7 @@ class Game(models.Model):  #
 
     def average_rating(self):
         query = GameRating.objects.filter(rated=self)
-        count = 0
-        sum = 0
-        average = -1.0
-        if query.exists():
-            for rating in query:
-                sum += rating.value
-                count += 1
-            average = sum/count
-        self.rating = average
+        self.rating = average(query)
         self.save()
         return self.rating
 
@@ -93,11 +103,36 @@ class GameRating(models.Model):
     #class Meta:
         #unique_together = (('user', 'rated'),)
 
-    user = models.ForeignKey(Player, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
     rated = models.ForeignKey(Game, on_delete=models.CASCADE)
     value = models.IntegerField()
 
     def __str__(self):
-        toString = self.user.user.username +  ' : ' + str(self.value)
+        toString = self.player.user.username +  ' : ' + str(self.value)
         return toString
+
+class PlayerRating(models.Model):
+
+    #class Meta:
+        #unique_together = (('user', 'rated'),)
+
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='player')
+    rated_player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='rated_player')
+    value = models.IntegerField()
+
+    def __str__(self):
+        toString = self.rating_user.user.username +  ' : ' + str(self.value)
+        return toString
+
+def average(query):
+    count = 0
+    sum = 0
+    average = -1.0
+    if query.exists():
+        for rating in query:
+            sum += rating.value
+            count += 1
+        average = sum/count
+    return average
+
 

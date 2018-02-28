@@ -111,50 +111,63 @@ def populate():
             'Bio':
                 '''Second Electronic and Software Engineering Student looking for some casual gamers for either PC(I\'ve an ok spec laptop) or Playstation''',
             'Steam':'BegsOnToast', 'PSN':'Begs_On_Toast','Xbox':'BegsOnToast', 'Nintendo':'',
-            'ratings':{'Star Wars Battlefront II': 4, 'Elder Scrolls Online':3, 'CS:GO':0}},
+            'game_ratings':{'Star Wars Battlefront II': 4, 'Elder Scrolls Online':3, 'CS:GO':0},
+            'player_ratings' : {'MattyBoi':3 , 'CrispyDarkMagic':4 , 'Musket_Mosez':3},
+            },
 
         'MattyBoi' :
             {'username':'MattyBoi', 'password':'WhosYourDa?', 'email':'Mathew@greggs.co.uk', 'First':'Mathew', 'Last':'McBride',
             'Bio':
                 '''Two Words : I f*cking love Gregggggggggggggggs''',
             'Steam':'Pedro', 'PSN':'','Xbox':'', 'Nintendo':'',
-            'ratings':{'Star Wars Battlefront II': 3, 'Elder Scrolls Online':4}},
+            'game_ratings':{'Star Wars Battlefront II': 3, 'Elder Scrolls Online':4},
+            'player_ratings' : {'BegsOnToast':5 , 'CrispyDarkMagic':1 , 'Musket_Mosez':3},
+            },
 
         'CrispyDarkMagic':
             {'username':'CrispyDarkMagic', 'password':'ILoveAJAX', 'email':'adam@sinnfein.ie', 'First':'Adam', 'Last':'Christie',
             'Bio':
                 '''Hearty Irish Lad looking for some likeminded players. Top of the morning to ya''',
             'Steam':'Chrispie', 'PSN':'', 'Xbox':'', 'Nintendo':'',
-            'ratings':{'Elder Scrolls Online':3, 'Team Fortress 2':5}},
+            'game_ratings':{'Elder Scrolls Online':3, 'Team Fortress 2':5},
+            'player_ratings' : {'BegsOnToast':5 , 'MattyBoi':0 , 'Musket_Mosez':2},
+            },
 
         'Musket_Mosez':
             {'username':'Musket_Mosez', 'password':'N@than', 'email':'mo@momo.com', 'First':'Mo', 'Last':'Moses',
             'Bio':
                 '''Pro-gamer yo!''',
             'Steam':'', 'PSN':'','Xbox':'', 'Nintendo':'',
-            'ratings':{'Fifa 18':3, 'PLAYERUNKNOWN\'S BATTLEGROUNDS':4}},
+            'game_ratings':{'Fifa 18':3, 'PLAYERUNKNOWN\'S BATTLEGROUNDS':4},
+            'player_ratings' : {'BegsOnToast':5 , 'MattyBoi':2 , 'CrispyDarkMagic':2, 'PhoniX':4 },
+            },
 
         'T0bbl3r':
             {'username':'T0bbl3r', 'password':'C00lDub3', 'email':'tobz@hotmail.com', 'First':'Toby', 'Last':'Jones',
             'Bio':
                 '''Add me if you got a KD greater than 0.8KD boiiiii. Only play console and not PC crap!!!''',
             'Steam':'', 'PSN':'T0bbl3r','Xbox':'T0bzz', 'Nintendo':'TobMan',
-            'ratings':{'Fifa 18':4, 'PLAYERUNKNOWN\'S BATTLEGROUNDS':4,'Star Wars Battlefront II': 5,'Overwatch':4}},
+            'game_ratings':{'Fifa 18':4, 'PLAYERUNKNOWN\'S BATTLEGROUNDS':4,'Star Wars Battlefront II': 5,'Overwatch':4},
+            'player_ratings' : {'BegsOnToast':5 , 'Amiek88':4 },
+            },
 
         'PhoniX':
             {'username':'PhoniX', 'password':'dhhwhw67576@;6%b', 'email':'danylo@danylo.com', 'First':'Danylo', 'Last':'Kravets',
             'Bio':
                 '''Hard core gamers only. PC MAster Race. Looking to get in MLG. Need Team''',
             'Steam':'PhoniX', 'PSN':'','Xbox':'', 'Nintendo':'',
-            'ratings':{'CS:GO':5, 'PLAYERUNKNOWN\'S BATTLEGROUNDS':4}},
+            'game_ratings':{'CS:GO':5, 'PLAYERUNKNOWN\'S BATTLEGROUNDS':4},
+            'player_ratings' : {'Musket_Mosez':4 },
+            },
 
         'Amiek88':
             {'username':'Amiek88', 'password':'Hello1234', 'email':'amiex@gmail.com', 'First':'Amie', 'Last':'King',
             'Bio':
                 '''New here. Absolutely love minecraft!''',
             'Steam':'Amiek88', 'PSN':'','Xbox':'', 'Nintendo':'Amiexoxo',
-            'ratings':{'Minecraft':5}}
-
+            'game_ratings':{'Minecraft':5},
+            'player_ratings' : {'T0bbl3r':3 },
+            },
         }
 
 
@@ -176,20 +189,27 @@ def populate():
     #Make Ratings
     for player, player_data in players.items():
         p = Player.objects.get(user=User.objects.get(username=player))
-        for game,rating in player_data["ratings"].items():
+
+        for game,rating in player_data["game_ratings"].items():
             g = Game.objects.get(name=game)
             p.make_game_rating(g,rating)
+
+        for pla,rating in player_data["player_ratings"].items():
+            rated_p= Player.objects.get(user = User.objects.get(username=pla))
+            p.make_player_rating(rated_p,rating)
+
+
 
     #Pretty print games
     print("\n Games:")
     for s in GameStudio.objects.all():
         for g in Game.objects.filter(studio=s):
-            print("- {0} - {1} : {2}".format(str(s), str(g), (g.average_rating())))
+            print("- {0} - {1} : {2}".format(str(s), str(g), (str(g.rating))))
 
     #Pretty print players
     print("\n Players:")
     for p in Player.objects.all():
-        print(str(p))
+        print("{0} : {1}".format(str(p),str(p.rating)))
 
 def add_studio_user(username, password, email):
     u = User.objects.get_or_create(username=username, password=password, email=email)[0]

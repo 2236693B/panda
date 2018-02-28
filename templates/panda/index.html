@@ -3,7 +3,7 @@
     <head>
           <title>Panda</title>
     </head>
-    
+
     <body>
           <div>
                {% if games %}
@@ -16,6 +16,20 @@
             </ul>
             {% else %}
                 <strong> There are no games present.</strong>
+            {%  endif %}
+        </div>
+
+        <div>
+               {% if players %}
+            <ul>
+                <strong> Top Five Players</strong>
+                {% for player in players %}
+                    <li>{{ player.user.username }} : <i>{{player.rating}}</i></li>
+
+                {% endfor  %}
+            </ul>
+            {% else %}
+                <strong> There are no players present.</strong>
             {%  endif %}
         </div>
     </body>
