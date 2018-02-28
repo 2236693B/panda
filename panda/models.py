@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class GameStudio(models.Model):  #Game Studios that make multiplayer games
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
 
     def __str__(self):
@@ -12,9 +13,10 @@ class Player(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     Bio = models.CharField(max_length=200, null = True, blank= True)
-    Steam = models.CharField(max_length=200, null = True, blank= True)
-    PSN = models.CharField(max_length=200, null = True, blank= True)
-    Xbox = models.CharField(max_length=200, null = True, blank= True)
+    Steam = models.CharField(max_length=31, null = True, blank= True)
+    PSN = models.CharField(max_length=16, null = True, blank= True)
+    Xbox = models.CharField(max_length=15, null = True, blank= True)
+    Nintendo = Xbox = models.CharField(max_length=10, null = True, blank= True)
     average = 0
     picture = models.ImageField(upload_to='profile_images', blank=True)
 
@@ -33,9 +35,39 @@ class Player(models.Model):
         r.save()
 
 class Game(models.Model):  #
+
+    NONE = 'NON'
+    ACTION = 'ACT'
+    ADVENTURE = 'ADV'
+    ROLEPLAYING = 'ROL'
+    MMO = 'MMO'
+    FPS = 'FPS'
+    SPO ='SPO'
+
+    CATEGORIES = (
+        (NONE, 'None'),
+        (ACTION, 'Action'),
+        (ADVENTURE, 'Adventure'),
+        (ROLEPLAYING, 'Roleplaying'),
+        (MMO, 'MMO'),
+        (FPS, 'FPS'),
+        (SPO, 'SPO'),
+    )
+
     studio = models.ForeignKey(GameStudio, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, null = True, blank= True)
+    name = models.CharField(max_length=200, null = False)
     players = models.ManyToManyField(Player, blank= True)
+    extract = models.CharField(max_length=500, blank= False, default = 'Extract missing')
+    site = models.URLField(null = True)
+    date = models.DateField(null = True)
+    catergory = models.CharField(max_length=3, choices=CATEGORIES, default = NONE)
+
+    Playstation = models.BooleanField(default = False)
+    Xbox = models.BooleanField(default = False)
+    PC = models.BooleanField(default = False)
+    Nintendo = models.BooleanField(default = False)
+    Mobile = models.BooleanField(default = False)
+
 
     def __str__(self):
         return self.name
@@ -48,7 +80,7 @@ class Game(models.Model):  #
             for rating in query:
                 sum += rating.value
                 count += 1
-                return sum/count
+            return sum/count
         else:
             return "N/a"
 
