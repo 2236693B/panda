@@ -1,0 +1,29 @@
+{% extends 'panda/base.html' %}
+
+{% block title_block %}
+    Games
+{% endblock %}
+
+{% block body_block %}
+          <div>
+               {% if games %}
+            <ul>
+                <strong> Games</strong>
+                {% for game in games %}
+                    <li> {{game.catergory}} - {{game.name}} : <i>
+                    {% if game.rating != -1 %}
+                        {{game.rating}}
+                    {% else %}
+                        unrated
+                    {% endif %}
+
+                    </i></li>
+
+                {% endfor  %}
+            </ul>
+            {% else %}
+                <strong> There are no games present.</strong>
+            {%  endif %}
+        </div>
+
+{% endblock %}
