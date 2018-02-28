@@ -231,7 +231,7 @@ def add_game(studio,name,game_data):
     g.site = game_data["URL"]
     g.date = game_data["date"]
     g.catergory = game_data["catergory"]
-    g.PLaystation = game_data["Playstation"]
+    g.Playstation = game_data["Playstation"]
     g.Xbox = game_data["Xbox"]
     g.PC = game_data["PC"]
     g.Nintendo = game_data["Nintendo"]

@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 
 class GameStudio(models.Model):  #Game Studios that make multiplayer games
@@ -62,14 +63,13 @@ class Game(models.Model):  #
     FPS = 'FPS'
     SPO ='SPO'
 
-    CATEGORIES = (
-        (NONE, 'None'),
+    CATERGORY = (
         (ACTION, 'Action'),
         (ADVENTURE, 'Adventure'),
         (ROLEPLAYING, 'Roleplaying'),
         (MMO, 'MMO'),
         (FPS, 'FPS'),
-        (SPO, 'SPO'),
+        (SPO, 'Sport'),
     )
 
     studio = models.ForeignKey(GameStudio, on_delete=models.CASCADE)
@@ -78,7 +78,7 @@ class Game(models.Model):  #
     extract = models.CharField(max_length=500, blank= False, default = 'Extract missing')
     site = models.URLField(null = True)
     date = models.DateField(null = True)
-    catergory = models.CharField(max_length=3, choices=CATEGORIES, default = NONE)
+    catergory = models.CharField(max_length=3, choices=CATERGORY, default = NONE)
 
     rating = models.FloatField(default = -1.0)
 
@@ -88,6 +88,11 @@ class Game(models.Model):  #
     Nintendo = models.BooleanField(default = False)
     Mobile = models.BooleanField(default = False)
 
+    slug = models.SlugField(unique = True)
+
+    def save(self, *args, **kwaargs):
+        self.slug = slugify(self.name)
+        super(Game, self).save(*args, **kwaargs)
 
     def __str__(self):
         return self.name
@@ -100,9 +105,6 @@ class Game(models.Model):  #
 
 class GameRating(models.Model):
 
-    #class Meta:
-        #unique_together = (('user', 'rated'),)
-
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     rated = models.ForeignKey(Game, on_delete=models.CASCADE)
     value = models.IntegerField()
@@ -112,9 +114,6 @@ class GameRating(models.Model):
         return toString
 
 class PlayerRating(models.Model):
-
-    #class Meta:
-        #unique_together = (('user', 'rated'),)
 
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='player')
     rated_player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='rated_player')

@@ -104,7 +104,22 @@ def sign_up(request):
 
     return render(request, 'panda/sign_up.html', {'user_form': user_form, 'profile_form':profile_form, 'registered': registered})
 
+def show_game(request, game_name_slug):
+    context_dict = {}
 
+    try:
+        game = Game.objects.get(slug = game_name_slug)
+
+        context_dict['game'] = game
+
+
+
+    except Game.DoesNotExist:
+        context_dict['game'] = None
+
+
+
+    return render(request, 'panda/game.html', context_dict)
 
 
 

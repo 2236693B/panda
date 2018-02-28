@@ -1,0 +1,71 @@
+{% extends 'panda/base.html' %}
+
+{% block title_block %}
+    {{ game.name }}
+{% endblock %}
+
+
+
+{% block body_block %}
+    <body>
+        <div>
+            {%  if game %}
+
+                <h1>{{ game.name }}</h1>
+
+                <h2>{{game.studio}}</h2>
+
+                <h3>{{ game.get_catergory_display }}</h3>
+
+                <h4>Extract</h4>
+                {{game.extract}}
+
+                <h4>Rating</h4>
+
+                {% if game.rating != -1 %}
+                    {{game.rating}}
+
+                {% else %}
+                    <i>unrated</i>
+
+                {% endif %}
+
+                <h4>Site</h4>
+                <a href="{{game.site}}" target="_blank"> {{game.site}} </a>
+
+                <h4>Released</h4>
+                {{game.date}}
+
+                <h4>Platform</h4
+                <ul>
+                    {%if game.Playstation %}
+                    <li>Playstation</li>
+                    {% endif %}
+
+                    {%if game.Xbox %}
+                    <li>Xbox</li>
+                    {% endif %}
+
+                    {%if game.PC %}
+                    <li>PC</li>
+                    {% endif %}
+
+                    {%if game.Nintendo %}
+                    <li>Nintendo</li>
+                    {% endif %}
+
+                    {%if game.Mobile %}
+                    <li>Playstation</li>
+                    {% endif %}
+
+
+
+                {% else %}
+
+                    The specified game does not exist!
+
+            {%  endif %}
+
+        </div>
+
+{% endblock %}

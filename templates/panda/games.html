@@ -10,7 +10,7 @@
             <ul>
                 <strong> Games</strong>
                 {% for game in games %}
-                    <li> {{game.catergory}} - {{game.name}} : <i>
+                    <li>{{game.catergory}} - <a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>
                     {% if game.rating != -1 %}
                         {{game.rating}}
                     {% else %}

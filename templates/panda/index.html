@@ -10,7 +10,7 @@
             <ul>
                 <strong> Top Five games</strong>
                 {% for game in games %}
-                    <li>{{ game.name }} : <i>{{game.rating}}</i></li>
+                    <li><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>{{game.rating}}</i></li>
 
                 {% endfor  %}
             </ul>
