@@ -21,7 +21,7 @@
 					<a href="/panda/about/" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-user"></i>  About</a>
 					<a href="/panda/players/" class="Panda-bar-item Panda-button"></i>Players</a>
 					{% if user.is_authenticated %}
-					<a href="" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-user-plus"></i> Welcome {{user.username}} </a>
+					<a href="/panda/my_profile/" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-user-plus"></i> Welcome {{user.username}} </a>
 					<a href="/panda/logout/" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-sign-in-alt"></i>  Log Out</a>
 					{% else %}
 					<a href="/panda/login/" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-sign-in-alt"></i>  Login</a>

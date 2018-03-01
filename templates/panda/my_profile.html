@@ -1,17 +1,13 @@
 {% extends 'panda/base.html' %}
 
 {% block title_block %}
-    {{ player.user.username }}
+    {user.username}
 {% endblock %}
-
-
 
 {% block body_block %}
 
     <body>
         <div>
-            {% if player %}
-
                 <h1>{{ player.user.username }}</h1>
 
                 <h4>Bio</h4>
@@ -26,8 +22,6 @@
                     <i>unrated</i>
 
                 {% endif %}
-
-                <a href ="/panda/player/{{player.slug}}/make_rating" >Make a rating</a>
 
                 <h4>Usernames</h4
                 <ul>
@@ -46,15 +40,6 @@
                     {%if player.Nintendo != None %}
                     <li><b>Nintendo: </b>{{player.Nintendo}}</li>
                     {% endif %}
-
-
-
-                {% else %}
-
-                    The specified player does not exist!
-
-            {%  endif %}
-
         </div>
 
 {% endblock %}

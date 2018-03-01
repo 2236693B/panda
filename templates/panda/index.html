@@ -17,16 +17,23 @@
             {% else %}
                 <strong> There are no games present.</strong>
             {%  endif %}
-        
 
-        
+
+
                {% if players %}
             <ul class="panda-col 2">
                 <strong> Top Five Players</strong>
+                {% if user.is_authenticated %}
+                {% for player in players %}
+                    <li><a href="/panda/player/{{ player.slug }}">{{ player.user.username }}</a> : <i>{{player.rating}}</i></li>
+                {% endfor  %}
+
+                {% else %}
                 {% for player in players %}
                     <li>{{ player.user.username }} : <i>{{player.rating}}</i></li>
-
                 {% endfor  %}
+
+                {% endif %}
             </ul>
             {% else %}
                 <strong> There are no players present.</strong>

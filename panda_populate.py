@@ -4,7 +4,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 import django
 django.setup()
 
-from panda.models import GameStudio, Game, Player
+from panda.models import GameStudio, Game, Player, Comment
 from django.contrib.auth.models import User
 import datetime
 
@@ -112,7 +112,9 @@ def populate():
                 '''Second Electronic and Software Engineering Student looking for some casual gamers for either PC(I\'ve an ok spec laptop) or Playstation''',
             'Steam':'BegsOnToast', 'PSN':'Begs_On_Toast','Xbox':'BegsOnToast', 'Nintendo':None,
             'game_ratings':{'Star Wars Battlefront II': 4, 'Elder Scrolls Online':3, 'CS:GO':0},
+            'game_comments':{'Star Wars Battlefront II': 'Stellar game', 'Elder Scrolls Online':'Top quailty Skyrim remake', 'CS:GO':'Terrible game and terrible graphics'},
             'player_ratings' : {'MattyBoi':3 , 'CrispyDarkMagic':4 , 'Musket_Mosez':3},
+            'plays': ['Star Wars Battlefront II','Elder Scrolls Online', 'CS:GO', 'Minecraft']
             },
 
         'MattyBoi' :
@@ -121,7 +123,9 @@ def populate():
                 '''Two Words : I f*cking love Gregggggggggggggggs''',
             'Steam':'Pedro', 'PSN':None,'Xbox':None, 'Nintendo':None,
             'game_ratings':{'Star Wars Battlefront II': 3, 'Elder Scrolls Online':4},
+            'game_comments':{'Star Wars Battlefront II': 'Ooof. Great game', 'Elder Scrolls Online':'Great laugh lad'},
             'player_ratings' : {'BegsOnToast':5 , 'CrispyDarkMagic':1 , 'Musket_Mosez':3},
+            'plays': ['Star Wars Battlefront II','Elder Scrolls Online', 'World of Warcraft', 'Minecraft']
             },
 
         'CrispyDarkMagic':
@@ -130,7 +134,9 @@ def populate():
                 '''Hearty Irish Lad looking for some likeminded players. Top of the morning to ya''',
             'Steam':'Chrispie', 'PSN':None, 'Xbox':None, 'Nintendo':None,
             'game_ratings':{'Elder Scrolls Online':3, 'Team Fortress 2':5},
+            'game_comments': {'Elder Scrolls Online':'Not a patch on Skyrim', 'Team Fortress 2':'First'},
             'player_ratings' : {'BegsOnToast':5 , 'MattyBoi':0 , 'Musket_Mosez':2},
+            'plays': ['Team Fortress 2','World of Warcraft','Elder Scrolls Online', 'CS:GO', 'Minecraft']
             },
 
         'Musket_Mosez':
@@ -139,7 +145,9 @@ def populate():
                 '''Pro-gamer yo!''',
             'Steam':None, 'PSN':None,'Xbox':None, 'Nintendo':None,
             'game_ratings':{'Fifa 18':3, 'PLAYERUNKNOWN\'S BATTLEGROUNDS':4},
+            'game_comments':{'Fifa 18':'Gotta love a bit of footie', 'PLAYERUNKNOWN\'S BATTLEGROUNDS':'Tough game but worth the challenge'},
             'player_ratings' : {'BegsOnToast':5 , 'MattyBoi':2 , 'CrispyDarkMagic':2, 'PhoniX':4 },
+            'plays': ['PLAYERUNKNOWN\'S BATTLEGROUNDS', 'Fifa 18', 'Minecraft']
             },
 
         'T0bbl3r':
@@ -148,7 +156,9 @@ def populate():
                 '''Add me if you got a KD greater than 0.8KD boiiiii. Only play console and not PC crap!!!''',
             'Steam':None, 'PSN':'T0bbl3r','Xbox':'T0bzz', 'Nintendo':'TobMan',
             'game_ratings':{'Fifa 18':4, 'PLAYERUNKNOWN\'S BATTLEGROUNDS':4,'Star Wars Battlefront II': 5,'Overwatch':4},
+            'game_comments':{'Fifa 18':'Great edition to the Fifa series. Ultimate team for the win!', 'PLAYERUNKNOWN\'S BATTLEGROUNDS':'Great fun. Real life huner games','Star Wars Battlefront II': 'Pew pew!','Overwatch':'Genre defining FPS'},
             'player_ratings' : {'BegsOnToast':5 , 'Amiek88':4 },
+            'plays': ['Star Wars Battlefront II','Overwatch','PLAYERUNKNOWN\'S BATTLEGROUNDS', 'Fifa 18', 'Minecraft']
             },
 
         'PhoniX':
@@ -157,7 +167,9 @@ def populate():
                 '''Hard core gamers only. PC MAster Race. Looking to get in MLG. Need Team''',
             'Steam':'PhoniX', 'PSN':None,'Xbox':None, 'Nintendo':None,
             'game_ratings':{'CS:GO':5, 'PLAYERUNKNOWN\'S BATTLEGROUNDS':4},
+            'game_comments': {'CS:GO':'Only real gamers play this. Reuires Skill and Intelligence', 'PLAYERUNKNOWN\'S BATTLEGROUNDS':'Up and comming game, shows potenial'},
             'player_ratings' : {'Musket_Mosez':4 },
+            'plays': ['CS:GO','PLAYERUNKNOWN\'S BATTLEGROUNDS', 'Minecraft']
             },
 
         'Amiek88':
@@ -166,7 +178,9 @@ def populate():
                 '''New here. Absolutely love minecraft!''',
             'Steam':'Amiek88', 'PSN':None,'Xbox':None, 'Nintendo':'Amiexoxo',
             'game_ratings':{'Minecraft':5},
+            'game_comments': {'Minecraft':'Such a fun game. Everyone should play it'},
             'player_ratings' : {'T0bbl3r':3 },
+            'plays': [ 'Minecraft']
             },
         }
 
@@ -198,7 +212,12 @@ def populate():
             rated_p= Player.objects.get(user = User.objects.get(username=pla))
             p.make_player_rating(rated_p,rating)
 
+    #Make Comments
+    for player, player_data in players.items():
+        p = Player.objects.get(user=User.objects.get(username=player))
 
+        for game,comment in player_data["game_comments"].items():
+            make_comment(p, game, comment)
 
     #Pretty print games
     print("\n Games:")
@@ -252,7 +271,16 @@ def add_player(user, player_data):
      p.Xbox = player_data['Xbox']
      p.Nintendo = player_data['Nintendo']
      p.save()
+
+     for game in player_data["plays"]:
+         g = Game.objects.get(name = game)
+         g.players.add(p)
      return p
+
+def make_comment (player, game, comment):
+    c = Comment.objects.get_or_create(player = player, comment = comment)[0]
+    g = Game.objects.get(name=game)
+    g.comments.add(c)
 
 
 if __name__ == '__main__':

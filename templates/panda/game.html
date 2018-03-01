@@ -31,6 +31,8 @@
 
                 {% endif %}
 
+                <a href ="/panda/game/{{game.slug}}/make_rating" >Make a rating</a>
+
                 <h4>Site</h4>
                 <a href="{{game.site}}" target="_blank"> {{game.site}} </a>
 
@@ -59,7 +61,26 @@
                     <li>Playstation</li>
                     {% endif %}
 
+                <h4> Players : {{game.players.count}}</h4>
+                <ul>
+                    {% if user.is_authenticated %}
+                        {% for player in game.players.all %}
+                            <li>{{ player.user.username}}</li>
+                        {% endfor %}
+                    {% else %}
+                        <i>Login to view</i>
+                    {% endif %}
 
+                </ul>
+
+                <h4> Comments : {{game.comments.count}}</h4>
+                <ul>
+                        {% for comment in game.comments.all %}
+                            <li><b>{{comment.player}}</b> : {{comment.comment}}</li>
+                        {% endfor %}
+                </ul>
+
+                <a href ="/panda/game/{{game.slug}}/make_comment" >Make a comment</a>
 
                 {% else %}
 

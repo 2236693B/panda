@@ -59,6 +59,15 @@ class Player(models.Model):
         self.save()
         return self.rating
 
+class Comment(models.Model):
+
+    player = models.ForeignKey(Player, on_delete=models.CASCADE,)
+    comment = models.CharField(max_length=200, null = True, blank= True)
+
+    def __str__(self):
+        toString = self.player.user.username +  ' : ' + self.comment
+        return toString
+
 class Game(models.Model):  #
 
     NONE = 'NON'
@@ -88,6 +97,7 @@ class Game(models.Model):  #
     picture = models.ImageField(upload_to='_images', blank=True)
 
     rating = models.FloatField(default = -1.0)
+    comments = models.ManyToManyField(Comment, blank= True)
 
     Playstation = models.BooleanField(default = False)
     Xbox = models.BooleanField(default = False)
@@ -96,6 +106,7 @@ class Game(models.Model):  #
     Mobile = models.BooleanField(default = False)
 
     slug = models.SlugField(unique = True)
+
 
     def save(self, *args, **kwaargs):
         self.slug = slugify(self.name)
@@ -140,5 +151,6 @@ def average(query):
             count += 1
         average = sum/count
     return average
+
 
 
