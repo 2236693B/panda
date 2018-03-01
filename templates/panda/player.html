@@ -1,0 +1,58 @@
+{% extends 'panda/base.html' %}
+
+{% block title_block %}
+    {{ player.user.username }}
+{% endblock %}
+
+
+
+{% block body_block %}
+
+    <body>
+        <div>
+            {% if player %}
+
+                <h1>{{ player.user.username }}</h1>
+
+                <h4>Bio</h4>
+                {{player.Bio}}
+
+                <h4>Rating</h4>
+
+                {% if player.rating != -1 %}
+                    {{player.rating}}
+
+                {% else %}
+                    <i>unrated</i>
+
+                {% endif %}
+
+                <h4>Usernames</h4
+                <ul>
+                    {%if player.PSN != None %}
+                    <li><b>Playstation: </b>{{player.PSN}}</li>
+                    {% endif %}
+
+                    {%if player.Xbox != None %}
+                    <li><b>Xbox: </b>{{player.PSN}}</li>
+                    {% endif %}
+
+                    {%if player.Steam != None %}
+                    <li><b>Steam: </b>{{player.Steam}}</li>
+                    {% endif %}
+
+                    {%if player.Nintendo != None %}
+                    <li><b>Nintendo: </b>{{player.Nintendo}}</li>
+                    {% endif %}
+
+
+
+                {% else %}
+
+                    The specified player does not exist!
+
+            {%  endif %}
+
+        </div>
+
+{% endblock %}

@@ -40,6 +40,19 @@ def games(request):
 
     return response
 
+def show_game(request, game_name_slug):
+
+    context_dict = {}
+
+    try:
+        game = Game.objects.get(slug = game_name_slug)
+        context_dict['game'] = game
+
+    except Game.DoesNotExist:
+        context_dict['game'] = None
+
+    return render(request, 'panda/game.html', context_dict)
+
 
 def user_login(request):
 
@@ -76,12 +89,11 @@ def sign_up(request):
     if request.method == 'POST':
 
         user_form = UserForm(data=request.POST)
-
         profile_form = PlayerProfileForm(data=request.POST)
 
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
-            user.set_password(user.set_password)
+            user.set_password(user.password)
             user.save()
 
             profile = profile_form.save(commit=False)
@@ -104,22 +116,32 @@ def sign_up(request):
 
     return render(request, 'panda/sign_up.html', {'user_form': user_form, 'profile_form':profile_form, 'registered': registered})
 
-def show_game(request, game_name_slug):
+@login_required
+def players(request):
+
+    context_dict = {}
+
+    player_list = Player.objects.order_by('-id')
+
+    context_dict = {'players': player_list}
+
+    response = render(request, 'panda/players.html', context_dict)
+
+    return response
+
+@login_required
+def show_player(request, player_name_slug):
+
     context_dict = {}
 
     try:
-        game = Game.objects.get(slug = game_name_slug)
-
-        context_dict['game'] = game
-
-
+        player = Player.objects.get(slug = player_name_slug)
+        context_dict['player'] = player
 
     except Game.DoesNotExist:
-        context_dict['game'] = None
+        context_dict['player'] = None
 
-
-
-    return render(request, 'panda/game.html', context_dict)
+    return render(request, 'panda/player.html', context_dict)
 
 
 

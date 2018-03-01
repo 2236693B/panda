@@ -4,7 +4,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 import django
 django.setup()
 
-from panda.models import GameStudio, Game, Player, GameRating
+from panda.models import GameStudio, Game, Player
 from django.contrib.auth.models import User
 import datetime
 
@@ -110,7 +110,7 @@ def populate():
             {'username':'BegsOnToast', 'password':'Pa55word', 'email':'Begs@Toast.com', 'First':'Conor', 'Last':'Begley',
             'Bio':
                 '''Second Electronic and Software Engineering Student looking for some casual gamers for either PC(I\'ve an ok spec laptop) or Playstation''',
-            'Steam':'BegsOnToast', 'PSN':'Begs_On_Toast','Xbox':'BegsOnToast', 'Nintendo':'',
+            'Steam':'BegsOnToast', 'PSN':'Begs_On_Toast','Xbox':'BegsOnToast', 'Nintendo':None,
             'game_ratings':{'Star Wars Battlefront II': 4, 'Elder Scrolls Online':3, 'CS:GO':0},
             'player_ratings' : {'MattyBoi':3 , 'CrispyDarkMagic':4 , 'Musket_Mosez':3},
             },
@@ -119,7 +119,7 @@ def populate():
             {'username':'MattyBoi', 'password':'WhosYourDa?', 'email':'Mathew@greggs.co.uk', 'First':'Mathew', 'Last':'McBride',
             'Bio':
                 '''Two Words : I f*cking love Gregggggggggggggggs''',
-            'Steam':'Pedro', 'PSN':'','Xbox':'', 'Nintendo':'',
+            'Steam':'Pedro', 'PSN':None,'Xbox':None, 'Nintendo':None,
             'game_ratings':{'Star Wars Battlefront II': 3, 'Elder Scrolls Online':4},
             'player_ratings' : {'BegsOnToast':5 , 'CrispyDarkMagic':1 , 'Musket_Mosez':3},
             },
@@ -128,7 +128,7 @@ def populate():
             {'username':'CrispyDarkMagic', 'password':'ILoveAJAX', 'email':'adam@sinnfein.ie', 'First':'Adam', 'Last':'Christie',
             'Bio':
                 '''Hearty Irish Lad looking for some likeminded players. Top of the morning to ya''',
-            'Steam':'Chrispie', 'PSN':'', 'Xbox':'', 'Nintendo':'',
+            'Steam':'Chrispie', 'PSN':None, 'Xbox':None, 'Nintendo':None,
             'game_ratings':{'Elder Scrolls Online':3, 'Team Fortress 2':5},
             'player_ratings' : {'BegsOnToast':5 , 'MattyBoi':0 , 'Musket_Mosez':2},
             },
@@ -137,7 +137,7 @@ def populate():
             {'username':'Musket_Mosez', 'password':'N@than', 'email':'mo@momo.com', 'First':'Mo', 'Last':'Moses',
             'Bio':
                 '''Pro-gamer yo!''',
-            'Steam':'', 'PSN':'','Xbox':'', 'Nintendo':'',
+            'Steam':None, 'PSN':None,'Xbox':None, 'Nintendo':None,
             'game_ratings':{'Fifa 18':3, 'PLAYERUNKNOWN\'S BATTLEGROUNDS':4},
             'player_ratings' : {'BegsOnToast':5 , 'MattyBoi':2 , 'CrispyDarkMagic':2, 'PhoniX':4 },
             },
@@ -146,7 +146,7 @@ def populate():
             {'username':'T0bbl3r', 'password':'C00lDub3', 'email':'tobz@hotmail.com', 'First':'Toby', 'Last':'Jones',
             'Bio':
                 '''Add me if you got a KD greater than 0.8KD boiiiii. Only play console and not PC crap!!!''',
-            'Steam':'', 'PSN':'T0bbl3r','Xbox':'T0bzz', 'Nintendo':'TobMan',
+            'Steam':None, 'PSN':'T0bbl3r','Xbox':'T0bzz', 'Nintendo':'TobMan',
             'game_ratings':{'Fifa 18':4, 'PLAYERUNKNOWN\'S BATTLEGROUNDS':4,'Star Wars Battlefront II': 5,'Overwatch':4},
             'player_ratings' : {'BegsOnToast':5 , 'Amiek88':4 },
             },
@@ -155,7 +155,7 @@ def populate():
             {'username':'PhoniX', 'password':'dhhwhw67576@;6%b', 'email':'danylo@danylo.com', 'First':'Danylo', 'Last':'Kravets',
             'Bio':
                 '''Hard core gamers only. PC MAster Race. Looking to get in MLG. Need Team''',
-            'Steam':'PhoniX', 'PSN':'','Xbox':'', 'Nintendo':'',
+            'Steam':'PhoniX', 'PSN':None,'Xbox':None, 'Nintendo':None,
             'game_ratings':{'CS:GO':5, 'PLAYERUNKNOWN\'S BATTLEGROUNDS':4},
             'player_ratings' : {'Musket_Mosez':4 },
             },
@@ -164,7 +164,7 @@ def populate():
             {'username':'Amiek88', 'password':'Hello1234', 'email':'amiex@gmail.com', 'First':'Amie', 'Last':'King',
             'Bio':
                 '''New here. Absolutely love minecraft!''',
-            'Steam':'Amiek88', 'PSN':'','Xbox':'', 'Nintendo':'Amiexoxo',
+            'Steam':'Amiek88', 'PSN':None,'Xbox':None, 'Nintendo':'Amiexoxo',
             'game_ratings':{'Minecraft':5},
             'player_ratings' : {'T0bbl3r':3 },
             },
@@ -212,12 +212,8 @@ def populate():
         print("{0} : {1}".format(str(p),str(p.rating)))
 
 def add_studio_user(username, password, email):
-    u = User.objects.get_or_create(username=username, password=password, email=email)[0]
-    u.save()
-    return u
-
-def add__user(username, password, email):
-    u = User.objects.get_or_create(username=username, password=password, email=email)[0]
+    u = User.objects.get_or_create(username=username, email=email)[0]
+    u.set_password(password) #Hashes password
     u.save()
     return u
 
@@ -240,7 +236,8 @@ def add_game(studio,name,game_data):
     return g
 
 def add_player_user(username, email, password, first, last):
-    u = User.objects.get_or_create(username=username, password=password, email=email)[0]
+    u = User.objects.get_or_create(username=username, email=email)[0]
+    u.set_password(password) #Hashes password
     u.first_name=first
     u.last_name=last
     u.save()
@@ -254,6 +251,7 @@ def add_player(user, player_data):
      p.PSN = player_data['PSN']
      p.Xbox = player_data['Xbox']
      p.Nintendo = player_data['Nintendo']
+     p.save()
      return p
 
 

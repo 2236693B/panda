@@ -16,6 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
+MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -26,7 +27,7 @@ SECRET_KEY = '53d2_jm6y*d4%st8qoe1)8@wrcat(cgt065g=_z!b%t#^*+639'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['lab9teamb.pythonanywhere.com']
 
 
 # Application definition
@@ -64,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media'
             ],
         },
     },
@@ -99,6 +101,33 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+
+PASSWORD_HASHERS = [ 'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+
+                     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher'
+
+                     ]
+
+#Authentication backends
+AUTHENTICATION_BACKENDS = [
+        'django.contrib.auth.backends.ModelBackend',
+    ]
+
+
+
+LOGIN_URL = '/panda/login/'
+
+#Media
+
+MEDIA_ROOT = MEDIA_DIR
+
+MEDIA_URL = '/media/'
+
+
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 # Internationalization

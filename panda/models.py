@@ -21,6 +21,12 @@ class Player(models.Model):
     rating =  models.FloatField(default = -1.0)
     picture = models.ImageField(upload_to='profile_images', blank=True)
 
+    slug = models.SlugField(unique = True)
+
+    def save(self, *args, **kwaargs):
+        self.slug = slugify(self.user.username)
+        super(Player, self).save(*args, **kwaargs)
+
     def __str__(self):
 
         return self.user.username
@@ -79,6 +85,7 @@ class Game(models.Model):  #
     site = models.URLField(null = True)
     date = models.DateField(null = True)
     catergory = models.CharField(max_length=3, choices=CATERGORY, default = NONE)
+    picture = models.ImageField(upload_to='_images', blank=True)
 
     rating = models.FloatField(default = -1.0)
 

@@ -1,0 +1,30 @@
+{% extends 'panda/base.html' %}
+
+{% block title_block %}
+    Players
+{% endblock %}
+
+{% block body_block %}
+
+          <div>
+               {% if players %}
+            <ul>
+                <strong> Players</strong>
+                {% for player in players %}
+                    <li><a href="/panda/player/{{ player.slug }}">{{ player.user.username }}</a> : <i>
+                    {% if player.rating != -1 %}
+                        {{player.rating}}
+                    {% else %}
+                        unrated
+                    {% endif %}
+
+                    </i></li>
+
+                {% endfor  %}
+            </ul>
+            {% else %}
+                <strong> There are no players present.</strong>
+            {%  endif %}
+        </div>
+
+{% endblock %}
