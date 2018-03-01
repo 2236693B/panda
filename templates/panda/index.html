@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block body_block %}
-          <div>
+        <div class="panda-row">
                {% if games %}
-            <ul>
+            <ul class="panda-col 1">
                 <strong> Top Five games</strong>
                 {% for game in games %}
                     <li><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>{{game.rating}}</i></li>
@@ -17,11 +17,11 @@
             {% else %}
                 <strong> There are no games present.</strong>
             {%  endif %}
-        </div>
+        
 
-        <div>
+        
                {% if players %}
-            <ul>
+            <ul class="panda-col 2">
                 <strong> Top Five Players</strong>
                 {% for player in players %}
                     <li>{{ player.user.username }} : <i>{{player.rating}}</i></li>

@@ -26,7 +26,7 @@ SECRET_KEY = '53d2_jm6y*d4%st8qoe1)8@wrcat(cgt065g=_z!b%t#^*+639'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['Lab9TeamB.pythonanywhere.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition

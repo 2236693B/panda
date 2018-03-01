@@ -18,3 +18,111 @@
     font-weight: 300;
     font-style: normal;
 }
+@font-face {
+    font-family: 'Lato-Black';
+    src: url('../fonts/Lato-Black.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-BlackItalic';
+    src: url('../fonts/Lato-BlackItalic.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-Bold';
+    src: url('../fonts/Lato-Bold.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-BoldItalic';
+    src: url('../fonts/Lato-BoldItalic.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-Hairline';
+    src: url('../fonts/Lato-Hairline.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-HairlineItalic';
+    src: url('../fonts/Lato-HairlineItalic.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-Heavy';
+    src: url('../fonts/Lato-Heavy.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-HeavyItalic';
+    src: url('../fonts/Lato-HeavyItalic.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-Italic';
+    src: url('../fonts/Lato-Italic.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-Light';
+    src: url('../fonts/Lato-Light.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-LightItalic';
+    src: url('../fonts/Lato-LightItalic.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-Medium';
+    src: url('../fonts/Lato-Medium.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-MediumItalic';
+    src: url('../fonts/Lato-MediumItalic.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-Regular';
+    src: url('../fonts/Lato-Regular.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-Semibold';
+    src: url('../fonts/Lato-Semibold.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-SemiboldItalic';
+    src: url('../fonts/Lato-SemiboldItalic.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-Thin';
+    src: url('../fonts/Lato-Thin.woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Lato-ThinItalic';
+    src: url('../fonts/Lato-ThinItalic.woff');
+    font-weight: 300;
+    font-style: normal;
+}

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
+{% load staticfiles %}
 <html>
     <head lang="en">
+		<link rel="stylesheet" href="{% static 'admin\css\site.css' %}">
+		<script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
         <meta charset="UTF-8">
         <title>Panda-
         {% block title_block %}
@@ -10,24 +13,37 @@
     </head>
 
     <body>
-        <div>
+		<div class="Panda-top">
+			<div class="Panda-bar">
+				
+					<a href="/panda/" class="Panda-bar-item Panda-button"></i>Home</a>
+					<a href="/panda/games/" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-gamepad"></i>  Games</a>
+					<a href="/panda/about/" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-user"></i>  About</a>
+					<a href="/panda/login/" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-sign-in-alt"></i>  Login</a>
+					<a href="/panda/sign_up/" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-user-plus"></i>  Sign Up</a>
+					<a class="Panda-bar-item Panda-button Panda-hide-small "><i class="fas fa-search"></i></a>
+
+			</div>
+		</div>
+		
+
+        <div class="Panda-content Panda-container Panda-padding-64">
         {% block body_block %}
         {% endblock %}
         </div>
 
         <hr />
-
-        <div>
-            <ul>
-                <li><a href="/panda/">Home</a><br /></li>
-                <li><a href="/panda/games/">Games</a><br /></li>
-                <li><a href="/panda/about/">About</a><br /></li>
-                <li><a href="/panda/login/">Login</a><br /></li>
-                <li><a href="/panda/sign_up/">Sign Up</a><br /></li>
-            </ul>
-
-        </div>
-
+		<footer class="Panda-center Panda-padding-64">
+		  <a href="#home" class="Panda-button Panda-light-grey"><i class="fas fa-arrow-up Panda-margin-right"></i>To the top</a>
+		  <div class="panda-xlarge panda-section">
+			<i class="fab fa-facebook-f"></i>
+			<i class="fab fa-instagram"></i>
+			<i class="fab fa-snapchat"></i>
+			<i class="fab fa-twitter"></i>
+			
+		  </div>
+		</footer>
+      
     </body>
 
 </html>
