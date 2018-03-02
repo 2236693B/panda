@@ -89,11 +89,13 @@
                 </ul>
 
                 <a href ="/panda/game/{{game.slug}}/make_comment" >Make a comment</a>
-
+                {% if owner %}
+                    <a href ="/panda/game/{{game.slug}}/edit_game_profile" >Edit game profile</a>
+                {% endif %}
                 {% else %}
 
                     The specified game does not exist!
-                    <a href = '/panda/games/'>Return</a>
+                    <a href = '{% url "games" %}'>Return</a>
 
             {%  endif %}
 

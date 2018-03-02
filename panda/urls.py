@@ -8,13 +8,15 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
 
                 url(r'^login/$', views.user_login, name='login'),
                 url(r'^sign_up/$', views.sign_up, name='sign_up'),
+                url(r'^studio_sign_up/$', views.studio_sign_up, name='studio_sign_up'),
                 url(r'^logout/$', views.user_logout, name='logout'),
 
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/$', views.show_game, name='show_game'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/make_rating/$', views.make_game_rating, name='game_rating'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/make_comment/$', views.make_game_comment, name='game_comment'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/add_player/$', views.add_player, name='add_player'),
-                url(r'^game/(?P<game_name_slug>[\w\-]+)/remove_player/$', views.remove_player, name='remove_remove'),
+                url(r'^game/(?P<game_name_slug>[\w\-]+)/remove_player/$', views.remove_player, name='remove_player'),
+                url(r'^game/(?P<game_name_slug>[\w\-]+)/edit_game_profile/$', views.edit_game_profile, name='edit_game_profile'),
 
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/$', views.show_player, name='show_player'),
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/make_rating/$', views.make_player_rating, name='player_rating'),

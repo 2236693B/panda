@@ -42,6 +42,7 @@ def games(request):
 def show_game(request, game_name_slug):
     played = False
     player = False
+    owner = False
 
     context_dict = {}
 
@@ -58,9 +59,12 @@ def show_game(request, game_name_slug):
             played = True
         if Player.objects.filter(user=request.user).exists():
             player = True
+        elif game.studio.user == request.user:
+            owner = True
 
     context_dict['played'] = played
     context_dict['player'] = player
+    context_dict['owner'] = owner
 
 
 
@@ -233,6 +237,7 @@ def user_logout(request):
 
 def sign_up(request):
     registered = False
+
     if request.method == 'POST':
 
         user_form = UserForm(data=request.POST)
@@ -261,7 +266,37 @@ def sign_up(request):
         user_form = UserForm()
         profile_form = PlayerProfileForm()
 
-    return render(request, 'panda/sign_up.html', {'user_form': user_form, 'profile_form':profile_form, 'registered': registered})
+    return render(request, 'panda/sign_up.html', {'user_form': user_form, 'profile_form':profile_form, 'registered': registered, 'player': True})
+
+def studio_sign_up(request):
+    registered = False
+
+    if request.method == 'POST':
+
+        user_form = UserForm(data=request.POST)
+        profile_form = StudioProfileForm(data=request.POST)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
+
+            profile = profile_form.save(commit=False)
+            profile.user = user
+
+            profile.save()
+
+            registered=True
+
+        else:
+            print(user_form.errors, profile_form.errors)
+
+    else:
+        user_form = UserForm()
+        profile_form = StudioProfileForm()
+
+    return render(request, 'panda/sign_up.html', {'user_form': user_form, 'profile_form':profile_form, 'registered': registered, 'player':False})
+
 
 @login_required
 def players(request):
@@ -437,6 +472,37 @@ def edit_studio_profile(request):
                 return render(request, 'panda//edit_studio_profile.html',{'studio': studio, 'form': form, 'err_message':err_message})
 
     return render(request, 'panda/edit_studio_profile.html', {'studio': studio, 'form': form,})
+
+@login_required
+def edit_game_profile(request, game_name_slug):
+
+    form = None
+    edit = False
+
+    try:
+       game = Game.objects.get(slug = game_name_slug)
+       form = GameRegisterForm( {'name':game.name, 'extract':game.extract, 'site':game.site,'date':game.date,'catergory':game.catergory,'picture':game.picture, 'Playstation':game.Playstation, 'Xbox':game.Xbox, 'PC':game.PC, 'Nintendo':game.Nintendo, 'Mobile':game.Mobile})
+
+    except Game.DoesNotExist:
+       game = None
+       edit = False
+
+    try:
+       studio = GameStudio.objects.get(user=request.user)
+       if game.studio.name == studio.name:
+           edit = True
+
+    except GameStudio.DoesNotExist:
+       game = None
+       edit = False
+
+    if request.method == 'POST':
+        form = GameRegisterForm(request.POST, request.FILES, instance=studio)
+        if form.is_valid():
+            form.save(commit=True)
+            return show_game(request)
+
+    return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form,})
 
 
 

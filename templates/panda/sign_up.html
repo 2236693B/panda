@@ -6,7 +6,10 @@
 
 {% block body_block %}
 
+{% if user.is_authenticated %}
+    You cannot register. You are logged in as user.username
 
+{% else %}
     <h1>Register for Panda</h1>
     {% if registered %}
 
@@ -16,15 +19,24 @@
     {% else %}
 
         <strong>Register here!</strong><br />
-        
+        {% if player %}
         <form id="user_form" method="post" action="{% url 'sign_up' %}" enctype="multipart/form-data">
+        {% else %}
+        <form id="user_form" method="post" action="{% url 'studio_sign_up' %}" enctype="multipart/form-data">
+        {% endif %}
         {% csrf_token %}
         {{ user_form.as_p }}
         {{ profile_form.as_p }}
 
         <input type="submit" name="submit" value="Register"/>
 
-    </form>
+        </form>
+        {% if player %}
+            <a href = "{% url 'studio_sign_up' %}" >Sign up as a Studio</a>
+        {% else %}
+            <a href = "{% url 'sign_up' %}" >Sign up as a Player</a>
+        {% endif %}
     {% endif %}
+{% endif %}
 
 {% endblock %}

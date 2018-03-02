@@ -14,7 +14,7 @@
 
         <div>
 
-            <form id = "game_register_form" method="post" action="/panda/my_profile/register_game/" />
+            <form id = "game_register_form" method="post" action="{% url register_game %}" />
 
                 {% csrf_token %}
 
@@ -49,7 +49,7 @@
 
        {% else %}
                 Players cannot register games
-                <a href = '/panda/games/'>Return</a>
+                <a href = '{% url "games" %}'>Return</a>
 
 
         {% endif %}
