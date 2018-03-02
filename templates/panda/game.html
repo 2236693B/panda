@@ -65,8 +65,16 @@
                 <ul>
                     {% if user.is_authenticated %}
                         {% for player in game.players.all %}
-                            <li>{{ player.user.username}}</li>
+                            <li><a href = "/panda/player/{{player.slug}}/">{{player.user.username}} </a></li>
                         {% endfor %}
+                        {% if player %}
+                            {% if played %}
+                                <a href = "/panda/game/{{game.slug}}/remove_player">Remove from my games</a>
+                            {% else %}
+                                <a href = "/panda/game/{{game.slug}}/add_player">Add to my games</a>
+                            {% endif %}
+                        {% endif %}
+
                     {% else %}
                         <i>Login to view</i>
                     {% endif %}

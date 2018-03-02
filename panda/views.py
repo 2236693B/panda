@@ -30,7 +30,6 @@ def about(request):
     return render(request, 'panda/about.html', context=context_dict)
 
 def games(request):
-
     context_dict = {}
 
     game_list = Game.objects.order_by('-catergory')
@@ -42,8 +41,11 @@ def games(request):
     return response
 
 def show_game(request, game_name_slug):
+    played = False
+    player = False
 
     context_dict = {}
+
 
     try:
         game = Game.objects.get(slug = game_name_slug)
@@ -51,6 +53,17 @@ def show_game(request, game_name_slug):
 
     except Game.DoesNotExist:
         context_dict['game'] = None
+
+    if request.user.is_authenticated():
+        if game.players.filter(user=request.user).exists():
+            played = True
+        if Player.objects.filter(user=request.user).exists():
+            player = True
+
+    context_dict['played'] = played
+    context_dict['player'] = player
+
+
 
     return render(request, 'panda/game.html', context_dict)
 
@@ -141,6 +154,53 @@ def make_game_comment(request,game_name_slug):
     context_dict = {'form':form, 'game':game, 'studio_warning':studio_warning, 'return':game_name_slug}
 
     return render(request, 'panda/game_comment.html', context_dict)
+
+@login_required
+def add_player(request, game_name_slug):
+    context_dict = {}
+
+    try:
+        game = Game.objects.get(slug = game_name_slug)
+        context_dict['game'] = game
+
+        if request.user.is_authenticated():
+            if not game.players.filter(user=request.user).exists():
+
+                try:
+                    player = Player.objects.get(user=request.user)
+                    game.players.add(player)
+
+                except Player.DoesNotExist:
+                    player = None
+
+
+    except Game.DoesNotExist:
+        context_dict['game'] = None
+
+    return show_game(request, game_name_slug)
+
+@login_required
+def remove_player(request, game_name_slug):
+    context_dict = {}
+
+    try:
+        game = Game.objects.get(slug = game_name_slug)
+        context_dict['game'] = game
+
+        if request.user.is_authenticated():
+            if game.players.filter(user=request.user).exists():
+                try:
+                    player = Player.objects.get(user=request.user)
+                    game.players.remove(player)
+
+                except Player.DoesNotExist:
+                    player = None
+
+
+    except Game.DoesNotExist:
+        context_dict['game'] = None
+
+    return show_game(request, game_name_slug)
 
 
 def user_login(request):
@@ -295,6 +355,7 @@ def show_profile(request):
     try:
         player = Player.objects.get(user = user)
         context_dict['player'] = player
+        context_dict['games'] = player.game_set.all()
         return render(request, 'panda/my_profile_player.html', context_dict)
 
     except Player.DoesNotExist:

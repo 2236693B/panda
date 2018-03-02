@@ -42,7 +42,7 @@ class PlayerProfileForm(forms.ModelForm):
 
         fields = ('Bio','Steam', 'PSN', 'Xbox','Nintendo', 'picture')
 
-class GameRegisterForm (forms.ModelForm):
+class GameRegisterForm (forms.ModelForm,):
     date = forms.DateField(initial=datetime.date.today, widget=forms.widgets.DateInput(format="%d/%m/%Y"))
 
     class Meta:

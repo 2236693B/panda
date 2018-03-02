@@ -23,7 +23,7 @@
 
                 {% endif %}
 
-                <h4>Usernames</h4
+                <h4>Usernames</h4>
                 <ul>
                     {%if player.PSN != None %}
                     <li><b>Playstation: </b>{{player.PSN}}</li>
@@ -40,6 +40,18 @@
                     {%if player.Nintendo != None %}
                     <li><b>Nintendo: </b>{{player.Nintendo}}</li>
                     {% endif %}
+
+                <h4>Games</h4>
+                <ul>
+                {% if games %}
+                    {% for game in games %}
+                    <li><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> </li>
+
+                {% endfor  %}
+                </ul>
+            {% else %}
+                <strong> You play no games </strong>
+            {%  endif %}
         </div>
 
 {% endblock %}
