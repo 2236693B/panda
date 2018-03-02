@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect#, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm
+from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm
 
 from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio
 from django.contrib.auth.models import User
@@ -108,7 +108,6 @@ def make_game_rating(request,game_name_slug):
             return show_game(request, game_name_slug)
 
         else:
-
             print(form.errors)
 
     context_dict = {'form':form, 'game':game, 'value': value, 'studio_warning': studio_warning,'return':game_name_slug}
@@ -396,6 +395,50 @@ def register_game(request):
     context_dict = {'form':form, 'studio':studio}
 
     return render(request, 'panda/register_game.html', context_dict)
+
+@login_required
+def edit_player_profile(request):
+    try:
+        player = Player.objects.get(user=request.user)
+
+    except Player.DoesNotExist:
+       player = None
+
+    form = PlayerProfileForm( {'Bio': player.Bio, 'Steam': player.Steam, 'PSN' : player.PSN, 'Xbox': player.Xbox, 'Nintendo':player.Nintendo, 'picture':player.picture})
+
+    if request.method == 'POST':
+        form = PlayerProfileForm(request.POST, request.FILES, instance=player)
+        if form.is_valid():
+            form.save(commit=True)
+            return show_profile(request)
+        else:
+            print(form.errors)
+
+    return render(request, 'panda/edit_player_profile.html', {'player': player, 'form': form})
+
+@login_required
+def edit_studio_profile(request):
+
+    form = None
+
+    try:
+       studio = GameStudio.objects.get(user=request.user)
+       form = StudioProfileForm( {'name':studio.name})
+
+    except GameStudio.DoesNotExist:
+       studio = None
+
+    if request.method == 'POST':
+        form = StudioProfileForm(request.POST, request.FILES, instance=studio)
+        if form.is_valid():
+            form.save(commit=True)
+            return show_profile(request)
+        else:
+                err_message = "Studio name already in use"
+                return render(request, 'panda//edit_studio_profile.html',{'studio': studio, 'form': form, 'err_message':err_message})
+
+    return render(request, 'panda/edit_studio_profile.html', {'studio': studio, 'form': form,})
+
 
 
 

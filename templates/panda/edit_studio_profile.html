@@ -1,0 +1,33 @@
+{% extends 'panda/base.html' %}
+
+{% block title %} Edit profile {% endblock %}
+{% block body_block %}
+
+
+{% if studio %}
+    <form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+            {{hidden}}
+        {% endfor %}
+
+
+        {% for field in form.visible_fields %}
+
+                    {{err_message}}
+                    <br>
+
+                    <b>{{ field.name}} </b>
+                    {{ field }}
+
+                {% endfor %}
+
+    <input type="submit" value="Update" />
+    </form>
+
+{% else %}
+
+<a href ="/panda/my_profile/edit_player_profile" >To edit Player details go here</a>
+
+{% endif %}
+{% endblock %}

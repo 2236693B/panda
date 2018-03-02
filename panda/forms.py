@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from panda.models import Player, GameRating, Comment, Game
+from panda.models import Player, GameRating, Comment, Game, GameStudio
 import datetime
 
 
@@ -8,21 +8,23 @@ import datetime
 class GameRatingForm (forms.ModelForm):
     INTEGER_CHOICES= [tuple([x,x]) for x in range(1,32)]
 
-    value = forms.ChoiceField(choices=[(x, x) for x in range(1, 6)])
+    value = forms.ChoiceField(required= True, choices=[(x, x) for x in range(1, 6)])
 
     class Meta:
         model = GameRating
         fields = ('value',)
 
 class GameCommentForm (forms.ModelForm):
-    value = forms.CharField(required = True)
+    value = forms.CharField(required = True, widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
 
     class Meta:
         model = Comment
         fields = ('value',)
 
 class PlayerRatingForm (forms.ModelForm):
-    value = forms.IntegerField(required = True, max_value = 5, min_value = 0)
+    INTEGER_CHOICES= [tuple([x,x]) for x in range(1,32)]
+
+    value = forms.ChoiceField(required= True, choices=[(x, x) for x in range(1, 6)])
 
     class Meta:
         model = GameRating
@@ -35,14 +37,24 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('username','email','password')
 
+class StudioProfileForm(forms.ModelForm):
+
+
+    class Meta:
+        model = GameStudio
+        fields = ('name',)
+        exclude = ('user',)
+
+
 class PlayerProfileForm(forms.ModelForm):
+
+    Bio = forms.CharField(widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
 
     class Meta:
         model = Player
-
         fields = ('Bio','Steam', 'PSN', 'Xbox','Nintendo', 'picture')
 
-class GameRegisterForm (forms.ModelForm,):
+class GameRegisterForm (forms.ModelForm):
     date = forms.DateField(initial=datetime.date.today, widget=forms.widgets.DateInput(format="%d/%m/%Y"))
 
     class Meta:

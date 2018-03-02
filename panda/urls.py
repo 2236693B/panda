@@ -21,7 +21,7 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
 
                 url(r'^my_profile/$', views.show_profile, name='my_profile'),
                 url(r'^my_profile/register_game/$', views.register_game, name='register_game'),
-
-
+                url(r'^my_profile/edit_player_profile/$', views.edit_player_profile, name='edit_player_profile'),
+                url(r'^my_profile/edit_studio_profile/$', views.edit_studio_profile, name='edit_studi_profile'),
 
               ]

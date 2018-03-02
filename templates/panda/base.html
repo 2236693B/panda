@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 {% load staticfiles %}
+
 <html>
     <head lang="en">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js">
+        <script src="{% static "js/panda-jquery.js" %}"></script>
 		<link rel="stylesheet" href="{% static 'admin\css\site.css' %}">
-		<script defer src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
         <meta charset="UTF-8">
         <title>Panda-
         {% block title_block %}
