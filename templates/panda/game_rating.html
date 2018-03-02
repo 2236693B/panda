@@ -46,8 +46,13 @@
         </div>
 
         {% else %}
-
-            A game by this name does not exist
+            {%if studio_warning %}
+                Studios cannot make Ratings
+                <a href = '/panda/game/{{return}}/'>Return</a>
+            {% else %}
+                A game by this name does not exist
+                <a href = '/panda/games/'>Return</a>
+            {% endif %}
 
         {% endif %}
 

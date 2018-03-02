@@ -1,0 +1,27 @@
+{% extends 'panda/base.html' %}
+
+{% block title_block %}
+    {{studio.name}}
+{% endblock %}
+
+{% block body_block %}
+
+    <body>
+        <div>
+                <h1>{{ studio.name }}</h1>
+
+                <h4>Games</h4>
+                <ul>
+
+                {% for game in games %}
+                    <li><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> </li>
+                {% endfor %}
+
+                </ul>
+
+
+                <a href = "/panda/my_profile/register_game">Register new game</a>
+
+        </div>
+
+{% endblock %}

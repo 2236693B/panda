@@ -17,7 +17,8 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/$', views.show_player, name='show_player'),
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/make_rating/$', views.make_player_rating, name='player_rating'),
 
-                url(r'^my_profile/', views.show_profile, name='my_profile'),
+                url(r'^my_profile/$', views.show_profile, name='my_profile'),
+                url(r'^my_profile/register_game/$', views.register_game, name='register_game'),
 
 
 

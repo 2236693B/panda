@@ -88,7 +88,7 @@ class Game(models.Model):  #
     )
 
     studio = models.ForeignKey(GameStudio, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, null = False)
+    name = models.CharField(max_length=200, null = False, unique =True)
     players = models.ManyToManyField(Player, blank= True)
     extract = models.CharField(max_length=500, blank= False, default = 'Extract missing')
     site = models.URLField(null = True)

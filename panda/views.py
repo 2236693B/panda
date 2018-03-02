@@ -4,9 +4,9 @@ from django.http import HttpResponseRedirect#, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm
+from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm
 
-from .models import Game, Player,GameRating, Comment, PlayerRating
+from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio
 from django.contrib.auth.models import User
 
 
@@ -56,16 +56,23 @@ def show_game(request, game_name_slug):
 
 @login_required
 def make_game_rating(request,game_name_slug):
-
+    studio_warning = False
     name = request.user.username
     user = User.objects.get(username = name)
-    player = Player.objects.get(user = user)
 
     try:
         game = Game.objects.get(slug= game_name_slug)
 
     except Game.DoesNotExist:
        game = None
+
+    try:
+         player = Player.objects.get(user = user)
+
+    except Player.DoesNotExist:
+       studio_warning = True
+       game = None
+       player = None
 
     try:
         rating = GameRating.objects.get(player = player, rated = game)
@@ -91,21 +98,27 @@ def make_game_rating(request,game_name_slug):
 
             print(form.errors)
 
-    context_dict = {'form':form, 'game':game, 'value': value}
+    context_dict = {'form':form, 'game':game, 'value': value, 'studio_warning': studio_warning,'return':game_name_slug}
 
     return render(request, 'panda/game_rating.html', context_dict)
 
 @login_required
 def make_game_comment(request,game_name_slug):
-
+    studio_warning = False
     name = request.user.username
     user = User.objects.get(username = name)
-    player = Player.objects.get(user = user)
 
     try:
         game = Game.objects.get(slug= game_name_slug)
 
     except Game.DoesNotExist:
+       game = None
+
+    try:
+         player = Player.objects.get(user = user)
+
+    except Player.DoesNotExist:
+       studio_warning = True
        game = None
 
     form = GameCommentForm()
@@ -125,7 +138,7 @@ def make_game_comment(request,game_name_slug):
 
             print(form.errors)
 
-    context_dict = {'form':form, 'game':game}
+    context_dict = {'form':form, 'game':game, 'studio_warning':studio_warning, 'return':game_name_slug}
 
     return render(request, 'panda/game_comment.html', context_dict)
 
@@ -214,19 +227,18 @@ def show_player(request, player_name_slug):
         player = Player.objects.get(slug = player_name_slug)
         context_dict['player'] = player
 
-    except Game.DoesNotExist:
+    except Player.DoesNotExist:
         context_dict['player'] = None
 
     return render(request, 'panda/player.html', context_dict)
 
 @login_required
 def make_player_rating(request,player_name_slug):
-
-    warning = False
+    studio_warning = False
+    player_warning = False
 
     name = request.user.username
     user = User.objects.get(username = name)
-    rating_player = Player.objects.get(user = user)
 
     try:
         player = Player.objects.get(slug=player_name_slug)
@@ -234,14 +246,21 @@ def make_player_rating(request,player_name_slug):
     except Player.DoesNotExist:
        player = None
 
-    if player == rating_player:
+    try:
+         rating_player = Player.objects.get(user = user)
+
+    except Player.DoesNotExist:
+       studio_warning = True
+       player = None
+       rating_player = None
+
+    if player == rating_player and rating_player != None:
         player = None
-        warning = True
+        player_warning = True
 
     try:
-        rating = PlayerRating.objects.get(player=rating_player, rated_player =player)
+        rating = PlayerRating.objects.get(player=rating_player, rated_player=player)
         value = rating.value
-
 
     except PlayerRating.DoesNotExist:
        value = 'unrated'
@@ -261,7 +280,7 @@ def make_player_rating(request,player_name_slug):
 
             print(form.errors)
 
-    context_dict = {'form':form, 'player':player, 'value': value, 'warning':warning}
+    context_dict = {'form':form, 'player':player, 'value': value, 'player_warning':player_warning, 'studio_warning':studio_warning, 'return':player_name_slug}
 
     return render(request, 'panda/player_rating.html', context_dict)
 
@@ -271,11 +290,55 @@ def show_profile(request):
     context_dict = {}
     name = request.user.username
     user = User.objects.get(username = name)
-    player = Player.objects.get(user = user)
+    player = None
 
-    context_dict['player'] = player
+    try:
+        player = Player.objects.get(user = user)
+        context_dict['player'] = player
+        return render(request, 'panda/my_profile_player.html', context_dict)
 
-    return render(request, 'panda/my_profile.html', context_dict)
+    except Player.DoesNotExist:
+        studio = GameStudio.objects.get(user = user)
+        context_dict['studio'] = studio
+        context_dict['games'] = Game.objects.filter(studio=studio)
+        return render(request, 'panda/my_profile_studio.html', context_dict)
+
+
+@login_required
+def register_game(request):
+
+    name = request.user.username
+    user = User.objects.get(username = name)
+
+    try:
+       studio = GameStudio.objects.get(user=user)
+
+    except GameStudio.DoesNotExist:
+      studio = None
+
+    form = GameRegisterForm()
+
+    if request.method == 'POST':
+        form = GameRegisterForm(request.POST)
+        if form.is_valid():
+            game = form.save(commit=False)
+            game.studio = studio
+
+            game.save()
+
+            return show_profile(request)
+
+        else:
+
+            print(form.errors)
+
+    context_dict = {'form':form, 'studio':studio}
+
+    return render(request, 'panda/register_game.html', context_dict)
+
+
+
+
 
 
 
