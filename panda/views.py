@@ -9,7 +9,6 @@ from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameComment
 from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio
 from django.contrib.auth.models import User
 
-
 def index(request):
 
     context_dict = {}
