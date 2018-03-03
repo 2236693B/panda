@@ -94,7 +94,7 @@ class Game(models.Model):  #
     site = models.URLField(null = True)
     date = models.DateField(null = True)
     catergory = models.CharField(max_length=3, choices=CATERGORY, default = NONE)
-    picture = models.ImageField(upload_to='_images', blank=True)
+    picture = models.ImageField(upload_to='game_images', blank=True)
 
     rating = models.FloatField(default = -1.0)
     comments = models.ManyToManyField(Comment, blank= True)

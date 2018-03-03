@@ -7,7 +7,6 @@ from django.contrib.auth import logout
 from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm
 
 from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio
-from django.contrib.auth.models import User
 
 #View for Home page which features top 5 games and players
 def index(request):
@@ -422,26 +421,35 @@ def edit_game_profile(request, game_name_slug):
     form = None
     edit = False
 
-    game = check_game(game_name_slug)
+    try:
+       game = Game.objects.get(slug = game_name_slug)
+       form = GameRegisterForm( {'studio':game.studio, 'name':game.name, 'extract':game.extract, 'site':game.site,'date':game.date,'catergory':game.catergory,'picture':game.picture, 'Playstation':game.Playstation, 'Xbox':game.Xbox, 'PC':game.PC, 'Nintendo':game.Nintendo, 'Mobile':game.Mobile})
 
-    if game != None:
-        form = GameRegisterForm( {'name':game.name, 'extract':game.extract, 'site':game.site,'date':game.date,'catergory':game.catergory,'picture':game.picture, 'Playstation':game.Playstation, 'Xbox':game.Xbox, 'PC':game.PC, 'Nintendo':game.Nintendo, 'Mobile':game.Mobile})
-
-    else:
+    except Game.DoesNotExist:
+       game = None
        edit = False
 
-    studio = check_studio_user(request.user)
-
-    if game != None and game.studio.name == studio.name :
+    try:
+       studio = GameStudio.objects.get(user=request.user)
+       if game.studio.name == studio.name:
            edit = True
 
+    except GameStudio.DoesNotExist:
+       studio = None
+       game = None
+       edit = False
+
     if request.method == 'POST':
-        form = GameRegisterForm(request.POST, request.FILES, instance=studio)
+        form = GameRegisterForm(request.POST, request.FILES, instance=game)
         if form.is_valid():
             form.save(commit=True)
-            return show_game(request)
 
-    return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form,})
+            return show_profile(request)
+
+        else:
+            print(form.errors)
+
+    return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form, 'studio':studio})
 
 
 
