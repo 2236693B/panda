@@ -47,14 +47,21 @@
         {% else %}
             {% if player_warning %}
                 You cannot rate yourself
+                <highlight>
                 <a href = '/panda/player/{{return}}/'>Return</a>
+                </highlight>
 
             {%elif studio_warning %}
                 Studios cannot make comments
+
+                <highlight>
                 <a href = '/panda/player/{{return}}/'>Return</a>
+                </highlight>
             {% else %}
                 A game by this name does not exist
+                <highlight>
                 <a href = '{% url "players" %}'>Return</a>
+                </highlight>
             {% endif %}
 
 

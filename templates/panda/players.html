@@ -11,6 +11,7 @@
             <ul>
                 <strong> Players</strong>
                 {% for player in players %}
+                    <highlight>
                     <li><a href="/panda/player/{{ player.slug }}">{{ player.user.username }}</a> : <i>
                     {% if player.rating != -1 %}
                         {{player.rating}}
@@ -19,7 +20,7 @@
                     {% endif %}
 
                     </i></li>
-
+                    </highlight>
                 {% endfor  %}
             </ul>
             {% else %}

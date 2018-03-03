@@ -11,15 +11,15 @@
             <ul>
                 <strong> Games</strong>
                 {% for game in games %}
-                    <li>{{game.catergory}} - <a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>
+
+                    <li>{{game.catergory}} -<highlight> <a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>
                     {% if game.rating != -1 %}
                         {{game.rating}}
                     {% else %}
                         unrated
                     {% endif %}
-
                     </i></li>
-
+                    </highlight>
                 {% endfor  %}
             </ul>
             {% else %}

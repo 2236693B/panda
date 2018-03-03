@@ -14,14 +14,20 @@
                 <ul>
 
                 {% for game in games %}
+                    <highlight>
                     <li><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> </li>
+                    </highlight>
                 {% endfor %}
 
                 </ul>
 
-
+                <highlight>
                 <a href = "{% url 'register_game' %}">Register new game</a>
+                </highlight>
+
+                <highlight>
                 <a href = "{% url 'edit_studio_profile' %}"> Edit details</a>
+                </highlight>
 
         </div>
 

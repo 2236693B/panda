@@ -1,13 +1,18 @@
 $(document).ready( function() {
-    $("p").hover( function() {
+
+    $("highlight").hover( function() {
         $(this).css('color', 'red');
+        $(this).css('font-weight', 'bold');
+
     },
     function() {
         $(this).css('color', 'black');
+        $(this).css('font-weight', 'normal');
+
     });
 
-    $("#about-btn").click( function(event) {
-        alert("You clicked the button using JQuery!");
+    $("NL").click( function() {
+        alert("Please log in to view profiles");
     });
 
 });

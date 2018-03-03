@@ -12,9 +12,11 @@
 {% else %}
     <h1>Register for Panda</h1>
     {% if registered %}
-
         <strong>Thank you for signing up!</strong>
+
+        <highlight>
         <a href="{% url 'index' %}">Return to the homepage.</a><br>
+        </highlight>
 
     {% else %}
 
@@ -27,14 +29,21 @@
         {% csrf_token %}
         {{ user_form.as_p }}
         {{ profile_form.as_p }}
-
+        <highlight>
         <input type="submit" name="submit" value="Register"/>
+        </highlight>
 
         </form>
         {% if player %}
+            <highlight>
             <a href = "{% url 'studio_sign_up' %}" >Sign up as a Studio</a>
+            </highlight>
+
         {% else %}
+            <highlight>
             <a href = "{% url 'sign_up' %}" >Sign up as a Player</a>
+            </highlight>
+
         {% endif %}
     {% endif %}
 {% endif %}

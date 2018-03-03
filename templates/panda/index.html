@@ -10,8 +10,9 @@
             <ul class="panda-col 1">
                 <strong> Top Five games</strong>
                 {% for game in games %}
-                    <li><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>{{game.rating}}</i></li>
-
+                    <highlight>
+                    <li></id><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>{{game.rating}}</i></li>
+                    </highlight>
                 {% endfor  %}
             </ul>
             {% else %}
@@ -25,14 +26,17 @@
                 <strong> Top Five Players</strong>
                 {% if user.is_authenticated %}
                 {% for player in players %}
+                    <highlight>
                     <li><a href="/panda/player/{{ player.slug }}">{{ player.user.username }}</a> : <i>{{player.rating}}</i></li>
+                    </highlight>
                 {% endfor  %}
 
                 {% else %}
                 {% for player in players %}
+                    <highlight><NL>
                     <li>{{ player.user.username }} : <i>{{player.rating}}</i></li>
+                    </NL></highlight>
                 {% endfor  %}
-
                 {% endif %}
             </ul>
             {% else %}

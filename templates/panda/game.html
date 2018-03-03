@@ -31,10 +31,17 @@
 
                 {% endif %}
 
+                <highlight>
+                <NL>
                 <a href ="/panda/game/{{game.slug}}/make_rating" >Make a rating</a>
+                </NL>
+                </highlight>
+
 
                 <h4>Site</h4>
+                <highlight>
                 <a href="{{game.site}}" target="_blank"> {{game.site}} </a>
+                </highlight>
 
                 <h4>Released</h4>
                 {{game.date}}
@@ -63,20 +70,30 @@
 
                 <h4> Players : {{game.players.count}}</h4>
                 <ul>
+
                     {% if user.is_authenticated %}
+
                         {% for player in game.players.all %}
+                            <highlight>
                             <li><a href = "/panda/player/{{player.slug}}/">{{player.user.username}} </a></li>
+                            </highlight>
                         {% endfor %}
                         {% if player %}
                             {% if played %}
+                                <highlight>
                                 <a href = "/panda/game/{{game.slug}}/remove_player">Remove from my games</a>
+                                </highlight>
                             {% else %}
+                                <highlight>
                                 <a href = "/panda/game/{{game.slug}}/add_player">Add to my games</a>
+                                </highlight>
                             {% endif %}
                         {% endif %}
 
                     {% else %}
+                        <highlight><NL>
                         <i>Login to view</i>
+                        </NL></highlight>
                     {% endif %}
 
                 </ul>
@@ -87,15 +104,23 @@
                             <li><b>{{comment.player}}</b> : {{comment.comment}}</li>
                         {% endfor %}
                 </ul>
-
+                <highlight>
+                <NL>
                 <a href ="/panda/game/{{game.slug}}/make_comment" >Make a comment</a>
+                </NL>
+                </highlight>
+
                 {% if owner %}
+                    <highlight>
                     <a href ="/panda/game/{{game.slug}}/edit_game_profile" >Edit game profile</a>
+                    </highlight>
                 {% endif %}
                 {% else %}
 
                     The specified game does not exist!
+                    <highlight>
                     <a href = '{% url "games" %}'>Return</a>
+                    </highlight>
 
             {%  endif %}
 
