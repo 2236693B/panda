@@ -12,7 +12,7 @@ $(document).ready( function() {
     });
 
     $("NL").click( function() {
-        alert("Please log in to view profiles");
+        alert("Please log in");
     });
 
 });

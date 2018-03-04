@@ -26,7 +26,7 @@
 					<a href="{% url 'my_profile'%}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-user-plus"></i> Welcome {{user.username}} </a>
 					<a href="{% url 'logout'%}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-sign-in-alt"></i>  Log Out</a>
 					{% else %}
-					<a href="{% url 'login'%}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-sign-in-alt"></i>  Login</a>
+					<a href="{% url 'login' %}?next={{ request.path|urlencode }}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-sign-in-alt"></i>  Login</a>
 					<a href="{% url 'sign_up'%}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-user-plus"></i>  Sign Up</a>
 					{% endif %}
 					<a class="Panda-bar-item Panda-button Panda-hide-small "><i class="fas fa-search"></i></a>

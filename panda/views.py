@@ -32,7 +32,16 @@ def about(request):
 def games(request):
     context_dict = {}
 
-    game_list = Game.objects.order_by('-catergory')
+
+    no_cat = Game.objects.filter(catergory = 'NON')
+    act_cat = Game.objects.filter(catergory ='ACT')
+    adv_cat = Game.objects.filter(catergory ='ADV')
+    rol_cat = Game.objects.filter(catergory ='ROL')
+    mmo_cat = Game.objects.filter(catergory ='MMO')
+    fps_cat = Game.objects.filter(catergory ='FPS')
+    spo_cat = Game.objects.filter(catergory ='SPO')
+
+    game_list = [no_cat, act_cat, adv_cat, rol_cat, mmo_cat, fps_cat, spo_cat, ]
 
     context_dict = {'games': game_list}
 
@@ -109,7 +118,7 @@ def make_game_rating(request,game_name_slug):
 @login_required
 def make_game_comment(request,game_name_slug):
 
-    studio_warning, game, player = user_check(request)
+    studio_warning, game, player = user_check(request, game_name_slug)
 
     form = GameCommentForm()
 
@@ -120,7 +129,7 @@ def make_game_comment(request,game_name_slug):
             data = form.cleaned_data
 
             #Create new comment for current game
-            c = Comment.objects.create(player=player, comment = data['value'])
+            c = Comment.objects.create(player=player, comment = data['comment'])
             c.save()
             game.comments.add(c)
 
@@ -132,6 +141,46 @@ def make_game_comment(request,game_name_slug):
     context_dict = {'form':form, 'game':game, 'studio_warning':studio_warning, 'return':game_name_slug}
 
     return render(request, 'panda/game_comment.html', context_dict)
+
+@login_required
+def edit_game_comment(request, game_name_slug, comment_id):
+
+    form = None
+    owner = False
+
+    player = check_player_user(request.user)
+    #Retrieve comment from id
+
+    game = check_game(game_name_slug)
+
+    c = check_comment(comment_id)
+
+    #If the player owns the commment, allow editing it
+    if c!= None and c.player == player:
+        owner = True
+        form = GameCommentForm( {'comment':c.comment})
+
+    if request.method == 'POST':
+        form = GameCommentForm(request.POST, request.FILES, instance=c)
+        if form.is_valid():
+            form.save(commit=True)
+            return show_game(request, game_name_slug)
+
+    return render(request, 'panda/edit_comment.html', {'owner': owner, 'game': game, 'comment': c, 'form': form,})
+
+#Delete players game comment
+@login_required
+def delete_game_comment(request,game_name_slug, comment_id):
+
+    player = check_player_user(request.user)
+    #Retrieve comment from id
+    c = check_comment(comment_id)
+
+    #If the player pwns the commment, delete it
+    if c!= None and c.player == player:
+        c.delete()
+
+    return show_game(request, game_name_slug) #Return to game page after making comment
 
 #View for adding player to game players list
 @login_required
@@ -174,7 +223,8 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect(reverse('index'))
+                next = request.POST.get('next', '/')
+                return HttpResponseRedirect(next)
 
             else:
                 err_message = "Your Panda account is disabled."
@@ -456,8 +506,16 @@ def edit_game_profile(request, game_name_slug):
 
 #Helper Functions
 
-def check_player_user(user):
+def check_comment(comment_id):
+    try:
+        comment = Comment.objects.get(id = comment_id)
 
+    except Comment.DoesNotExist:
+        comment = None
+
+    return comment
+
+def check_player_user(user):
     try:
         player = Player.objects.get(user=user)
 
@@ -467,7 +525,6 @@ def check_player_user(user):
     return player
 
 def check_studio_user(user):
-
     try:
        studio = GameStudio.objects.get(user = user)
 

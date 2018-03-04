@@ -10,18 +10,22 @@
                {% if games %}
             <ul>
                 <strong> Games</strong>
-                {% for game in games %}
-
-                    <li>{{game.catergory}} -<highlight> <a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>
-                    {% if game.rating != -1 %}
-                        {{game.rating}}
-                    {% else %}
-                        unrated
-                    {% endif %}
-                    </i></li>
-                    </highlight>
-                {% endfor  %}
-            </ul>
+                {% for catergory in games %}
+                <strong>{{ catergory.0.get_catergory_display }} </strong>
+                    <ul>
+                    {% for game in catergory %}
+                        <li><highlight> <a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>
+                        {% if game.rating != -1 %}
+                            {{game.rating}}
+                        {% else %}
+                            unrated
+                        {% endif %}
+                        </i></li>
+                        </highlight>
+                    {% endfor  %}
+                    </ul>
+                    <br/>
+                {% endfor %}
             {% else %}
                 <strong> There are no games present.</strong>
             {%  endif %}

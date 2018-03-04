@@ -1,0 +1,30 @@
+{% extends 'panda/base.html' %}
+
+{% block title %} Edit Comment -  {{game.name}}{% endblock %}
+{% block body_block %}
+
+
+{% if game %}
+    {% if comment %}
+        {%if owner %}
+            <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Update" />
+            </form>
+
+        {% else %}
+        You cannot edit this comment
+        {% endif %}
+
+    {% else %}
+    This comment does not exist
+    {% endif %}
+
+{% else %}
+This game does not exist
+<highlight>
+<a href ="{% url games%}" >Return</a>
+</highlight>
+{% endif %}
+{% endblock %}

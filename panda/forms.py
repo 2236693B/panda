@@ -16,11 +16,11 @@ class GameRatingForm (forms.ModelForm):
 
 #Form for Player to comment on game
 class GameCommentForm (forms.ModelForm):
-    value = forms.CharField(required = True, widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
+    comment = forms.CharField(required = True, widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
 
     class Meta:
         model = Comment
-        fields = ('value',)
+        fields = ('comment',)
 
 #Form for Player to rate another player
 class PlayerRatingForm (forms.ModelForm):

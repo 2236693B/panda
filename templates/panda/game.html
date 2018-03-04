@@ -34,7 +34,9 @@
                 {% endif %}
 
                 <highlight>
+                {% if not user.is_authenticated %}
                 <NL>
+                {% endif %}
                 <a href ="/panda/game/{{game.slug}}/make_rating" >Make a rating</a>
                 </NL>
                 </highlight>
@@ -94,7 +96,7 @@
 
                     {% else %}
                         <highlight><NL>
-                        <i>Login to view</i>
+                        	<a href="{% url 'login' %}?next={{ request.path|urlencode }}"><i>Login to view</i></a>
                         </NL></highlight>
                     {% endif %}
 
@@ -104,10 +106,15 @@
                 <ul>
                         {% for comment in game.comments.all %}
                             <li><b>{{comment.player}}</b> : {{comment.comment}}</li>
+                            {% if comment.player.user == user %} <a href = "/panda/game/{{game.slug}}/{{comment.id}}/edit_comment/"> Edit </a><a href = "/panda/game/{{game.slug}}/{{comment.id}}/delete_comment/"> Delete </a> {% endif %}
                         {% endfor %}
                 </ul>
+
+
                 <highlight>
+                {% if not user.is_authenticated %}
                 <NL>
+                {% endif %}
                 <a href ="/panda/game/{{game.slug}}/make_comment" >Make a comment</a>
                 </NL>
                 </highlight>
