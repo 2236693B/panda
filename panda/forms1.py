@@ -4,15 +4,11 @@ try:
     User = get_user_model()
 except ImportError:
     from django.contrib.auth.models import User
-
 from django import forms
-from panda.models import Player, GameRating, Comment, Game, GameStudio, ForumCategory
+from panda.models import Player, GameRating, Comment, Game, GameStudio, ForumCategory, Badge, Topic
 import datetime
 from django.template.defaultfilters import slugify
 
-INTEGER_CHOICES= [tuple([x,x]) for x in range(0,6)] #Limit rating choices from 0-5
-
-#form for category on forum
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = ForumCategory
@@ -48,7 +44,10 @@ class CategoryForm(forms.ModelForm):
         return instance
 
 
-#form for topics on forum
+    
+
+
+
 class TopicForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -84,8 +83,7 @@ class TopicForm(forms.ModelForm):
             instance.save()
         return instance
 
-#form for posting comments on forum
-class ForumCommentForm(forms.ModelForm):
+class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
@@ -98,10 +96,10 @@ class ForumCommentForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
-        super(ForumCommentForm, self).__init__(*args, **kwargs)
+        super(CommentForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
-        instance = super(ForumCommentForm, self).save(commit=False)
+        instance = super(CommentForm, self).save(commit=False)
         instance.comment = self.cleaned_data['comment']
         instance.topic = self.cleaned_data['topic']
         if not self.instance.id:
@@ -113,41 +111,31 @@ class ForumCommentForm(forms.ModelForm):
         return instance
 
 
-
-
-
-
-
-
-
-
-#Form for Player to rate game
 class GameRatingForm (forms.ModelForm):
+    INTEGER_CHOICES= [tuple([x,x]) for x in range(1,32)]
 
-    value = forms.ChoiceField(required= True, choices=INTEGER_CHOICES)
+    value = forms.ChoiceField(required= True, choices=[(x, x) for x in range(1, 6)])
 
     class Meta:
         model = GameRating
         fields = ('value',)
 
-#Form for Player to comment on game
 class GameCommentForm (forms.ModelForm):
-    comment = forms.CharField(required = True, widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
+    value = forms.CharField(required = True, widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
 
     class Meta:
         model = Comment
-        fields = ('comment',)
+        fields = ('value',)
 
-#Form for Player to rate another player
 class PlayerRatingForm (forms.ModelForm):
+    INTEGER_CHOICES= [tuple([x,x]) for x in range(1,32)]
 
-    value = forms.ChoiceField(required= True, choices=INTEGER_CHOICES)
+    value = forms.ChoiceField(required= True, choices=[(x, x) for x in range(1, 6)])
 
     class Meta:
         model = GameRating
         fields = ('value',)
 
-#Form for base user, used by both Player and Studio
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
 
@@ -155,23 +143,23 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('username','email','password')
 
-#Details form for Studio, user for registeration and changing details
 class StudioProfileForm(forms.ModelForm):
+
 
     class Meta:
         model = GameStudio
         fields = ('name',)
         exclude = ('user',)
 
-#Details form for Player, user for registeration and changing details
+
 class PlayerProfileForm(forms.ModelForm):
+
     Bio = forms.CharField(widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
 
     class Meta:
         model = Player
         fields = ('Bio','Steam', 'PSN', 'Xbox','Nintendo', 'picture')
 
-#Details form for Game, user for registeration and changing details by studio
 class GameRegisterForm (forms.ModelForm):
     date = forms.DateField(initial=datetime.date.today, widget=forms.widgets.DateInput(format="%d/%m/%Y"))
 
@@ -181,8 +169,6 @@ class GameRegisterForm (forms.ModelForm):
 
     def clean_date(self):
         date = self.cleaned_data['date']
-
-        # Check to make sure date is valid i.e not in the future
         if date > datetime.date.today():
             raise forms.ValidationError("The date cannot be in the future!")
         return date
