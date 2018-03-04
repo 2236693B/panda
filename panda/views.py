@@ -8,6 +8,10 @@ from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameComment
 
 from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio
 
+import requests as r
+import json
+
+
 #View for Home page which features top 5 games and players
 def index(request):
     context_dict = {}
@@ -59,6 +63,29 @@ def show_game(request, game_name_slug):
 
     game = check_game(game_name_slug)
     context_dict['game'] = game
+
+    #Steam API
+    if game != None:
+        if game.steam_id != None:
+            try:
+                new_request = "http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=" + str(game.steam_id) + "&count=3&maxlength=300&format=json"
+                news_response = r.get(new_request)
+                news = news_response.json()
+                news = news["appnews"]["newsitems"]
+
+                world_players_request = "http://api.steampowered.com/ISteamUserStats/GetGlobalStatsForGame/v0001/?format=json&appid=" + str(17740) +"&count=1&name[0]=global.map.emp_isle"
+                world_players_response = r.get( world_players_request)
+                world_players =  world_players_response.json()
+                world_players =  world_players["response"]["globalstats"]["global.map.emp_isle"]["total"]
+
+                context_dict['news'] = news
+                context_dict['world_players'] = str(world_players)
+
+            except KeyError:
+                context_dict['news'] = None
+                context_dict['world_players'] = None
+
+
 
     #If user is logged in
     if request.user.is_authenticated():

@@ -96,7 +96,9 @@ class Game(models.Model):  #
     catergory = models.CharField(max_length=3, choices=CATERGORY, default = NONE)
     picture = models.ImageField(upload_to='game_images', blank=True)
 
-    rating = models.FloatField(default = -1.0)
+    steam_id = models.IntegerField(default = None, null=True, blank= True)
+
+    rating = models.FloatField(blank = True)
     comments = models.ManyToManyField(Comment, blank= True)
 
     Playstation = models.BooleanField(default = False)

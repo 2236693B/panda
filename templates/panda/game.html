@@ -134,5 +134,18 @@
             {%  endif %}
 
         </div>
+        <br>
+
+         {% if world_players %}
+             <strong>World Players : </strong> {{world_players}} <br>
+         {% endif %}
+        {% if news %}
+            <strong>News</strong> <br>
+            {% for item in news %}
+                <b>{{item.title}} </b> <br>
+                {{item.contents |safe }} <br>
+                <a href = "{{item.url}}" target="_blank"> Read more</a> <br>
+            {% endfor %}
+        {% endif %}
 
 {% endblock %}
