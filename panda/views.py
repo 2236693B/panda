@@ -36,7 +36,6 @@ def about(request):
 def games(request):
     context_dict = {}
 
-
     no_cat = Game.objects.filter(catergory = 'NON')
     act_cat = Game.objects.filter(catergory ='ACT')
     adv_cat = Game.objects.filter(catergory ='ADV')
@@ -47,11 +46,22 @@ def games(request):
 
     game_list = [no_cat, act_cat, adv_cat, rol_cat, mmo_cat, fps_cat, spo_cat, ]
 
-    context_dict = {'games': game_list}
+    context_dict['games'] = game_list
 
     response = render(request, 'panda/games.html', context_dict)
     return response
 
+def games_search(request):
+
+    if request.method == 'POST':
+        search = request.POST.get('search')
+        game_list = Game.objects.filter(name__icontains=search)
+        context_dict = {'results': game_list, 'search_request':search, "search":True}
+
+        response = render(request, 'panda/games.html', context_dict)  # Return to game page after making rating
+        return response
+
+    return games(request)
 
 #View for displaying indivdual game
 def show_game(request, game_name_slug):
@@ -360,6 +370,18 @@ def show_player(request, player_name_slug):
     context_dict['player'] = player
 
     return render(request, 'panda/player.html', context_dict)
+
+def player_search(request):
+
+    if request.method == 'POST':
+        search = request.POST.get('search')
+        player_list = Player.objects.filter(user__username__icontains=search)
+        context_dict = {'results': player_list, 'search_request':search, "search":True}
+
+        response = render(request, 'panda/players.html', context_dict)  # Return to game page after making rating
+        return response
+
+    return players(request)
 
 #View to make player rating
 @login_required

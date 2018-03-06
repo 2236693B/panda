@@ -2,9 +2,11 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [ url(r'^$', views.index, name='index'),
-                url(r'^about/', views.about, name='about'),
+                url(r'^about/', views.index, name='about'),
                 url(r'^games/', views.games, name='games'),
                 url(r'^players/', views.players, name='players'),
+                url(r'^search/games/', views.games_search, name='games_search'),
+                url(r'search/players/', views.player_search, name='player_search'),
 
                 url(r'^login/$', views.user_login, name='login'),
                 url(r'^sign_up/$', views.sign_up, name='sign_up'),
@@ -19,6 +21,7 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/edit_game_profile/$', views.edit_game_profile, name='edit_game_profile'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/(?P<comment_id>\d+)/delete_comment/$', views.delete_game_comment, name='delete_game_comment'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/(?P<comment_id>\d+)/edit_comment/$', views.edit_game_comment, name='edit_game_comment'),
+
 
 
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/$', views.show_player, name='show_player'),
