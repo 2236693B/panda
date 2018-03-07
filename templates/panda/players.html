@@ -6,6 +6,39 @@
 
 {% block body_block %}
 
+     <form id="login_form" method="post" action="{% url 'player_search' %}">
+                  {% csrf_token %}
+                  Search: <input type="text" name="search" value="" size="50" /> <br />
+
+                  <input type="hidden" name="next" value="{{ request.GET.next }}">
+                  <input type="submit"  value="submit" />
+
+              </form>
+
+    {% if search %}
+        {% if results %}
+          <div>
+              <strong> Search results</strong> <br/>
+            <ul>
+                   {% for player in results %}
+                               <li><a href="/panda/player/{{ player.slug }}">{{ player.user.username }}</a> : <i>
+                                   {% if player.rating != -1 %}
+                                       {{player.rating}}
+                                   {% else %}
+                                       unrated
+                                   {% endif %}
+                               </i></highlight></li>
+                   {% endfor %}
+            </ul>
+                       <br/>
+    {% else %}
+        There are no games present with containg "{{ search_request }}" <br>
+    {% endif %}
+         <a href ="{% url 'players' %}">Return</a>
+        </div>
+
+    {% else %}
+
           <div>
                {% if players %}
             <ul>
@@ -27,5 +60,5 @@
                 <strong> There are no players present.</strong>
             {%  endif %}
         </div>
-
+{% endif %}
 {% endblock %}
