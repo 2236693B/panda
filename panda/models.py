@@ -55,7 +55,7 @@ class Player(models.Model):
 
     def average_rating(self):
         query = PlayerRating.objects.filter(rated_player=self)
-        self.rating = average(query)
+        self.rating = round(average(query), 2)
         self.save()
         return self.rating
 
@@ -98,7 +98,7 @@ class Game(models.Model):  #
 
     steam_id = models.IntegerField(default = None, null=True, blank= True)
 
-    rating = models.FloatField(blank = True)
+    rating = models.FloatField(default = -1.0)
     comments = models.ManyToManyField(Comment, blank= True)
 
     Playstation = models.BooleanField(default = False)
@@ -119,7 +119,7 @@ class Game(models.Model):  #
 
     def average_rating(self):
         query = GameRating.objects.filter(rated=self)
-        self.rating = average(query)
+        self.rating = round(average(query),2)
         self.save()
         return self.rating
 
