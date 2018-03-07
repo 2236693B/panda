@@ -11,6 +11,17 @@ from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio
 import requests as r
 import json
 
+def sitemap(request):
+
+    context_dict = { }
+
+    return render(request, 'panda/sitemap.xml', context=context_dict)
+
+def google_veri(request):
+
+    context_dict = { }
+
+    return render(request, 'panda/googleb00694232a77d6d0.html', context=context_dict)
 
 #View for Home page which features top 5 games and players
 def index(request):
