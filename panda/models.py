@@ -154,4 +154,9 @@ def average(query):
         average = sum/count
     return average
 
+class ReportingMessage(models.Model):
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    message = models.CharField(max_length=1000)
+
 

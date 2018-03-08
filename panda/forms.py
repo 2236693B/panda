@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from panda.models import Player, GameRating, Comment, Game, GameStudio
+from panda.models import Player, GameRating, Comment, Game, GameStudio, ReportingMessage
 import datetime
 
 INTEGER_CHOICES= [tuple([x,x]) for x in range(0,6)] #Limit rating choices from 0-5
@@ -70,3 +70,10 @@ class GameRegisterForm (forms.ModelForm):
         if date > datetime.date.today():
             raise forms.ValidationError("The date cannot be in the future!")
         return date
+
+class ReportingPlayerForm(forms.ModelForm):
+    message = forms.CharField(widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
+
+    class Meta:
+        model = ReportingMessage
+        fields = ('message',)

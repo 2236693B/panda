@@ -1,0 +1,57 @@
+{% extends 'panda/base.html' %}
+
+{% block title_block %}
+ Report {{ player.user.username }}
+{% endblock %}
+
+
+
+{% block body_block %}
+
+    {% if player %}
+
+        <h1>Report {{ player.user.username }}</h1>
+
+        <div>
+
+            <form id = "player_report_form" method="post" action="/panda/report/{{ player.slug }}/" />
+
+                {% csrf_token %}
+
+                {% for hidden in form.hidden_fields %}
+
+                    {{hidden}}
+
+                {% endfor %}
+
+
+                {% for field in form.visible_fields %}
+
+                    {{ field.errors }}
+
+                    {{ field.help_text }}
+
+                    {{field.name}}
+
+                    {{ field }}
+
+                    <br>
+
+                {% endfor %}
+
+            <input type="submit" name="submit" value="Report player" />
+
+
+
+            </form>
+
+        </div>
+
+       {% else %}
+                Players does not exist
+                <a href = '{% url "players" %}'>Return</a>
+
+
+        {% endif %}
+
+{% endblock %}

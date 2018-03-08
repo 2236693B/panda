@@ -45,7 +45,10 @@
         </div>
 
         {% else %}
-            {% if player_warning %}
+            {% if request.user.is_superuser %}
+                Admin cannot make comments
+                <a href = '/panda/player/{{return}}/'>Return</a>
+            {% elif player_warning %}
                 You cannot rate yourself
                 <highlight>
                 <a href = '/panda/player/{{return}}/'>Return</a>
