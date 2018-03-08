@@ -44,7 +44,10 @@
         </div>
 
        {% else %}
-            {%if studio_warning %}
+            {% if request.user.is_superuser %}
+                Admin cannot make comments
+                <a href = '/panda/game/{{return}}/'>Return</a>
+            {%elif studio_warning %}
                 Studios cannot make comments
                 <a href = '/panda/game/{{return}}/'>Return</a>
             {% else %}

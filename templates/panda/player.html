@@ -33,7 +33,7 @@
                 <a href ="/panda/player/{{player.slug}}/make_rating" >Make a rating</a>
                 </highlight>
 
-                <h4>Usernames</h4
+                <h4>Usernames</h4>
                 <ul>
                     {%if player.PSN != None %}
                     <li><b>Playstation: </b>{{player.PSN}}</li>
@@ -50,6 +50,8 @@
                     {%if player.Nintendo != None %}
                     <li><b>Nintendo: </b>{{player.Nintendo}}</li>
                     {% endif %}
+
+                <a href = "/panda/report/{{ player.slug }}/">Report player</a>
 
 
 

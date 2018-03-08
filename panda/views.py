@@ -1,27 +1,16 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect#, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm
+
+from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, ReportingPlayerForm
 
 from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio
 
 import requests as r
 import json
-
-def sitemap(request):
-
-    context_dict = { }
-
-    return render(request, 'panda/sitemap.xml', context=context_dict)
-
-def google_veri(request):
-
-    context_dict = { }
-
-    return render(request, 'panda/googleb00694232a77d6d0.html', context=context_dict)
 
 #View for Home page which features top 5 games and players
 def index(request):
@@ -441,23 +430,50 @@ def make_player_rating(request,player_name_slug):
 
     return render(request, 'panda/player_rating.html', context_dict)
 
+@login_required
+def report_player(request, player_name_slug):
+
+    player = check_player(player_name_slug)
+
+    form = ReportingPlayerForm()
+
+    if request.method == 'POST':
+        form = ReportingPlayerForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.reporter = request.user
+            report.player = player
+
+            report.save()
+
+            return show_player(request, player_name_slug)
+
+    context_dict = {'form': form, 'player': player}
+
+    return render(request, 'panda/report.html', context_dict)
+
+
 #Show studio or player's own profile
 @login_required
 def show_profile(request):
 
     context_dict = {}
 
-    try:
-        player = Player.objects.get(user = request.user)
-        context_dict['player'] = player
-        context_dict['games'] = player.game_set.all()
-        return render(request, 'panda/my_profile_player.html', context_dict)
+    if not request.user.is_superuser:
 
-    except Player.DoesNotExist:
-        studio = GameStudio.objects.get(user = request.user)
-        context_dict['studio'] = studio
-        context_dict['games'] = Game.objects.filter(studio=studio)
-        return render(request, 'panda/my_profile_studio.html', context_dict)
+        try:
+            player = Player.objects.get(user = request.user)
+            context_dict['player'] = player
+            context_dict['games'] = player.game_set.all()
+            return render(request, 'panda/my_profile_player.html', context_dict)
+
+        except Player.DoesNotExist:
+            studio = GameStudio.objects.get(user = request.user)
+            context_dict['studio'] = studio
+            context_dict['games'] = Game.objects.filter(studio=studio)
+            return render(request, 'panda/my_profile_studio.html', context_dict)
+    else:
+        return HttpResponse("Please login in at the admin site <a href ='/admin/'>Here</a>")
 
 
 #View to allow studio to register game
@@ -556,9 +572,6 @@ def edit_game_profile(request, game_name_slug):
 
             return show_profile(request)
 
-        else:
-            print(form.errors)
-
     return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form, 'studio':studio})
 
 
@@ -634,6 +647,18 @@ def user_check(request, game_name_slug):  #Get details abouit current user
 
 
 
+#Google search requirements
 
+def sitemap(request):
+
+    context_dict = { }
+
+    return render(request, 'panda/sitemap.xml', context=context_dict)
+
+def google_veri(request):
+
+    context_dict = { }
+
+    return render(request, 'panda/googleb00694232a77d6d0.html', context=context_dict)
 
 

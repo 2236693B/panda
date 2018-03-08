@@ -13,9 +13,14 @@
 
 {% else %}
 
-<highlight>
-<a href ="{% url 'edit_studio_profile' %}" >To edit Studio details go here</a>
-</highlight>
+
+{% if not request.user.is_superuser %}
+    <highlight>
+    <a href ="{% url 'edit_studio_profile' %}" >To edit Studio details go here</a>
+    </highlight>
+{% else %}
+    Admin cannot edit player details from here
+{% endif %}
 
 {% endif %}
 {% endblock %}
