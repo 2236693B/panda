@@ -4,9 +4,13 @@ from django.http import HttpResponseRedirect#, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm
+from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, CategoryForm, TopicForm, ForumCommentForm
+from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DetailView, DeleteView, View
 
-from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio
+
+
+
+from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio, ForumCategory, STATUS, Topic, ForumComment
 
 import requests as r
 import json
@@ -561,6 +565,34 @@ def edit_game_profile(request, game_name_slug):
 
     return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form, 'studio':studio})
 
+class CategoryList(ListView):
+    model = ForumCategroy
+    template_name = 'forum_categories.html'
+    context_object_name = 'forum_categories'
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryList, self).get_context_data(**kwargs)
+        forum_categories = ForumCategory.objects.filter(parent=None)
+        context['forum_categories'] = forum_categories
+        return context
+
+    def post(self, request, *args, **kwargs):
+        categories_list = self.model.objects.all()
+
+        if request.POST.get('is_active') == 'True':
+            forum_categories = forum_categories.filter(is_active=True)
+        if request.POST.get('search_text', ''):
+            forum_categories = forum_categories.filter(
+                title_icontains=request.POST.get('search_text')
+            )
+        return render(request, self.template_name, {'forum_categories':forum_categories})
+
+
+class CategoryDetailView(DetailView):
+    model = ForumCategory
+    template_name = 'view_category.html'
+    slug_field = "slug"
+    context_object_name 'forum_
 
 
 
