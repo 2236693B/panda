@@ -1,6 +1,25 @@
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.conf import settings
+from datetime import datetime
+
+STATUS = (
+    ('Draft', 'Draft'),
+    ('Published', 'Published'),
+    ('Disabled', 'Disabled'),
+)
+
+USER_ROLES = (
+    ('Admin', 'Admin'),
+    ('Publisher', 'Publisher'),
+)
+
+
+
+
 
 class GameStudio(models.Model):  #Game Studios that make multiplayer games
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -20,6 +39,8 @@ class Player(models.Model):
     Nintendo = models.CharField(max_length=10, null = True, blank= True)
     rating =  models.FloatField(default = -1.0)
     picture = models.ImageField(upload_to='profile_images', blank=True)
+    user_votes = models.IntegerField(default='0')
+    user_roles = models.CharField(choices=USER_ROLES, max_length=10)
 
     slug = models.SlugField(unique = True)
 
@@ -55,7 +76,7 @@ class Player(models.Model):
 
     def average_rating(self):
         query = PlayerRating.objects.filter(rated_player=self)
-        self.rating = round(average(query), 2)
+        self.rating = average(query)
         self.save()
         return self.rating
 
@@ -98,7 +119,7 @@ class Game(models.Model):  #
 
     steam_id = models.IntegerField(default = None, null=True, blank= True)
 
-    rating = models.FloatField(default = -1.0)
+    rating = models.FloatField(blank = True)
     comments = models.ManyToManyField(Comment, blank= True)
 
     Playstation = models.BooleanField(default = False)
@@ -119,7 +140,7 @@ class Game(models.Model):  #
 
     def average_rating(self):
         query = GameRating.objects.filter(rated=self)
-        self.rating = round(average(query),2)
+        self.rating = average(query)
         self.save()
         return self.rating
 
@@ -154,4 +175,71 @@ def average(query):
         average = sum/count
     return average
 
+class ForumCategory(models.Model):
+    created_by = models.ForeignKey(User)
+    title = models.CharField(max_length=1000)
+    is_votable = models.BooleanField(default=False)
+    created_on = models.DateTimeField(auto_now_add=True)
+    slug = models.SlugField(max_length=1000)
+    description = models.TextField()
 
+    def get_topics(self):
+        topics = Topic.objects.filter(category=self, status='Published')
+        return topics
+
+    def __str__(self):
+        return self.title
+
+class Vote(models.Model):
+    TYPES = (
+        ("U", "Up"),
+        ("D", "Down"),
+    )
+    user = models.ForeignKey(User)
+    type = models.CharField(choices=TYPES, max_length=1)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user
+
+class Topic(models.Model):
+    title = models.CharField(max_length=2000)
+    description = models.TextField()
+    created_by = models.ForeignKey(User)
+    status = models.CharField(choices=STATUS, max_length=10)
+    category = models.ForeignKey(ForumCategory)
+    created_on = models.DateTimeField(auto_now=True)
+    updated_on = models.DateTimeField(auto_now=True)
+    no_of_views = models.IntegerField(default='0')
+    slug = models.SlugField(max_length=1000)
+    no_of_likes = models.IntegerField(default='0')
+    votes = models.ManyToManyField(Vote)
+
+    def up_votes_count(self):
+        return self.votes.filter(type="U").count()
+
+    def down_votes_count(self):
+        return self.votes.filter(type="D").count()  
+
+    def __str__(self):
+        return self.title
+
+class ForumComment(models.Model):
+    comment = models.TextField(null=True, blank=True)
+    commented_by = models.ForeignKey(User, related_name="commented_by")
+    topic = models.ForeignKey(Topic, related_name="topic_comments")
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey("self", blank=True, null=True, related_name="comment_parent")
+
+    votes = models.ManyToManyField(Vote)
+
+    def get_comments(self):
+        comments = self.comment_parent.all()
+        return comments
+
+    def up_votes_count(self):
+        return self.votes.filter(type="U").count()
+
+    def down_votes_count(self):
+        return self.votes.filter(type="D").count()

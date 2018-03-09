@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
-from panda.models import Player, GameRating, Comment, Game, GameStudio
+from panda.models import Player, GameRating, Comment, Game, GameStudio, ForumCategory, Topic,ForumComment
 import datetime
+from django.template.defaultfilters import slugify
 
 INTEGER_CHOICES= [tuple([x,x]) for x in range(0,6)] #Limit rating choices from 0-5
 
@@ -61,7 +62,7 @@ class GameRegisterForm (forms.ModelForm):
 
     class Meta:
         model = Game
-        fields = ('name', 'extract', 'site','date','catergory','picture', 'Playstation', 'Xbox', 'PC', 'Nintendo', 'Mobile')
+        fields = ('name', 'extract', 'site','date','catergory','picture', 'Playstation', 'Xbox', 'PC', 'Nintendo', 'Mobile', 'steam_id')
 
     def clean_date(self):
         date = self.cleaned_data['date']
@@ -70,3 +71,45 @@ class GameRegisterForm (forms.ModelForm):
         if date > datetime.date.today():
             raise forms.ValidationError("The date cannot be in the future!")
         return date
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = ForumCategory
+        exclude = ('slug', 'created_by')
+
+    def clean_title(self):
+        if ForumCategory.objects.filter(slug=slugify(self.cleaned_data['title'])).exclude(id=self.instance.id):
+            raise forms.ValidationError('Category with this Name already exists.')
+
+        return self.cleaned_data['title']
+
+    #def __init__(self, *args, **kwargs):
+        #self.user = kwargs.pop('user', None)
+        #super(CategoryForm, self).__init__(*args, **kwargs)
+
+    
+class TopicForm(forms.ModelForm):
+
+    tags = forms.CharField(required=False)
+    class Meta:
+        model = Topic
+        fields = ("title", "category", "description", "tags")
+
+    def clean_title(self):
+         
+        if Topic.objects.filter(slug=slugify(self.cleaned_data['title'])).exclude(id=self.instance.id):
+            raise forms.ValidationError('Topic with this Name already exists.')
+
+        return self.cleaned_data['title']
+
+class ForumCommentForm(forms.ModelForm):
+
+    class Meta:
+        model = ForumComment
+        fields = ('comment', 'topic')
+
+    def clean_comment(self):
+        if self.cleaned_data['comment']:
+            return self.cleaned_data['comment']
+        raise forms.ValidationError('This field is required')
+    
