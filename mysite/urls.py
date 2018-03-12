@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^panda/', include('panda.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^$', RedirectView.as_view(url='/panda/', permanent=False), name='empty'),
-    ]
+    
+	]
 

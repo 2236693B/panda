@@ -13,9 +13,6 @@
         <h1>Rate {{game.name}}</h1>
 
         Your current rating is : {{value}}
-
-        <div>
-
             <form id = "game_rating_form" method="post" action="/panda/game/{{ game.slug }}/make_rating/" />
 
                 {% csrf_token %}

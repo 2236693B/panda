@@ -284,8 +284,8 @@ def user_logout(request):
 
 #Sign up view for player
 def sign_up(request):
-    registered = False
-
+    
+	registered = False
     if request.method == 'POST':
 
         user_form = UserForm(data=request.POST)
@@ -316,6 +316,8 @@ def sign_up(request):
 
     return render(request, 'panda/sign_up.html', {'user_form': user_form, 'profile_form':profile_form, 'registered': registered, 'player': True})
 
+
+	
 #Sign up view for studio
 def studio_sign_up(request):
     registered = False
