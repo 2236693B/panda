@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<note
+xmlns="https://www.w3schools.com"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="https://www.w3schools.com
+					http://www.dcs.gla.ac.uk/~davidm/WAD2/XML/note.xsd">
+   <to>Bob</to>
+   <from>Alice</from>
+   <heading>Reminder</heading>
+   <body>Don't forget to cook dinner</body>
+</note>
