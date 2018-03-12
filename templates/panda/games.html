@@ -43,22 +43,26 @@
 
           <div>
                {% if games %}
-                       <strong> Games</strong>
+                       <h1> Games</h1>
                    {% for catergory in games %}
-                       <strong>{{ catergory.0.get_catergory_display }} </strong>
-                       <ul>
+						<div class='catergory'>
+						<highlight><toggleButton><strong>{{ catergory.0.get_catergory_display }} </strong></toggleButton></highlight>
+					    <ul>
                            {% for game in catergory %}
-                               <li><highlight> <a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>
-                                   {% if game.rating != -1 %}
-                                       {{game.rating}}
-                                   {% else %}
-                                       unrated
-                                   {% endif %}
-                               </i></li>
-                               </highlight>
+									<catGames><li><highlight> <a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>
+									   {% if game.rating != -1 %}
+										   {{game.rating}}
+									   {% else %}
+										   unrated
+									   {% endif %}
+								   </i></highlight></li></catGames>
+                              
                            {% endfor  %}
+						 
                        </ul>
                        <br/>
+					   </div>
+					   
                    {% endfor %}
                {% else %}
                    <strong> There are no games present.</strong>
