@@ -23,12 +23,10 @@
 
     <body>
 		
-		<div class="Panda-top">
+		<div class="Panda-topleft">
 			
-		<div class="Panda-bar  Panda-card">
-			
-					
-					<a href="{% url 'index'%}" class="Panda-bar-item Panda-button"></i><i class="fas fa-home"></i>  Home</a>
+		<div class="Panda-topbar ">
+					<a href="{% url 'index'%}" class="Panda-bar-item Panda-button "></i><i class="fas fa-home"></i>  Home</a>
 					<a href="{% url 'games' %}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-gamepad"></i>  Games</a>
 					<a href="{% url 'about' %}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-user"></i>  About</a>
 					<a href="{% url 'players'%}" class="Panda-bar-item Panda-button"><i class="fas fa-users"></i></i>  Players</a>
@@ -43,12 +41,14 @@
 
 			</div>
 		</div>
-
-        <div class="Panda-content  Panda-padding-64">
+		<img src="{% static 'images\123.png' %}" style="width:50%" class="center">
+        
+		<div class="Panda-content Panda-container Panda-padding-64">
         {% block body_block %}
         {% endblock %}
         </div>
-
+		
+		
         <hr />
 		<footer class="Panda-center Panda-padding-64">
 		  <a href="#home" class="Panda-button Panda-light-grey"><i class="fas fa-arrow-up Panda-margin-right"></i>To the top</a>

@@ -16,7 +16,7 @@
 
                 <h2>{{game.studio}}</h2>
 
-                <img src='{% static "images/panda.png" %}' alt = "Game cover art"/>
+                <img src="{{ MEDIA_URL }}{{game.picture}}" alt = "Game cover art"/>
 
                 <h3>{{ game.get_catergory_display }}</h3>
 

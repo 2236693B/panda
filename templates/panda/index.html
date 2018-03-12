@@ -5,66 +5,18 @@
 {% endblock %}
 <script src='{% static "js/index.js" %}'></script>
 {% block body_block %}
-<body ng-app='app' ng-controller='MainController'>
 	<main id="main" >
 	<div>
-		<div class="panda-content panda-display-container">
-		<img class="mySlides" src='{% static "images/panda.png" %}' alt = "Game cover art"/>
-		<img class="mySlides" src='{% static "images/panda2.png" %}' alt = "Game cover art"/>
-		
-		<button class="panda-button panda-display-left" onclick="plusDivs(-1)">&#10094;</button>
-		<button class="panda-button panda-display-right" onclick="plusDivs(+1)">&#10095;</button>
-		</div>		
-               {% if games %}
-            <ul class="panda-col 1">
-                <strong> Top Five games</strong>
-                {% for game in games %}
-                    <highlight>
-                    <li></id><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>{{game.rating}}</i></li>
-                    </highlight>
-                {% endfor  %}
-            </ul>
-            {% else %}
-                <strong> There are no games present.</strong>
-            {%  endif %}
-			</main>
-			
-			{% if players %}
-			<ul class="panda-col 2">
-			<strong> Top Five Players</strong>
-                {% if user.is_authenticated %}
-                {% for player in players %}
-                    <highlight>
-                    <li><a href="/panda/player/{{ player.slug }}">{{ player.user.username }}</a> : <i>{{player.rating}}</i></li>
-                    </highlight>
-                {% endfor  %}
-
-                {% else %}
-                {% for player in players %}
-                    <highlight><NL>
-                    <li>{{ player.user.username }} : <i>{{player.rating}}</i></li>
-                    </NL></highlight>
-                {% endfor  %}
-                {% endif %}
-            </ul>
-            {% else %}
-                <strong> There are no players present.</strong>
-            {%  endif %}
-        </div>
-</body>
-{% endblock %}
-
-
-
-<!-- <section id='one'>
-			  <div class='pane'
-				   ng-repeat='forest in forests track by $index'
-				   ng-if="$index == active">
-				  <main>
-					  <h1 ng-style="{'background-image' : 'url(' + games.img + ')'}">{{ games.rank }}</h1>
-				  </main>
-				  <div class="bg" ng-style="{'background-image' : 'url(' + games.img + ')'}"></div>
-			  </div>
+		<div <!-- class="panda-content panda-display-container" -->
+			<section id='one'>
+				  <div class='pane'
+					   ng-repeat='forest in forests track by $index'
+					   ng-if="$index == active">
+					  <main>
+						  <h1 ng-style="{'background-image' : 'url(' + games.img + ')'}">{{ games.rank }}</h1>
+					  </main>
+					  <div class="bg" ng-style="{'background-image' : 'url(' + games.img + ')'}"></div>
+				  </div>
 			</section>
 			<section id='two'>
 			  <div class='pane'
@@ -78,9 +30,9 @@
 					<p class='sub'>{{ game.studio }}</p>
 				</main>
 			  </div>
-			</section> -->
+			</section>
 			
-			<!-- <nav id='nav'>
+			<nav id='nav'>
     <ul>
       <li class="previous" ng-show="active > 0">
         <a href='#' ng-click="previous()">
@@ -108,4 +60,47 @@
     </div>
 	<script src='http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js'></script>
 <script src='https://cdn.rawgit.com/chieffancypants/angular-hotkeys/master/build/hotkeys.min.js'></script>
-<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-animate.js'></script> -->
+<script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-animate.js'></script>
+		</div>		
+               {% if games %}
+            <ul class="panda-col 1">
+                <strong> Top Five games</strong>
+                {% for game in games %}
+                    <highlight>
+                    <li></id><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>{{game.rating}}</i> : <img src="{{ MEDIA_URL }}{{game.picture}}" alt = "Game cover art"/></li>
+                    </highlight>
+                {% endfor  %}
+            </ul>
+            {% else %}
+                <strong> There are no games present.</strong>
+            {%  endif %}
+			</main>
+			
+			{% if players %}
+			<ul>
+			<strong> Top Five Players</strong>
+                {% if user.is_authenticated %}
+                {% for player in players %}
+                    <highlight>
+                    <li><a href="/panda/player/{{ player.slug }}">{{ player.user.username }}</a> : <i>{{player.rating}}</i></li>
+                    </highlight>
+                {% endfor  %}
+
+                {% else %}
+                {% for player in players %}
+                    <highlight><NL>
+                    <li>{{ player.user.username }} : <i>{{player.rating}}</i></li>
+                    </NL></highlight>
+                {% endfor  %}
+                {% endif %}
+            </ul>
+            {% else %}
+                <strong> There are no players present.</strong>
+            {%  endif %}
+        </div>
+{% endblock %}
+
+
+
+
+			
