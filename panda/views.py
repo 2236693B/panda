@@ -31,7 +31,7 @@ def about(request):
 
     return render(request, 'panda/about.html', context=context_dict)
 
-def contact_us(requst):
+def contact_us(request):
 	context_dict = {}
 	return render(request, 'panda/contact_us.html', context = context_dict)
 
