@@ -592,7 +592,90 @@ class CategoryDetailView(DetailView):
     model = ForumCategory
     template_name = 'view_category.html'
     slug_field = "slug"
-    context_object_name 'forum_
+    context_object_name 'forum_category'
+
+    def get_object(self):
+        return get_object_or_404(ForumCategory, slug=self.kwargs['slug'])
+
+
+class CategoryAdd(CreateView):
+    model = ForumCategory
+    form_class = CategoryForm
+    template_name = "category_add.html"
+
+    def get_form_kwargs(self):
+        kwargs = super(CategoryAdd, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+    def form_valid(self, form):
+        menu = form.save()
+        if self.request.POST.get('parent'):
+            menu.parent_id = self.request.POST.get('parent')
+            menu.save()
+
+        data = {'error': False, 'response': 'Successfully Created Category'}
+        return JsonResponse(data)
+
+    def form_invalid(self, form):
+        data = {'error':True, 'response': from.errors}
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryAdd, self).get_context_data(**kwargs)
+        form = CategoryForm(self.request.GET)
+        menus = ForumCategory.objects.filter(parent=None)
+        context['form'] = form
+        context['menus'] = menus
+        return context
+
+class CategoryDelete(DeleteView):
+    model = ForumCategory
+    slug_field = 'slug'
+    template_name = "forum_categories.html"
+
+    def get_object(self):
+        return get_object_or_404(ForumCategory, slug=self.kwargs['slug'])
+
+    def post(self, request, *args, **kwargs):
+        category = self.get_object()
+        category.delete()
+        return JsonResponse({'error': False, 'response': 'Successfully Deleted Category'})        
+
+
+class CategoryEdit(UpdateView):
+    model = ForumCategory
+    form_class = CategoryForm
+    template_name = "category_add.html"
+    context_object_name = 'category'
+
+    def get_object(self):
+        return get_object_or_404(ForumCategory, slug=self.kwargs['slug'])
+
+    def get_form_kwargs(self):
+        kwargs = super(CategoryEdit, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+    def form_valid(self, form):
+        menu = form.save()
+        if self.request.POST.get('parent'):
+            menu.parent_id = self.request.POST.get('parent')
+            menu.save()
+        data = {'error': False, 'response': 'Successfully Edited Category'}
+        return JsonResponse(data)
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': True, 'response': form.errors})
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryEdit, self).get_context_data(**kwargs)
+        form = CategoryForm(self.request.GET)
+        menus = ForumCategory.objects.filter(parent=None)
+        context['form'] = form
+        context['menus'] = menus
+        return context
+
 
 
 
