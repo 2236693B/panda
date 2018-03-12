@@ -7,7 +7,10 @@
 
 
 {% block body_block %}
+{% if user.is_authenticated %}
+    You cannot login. You are logged in as user.username
 
+{% else %}
     <h1>Login to Panda</h1>
     {{ err_message }}
 
@@ -24,5 +27,6 @@
         <input type="submit"  value="submit" />
 
     </form>
+{% endif %}
 
 {% endblock %}
