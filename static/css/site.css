@@ -2,6 +2,185 @@ html,body{font-family:Lato,sans-serif;font-size:15px;line-height:1.5}html{overfl
 h1{font-size:36px}h2{font-size:30px}h3{font-size:24px}h4{font-size:20px}h5{font-size:18px}h6{font-size:16px}.Panda-serif{font-family:serif}
 h1,h2,h3,h4,h5,h6{font-family:"Segoe UI",Arial,sans-serif;font-weight:400;margin:10px 0}.Panda-wide{letter-spacing:4px}
 hr{border:0;border-top:1px solid #eee;margin:20px 0}
+ol, ul {list-style: none;}
+a img {
+  border: none;
+}
+#main {
+  padding: 1em;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 66px;
+  margin-bottom: -66px;
+}
+
+#one, #two {
+  position: relative;
+  float: left;
+  height: 100%;
+  width: 50%;
+  overflow: hidden;
+}
+
+#one {
+  background: #f5f5fd;
+  -moz-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
+  -o-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
+  -webkit-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
+  transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
+  text-align: center;
+}
+#one .bg {
+  content: "";
+  background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/130891/sagano.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  opacity: 0.75;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;
+}
+#one:hover {
+  background: rgba(245, 245, 253, 0);
+}
+#one:hover h1 {
+  opacity: 0;
+}
+#one h1 {
+  position: relative;
+  margin-top: -20px;
+  font-size: 750px;
+  font-size: 60vw;
+}
+
+@media (min-width: 1400px) {
+  #one h1 {
+    font-size: 838px;
+  }
+}
+#two {
+  background: #f5f5fd;
+  color: #78708e;
+}
+#two main {
+  padding: 0 20% 0 2em;
+}
+#two .pane.active {
+  -moz-animation: fade-in 1s 0 normal cubic-bezier(0.65, 0.19, 0.08, 0.97);
+  -webkit-animation: fade-in 1s 0 normal cubic-bezier(0.65, 0.19, 0.08, 0.97);
+  animation: fade-in 1s 0 normal cubic-bezier(0.65, 0.19, 0.08, 0.97);
+}
+
+.pane {
+  top: 0;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+.pane main {
+  margin: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.pane.ng-enter, .pane.ng-leave {
+  -moz-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
+  -o-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
+  -webkit-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
+  transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
+}
+
+#one .pane.ng-leave, #one .pane.ng-enter.ng-enter-active {
+  top: 0;
+}
+#one .pane.ng-enter {
+  top: -100%;
+}
+#one .pane.ng-leave.ng-leave-active {
+  top: 100%;
+}
+
+#two .pane.ng-leave, #two .pane.ng-enter.ng-enter-active {
+  top: 0;
+}
+#two .pane.ng-enter {
+  top: 100%;
+}
+#two .pane.ng-leave.ng-leave-active {
+  top: -100%;
+}
+
+#nav {
+  position: relative;
+  overflow: hidden;
+  background: #f5f5fd;
+  width: 100%;
+  height: 66px;
+}
+#nav li {
+  position: absolute;
+  text-align: center;
+}
+#nav li a {
+  display: block;
+  padding: 0 1em;
+  color: #2c0735;
+  text-decoration: none;
+  height: 66px;
+  line-height: 66px;
+}
+#nav li a .icon {
+  line-height: 66px;
+}
+#nav li.previous, #nav li.next {
+  background: white;
+  width: 150px;
+  z-index: 2;
+  bottom: 0;
+}
+#nav li.previous.ng-hide-add.ng-hide-add-active, #nav li.previous.ng-hide-remove.ng-hide-remove-active, #nav li.next.ng-hide-add.ng-hide-add-active, #nav li.next.ng-hide-remove.ng-hide-remove-active {
+  -moz-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
+  -o-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
+  -webkit-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
+  transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
+}
+#nav li.previous.ng-hide, #nav li.next.ng-hide {
+  bottom: -66px;
+}
+#nav li.previous {
+  left: 0;
+}
+#nav li.next {
+  right: 0;
+}
+#nav li.numbers {
+  z-index: 0;
+  width: 100%;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+}
+#nav li.numbers a {
+  display: inline;
+}
+#nav li.numbers a.active {
+  color: #858ae3;
+}
+
+#preloader {
+  opacity: 0;
+  position: absolute;
+  z-index: -100;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
 .Panda-image{max-width:100%;height:auto}img{vertical-align:middle}a{color:inherit}
 .Panda-table,.Panda-table-all{border-collapse:collapse;border-spacing:0;width:100%;display:table}.Panda-table-all{border:1px solid #ccc}
 .Panda-bordered tr,.Panda-table-all tr{border-bottom:1px solid #ddd}.Panda-striped tbody tr:nth-child(even){background-color:#f1f1f1}
@@ -202,202 +381,6 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 .Panda-border-dark-grey,.Panda-hover-border-dark-grey:hover,.Panda-border-dark-gray,.Panda-hover-border-dark-gray:hover{border-color:#616161!important}
 .Panda-border-pale-red,.Panda-hover-border-pale-red:hover{border-color:#ffe7e7!important}.Panda-border-pale-green,.Panda-hover-border-pale-green:hover{border-color:#e7ffe7!important}
 .Panda-border-pale-yellow,.Panda-hover-border-pale-yellow:hover{border-color:#ffffcc!important}.Panda-border-pale-blue,.Panda-hover-border-pale-blue:hover{border-color:#e7ffff!important}
-#main {
-  padding: 1em;
-  width: 100%;
-  height: 100%;
-  padding-bottom: 66px;
-  margin-bottom: -66px;
-}
 
-#one, #two {
-  position: relative;
-  float: left;
-  height: 100%;
-  width: 50%;
-  overflow: hidden;
-}
 
-#one {
-  background: #f5f5fd;
-  -moz-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
-  -o-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
-  -webkit-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
-  transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
-  text-align: center;
-}
-#one .bg {
-  content: "";
-  background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/130891/sagano.jpg) no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  opacity: 0.75;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  position: absolute;
-  z-index: -1;
-}
-#one:hover {
-  background: rgba(245, 245, 253, 0);
-}
-#one:hover h1 {
-  opacity: 0;
-}
-#one h1 {
-  position: relative;
-  margin-top: -20px;
-  font-size: 750px;
-  font-size: 60vw;
-}
 
-@media (min-width: 1400px) {
-  #one h1 {
-    font-size: 838px;
-  }
-}
-#two {
-  background: #f5f5fd;
-  color: #78708e;
-}
-#two main {
-  padding: 0 20% 0 2em;
-}
-#two .pane.active {
-  -moz-animation: fade-in 1s 0 normal cubic-bezier(0.65, 0.19, 0.08, 0.97);
-  -webkit-animation: fade-in 1s 0 normal cubic-bezier(0.65, 0.19, 0.08, 0.97);
-  animation: fade-in 1s 0 normal cubic-bezier(0.65, 0.19, 0.08, 0.97);
-}
-
-.pane {
-  top: 0;
-  display: flex;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-}
-.pane main {
-  margin: auto;
-  position: relative;
-  z-index: 1;
-}
-
-.pane.ng-enter, .pane.ng-leave {
-  -moz-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
-  -o-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
-  -webkit-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
-  transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
-}
-
-#one .pane.ng-leave, #one .pane.ng-enter.ng-enter-active {
-  top: 0;
-}
-#one .pane.ng-enter {
-  top: -100%;
-}
-#one .pane.ng-leave.ng-leave-active {
-  top: 100%;
-}
-
-#two .pane.ng-leave, #two .pane.ng-enter.ng-enter-active {
-  top: 0;
-}
-#two .pane.ng-enter {
-  top: 100%;
-}
-#two .pane.ng-leave.ng-leave-active {
-  top: -100%;
-}
-
-#nav {
-  position: relative;
-  overflow: hidden;
-  background: #f5f5fd;
-  width: 100%;
-  height: 66px;
-}
-#nav li {
-  position: absolute;
-  text-align: center;
-}
-#nav li a {
-  display: block;
-  padding: 0 1em;
-  color: #2c0735;
-  text-decoration: none;
-  height: 66px;
-  line-height: 66px;
-}
-#nav li a .icon {
-  line-height: 66px;
-}
-#nav li.previous, #nav li.next {
-  background: white;
-  width: 150px;
-  z-index: 2;
-  bottom: 0;
-}
-#nav li.previous.ng-hide-add.ng-hide-add-active, #nav li.previous.ng-hide-remove.ng-hide-remove-active, #nav li.next.ng-hide-add.ng-hide-add-active, #nav li.next.ng-hide-remove.ng-hide-remove-active {
-  -moz-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
-  -o-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
-  -webkit-transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
-  transition: all 0.5s cubic-bezier(0.65, 0.19, 0.08, 0.97);
-}
-#nav li.previous.ng-hide, #nav li.next.ng-hide {
-  bottom: -66px;
-}
-#nav li.previous {
-  left: 0;
-}
-#nav li.next {
-  right: 0;
-}
-#nav li.numbers {
-  z-index: 0;
-  width: 100%;
-  margin: 0 auto;
-  left: 0;
-  right: 0;
-}
-#nav li.numbers a {
-  display: inline;
-}
-#nav li.numbers a.active {
-  color: #858ae3;
-}
-
-@-moz-keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opactiy: 1;
-  }
-}
-@-webkit-keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opactiy: 1;
-  }
-}
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opactiy: 1;
-  }
-}
-#preloader {
-  opacity: 0;
-  position: absolute;
-  z-index: -100;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-}

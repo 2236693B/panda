@@ -5,10 +5,13 @@
 <script src='{% static "js/gameCatShow-jquery.js" %}'></script>
 <script src='{% static "js/googleCSE.js" %}'></script>
 <script src='{% static "js/hideDisplay-jquery.js" %}'></script>
+
+
 <html>
 
     <head lang="en">
-		<link rel="stylesheet" href="{% static 'admin\css\site.css' %}">
+		<link rel="stylesheet" href="{% static 'css\site.css' %}">
+		<script src='{% static "js/index.js" %}'></script>
 		<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
         <meta charset="UTF-8">
         <title>Panda-
@@ -22,7 +25,7 @@
 		
 		<div class="Panda-top">
 			
-		<div class="Panda-bar Panda-card">
+		<div class="Panda-bar  Panda-card">
 			
 					
 					<a href="{% url 'index'%}" class="Panda-bar-item Panda-button"></i><i class="fas fa-home"></i>  Home</a>
@@ -41,7 +44,7 @@
 			</div>
 		</div>
 
-        <div class="Panda-content Panda-container Panda-padding-64">
+        <div class="Panda-content  Panda-padding-64">
         {% block body_block %}
         {% endblock %}
         </div>
