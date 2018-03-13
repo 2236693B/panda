@@ -676,7 +676,76 @@ class CategoryEdit(UpdateView):
         context['menus'] = menus
         return context
 
+class ForumIndexView(FormView):
+    template_name = 'topic_list.html'
+    form_class = UserForm
 
+    def get _context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+        topics = Topic.objects.filter(status='Publsihed')
+        context['topic_list'] = topics
+        return context
+
+    def form_valid(self, form):
+        user = User.objects.create(
+            username=form.cleaned_data['username'], email=form.cleaned_data['email'])
+        user.set_password(form.cleaned_data['password'])
+        user.is_active = True
+        user.save()
+        UserProfile.objects.create(user=user, user_roles='Publisher')
+        login(self.request, user)
+
+        data = {'error': False, 'response': 'Successfully Created Badge'}
+        return JsonResponse(data)
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': True, 'response': form.errors})
+
+class TopicAdd(CreateView):
+    model = Topic
+    form_class = TopicForm
+    template_name = "new_topic.html"
+
+    def get_form_kwargs(self):
+        kwargs = super(TopicAdd, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+    def form_valid(self, form):
+        topic = form.save()
+        if self.request.POST['sub_category']:
+            topic.category_id = self.request.POST['sub_category']
+        topic.save()
+        data = {'error': False, 'response': 'Successfully Created Topic'}
+        return JsonResponse(data)
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': True, 'response': form.errors})
+
+    def get_context_data(self, **kwargs):
+        context = super(TopicAdd, self).get_context_data(**kwargs)
+        form = TopicForm(self.request.GET)
+        context['form'] = form
+        context['status'] = STATUS
+        context['categories'] = ForumCategory.objects.filter(
+            is_active=True, is_votable=True, parent=None)
+        context['sub_categories'] = ForumCategory.objects.filter(
+            is_active=True, is_votable=True).exclude(parent=None)
+        return context
+        
+class TopicList(ListView):
+    template_name = 'forum/topic_list.html'
+    context_object_name = "topic_list"
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated():
+            query = Q(status='Published')|Q(created_by=self.request.user)
+
+        else:
+            query = Q(status='Published')
+        queryset = Topic.objects.filter(query).order_by('-created_on')
+        return queryset
+        
 
 
 #Helper Functions
