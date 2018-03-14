@@ -746,6 +746,97 @@ class TopicList(ListView):
         queryset = Topic.objects.filter(query).order_by('-created_on')
         return queryset
         
+class TopicView(TemplateView):
+    template_name = 'view_topic.html'
+
+    def get_object(self):
+        return get_object_or_404(Topic, slug=self.kwargs['slug'])
+
+    def get_context_data(self, **kwargs):
+        context = super(TopicView, self).get_context_data(**kwargs)
+        context['topic'] = self.get_object()
+        return context
+
+class TopicDeleteView(DeleteView):
+    model = Topic
+    template_name = "topic_delete.html"
+
+    def get_object(self):
+        if not hasattr(self, "object"):
+            self.object = super(TopicDeleteView, self).get_object()
+        return self.object
+
+    def delete(self, request, *args, **kwargs):
+        if request.is_ajax():
+            self.object = self.get_object()
+            self.object.delete()
+            return JsonResponse({"error": False, "message": "deleted"})
+        else:
+            return super(TopicDeleteView, self).delete(request, *args, **kwargs)
+            
+
+class CommentVoteUpView(View):
+
+    def get(self, request, *args, **kwargs):
+        comment = get_object_or_404(Comment, pk=kwargs.get("pk"))
+        vote = comment.votes.filter(user=request.user).first()
+        if not vote:
+            vote = Vote.objects.create(user=request.user, type="U")
+            comment.votes.add(vote)
+            comment.save()
+            status = "up"
+        elif vote and vote.type == "D":
+            vote.delete()
+            status = "removed"
+        else:
+            status = "neutral"
+        return JsonResponse({"status": status})
+
+class ForumCommentAdd(CreateView):
+    model = Topic
+    form_class = ForumCommentForm
+    template_name = 'view_topic.html'
+    form_class = ForumCommentForm
+    slug_field = 'slug'
+
+    def get_form_kwargs(self):
+        kwargs = super(ForumCommentAdd, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+    def form_valid(self, form):
+        comment = form.save()
+        if self.request.POST['parent']:
+            comment.parent_id = self.request.POST['parent']
+            comment.save()
+
+        data = {'error': False, 'response': 'Successfully Created Topic'}
+        return JsonResponse(data)
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': True, 'response': form.errors})
+
+    def get_context_data(self, **kwargs):
+        context = super(CommentAdd, self).get_context_data(**kwargs)
+        form = CommentForm(self.request.GET)
+        context['form'] = form
+        return context
+
+class ForumCommentDelete(DeleteView):
+    model = ForumComment
+    slug_field = 'comment_id'
+    template_name = "forum_categories.html"
+
+    def get_object(self):
+        return get_object_or_404(ForumComment, id=self.kwargs['comment_id'])
+
+    def post(self, request, *args, **kwargs):
+        comment = self.get_object()
+        if self.request.user == comment.commented_by:
+            comment.delete()
+            return JsonResponse({'error': False, 'response': 'Successfully Deleted Your Comment'})
+        else:
+            return JsonResponse({'error': False, 'response': 'Only commented user can delete this comment'})
 
 
 #Helper Functions
