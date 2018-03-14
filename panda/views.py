@@ -838,6 +838,23 @@ class ForumCommentDelete(DeleteView):
         else:
             return JsonResponse({'error': False, 'response': 'Only commented user can delete this comment'})
 
+class ForumCategoryList(ListView):
+    queryset = ForumCategory.objects.filter(
+        is_active=True, is_votable=True).order_by('-created_on')
+    template_name = 'forum_categories.html'
+    context_object_name = "forum_categories"
+
+class ForumCategoryView(ListView):
+    template_name = 'topic_list.html'
+
+    def get_queryset(self, queryset=None):
+        if self.request.user.is_authenticated():
+            query = Q(status="Published")
+        else:
+            query = Q(status="Published")
+        category = get_object_or_404(ForumCategory, slug=self.kwargs.get("slug"))
+        topics = category.topic_set.filter(query)
+        return topics
 
 #Helper Functions
 
