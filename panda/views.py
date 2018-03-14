@@ -31,6 +31,9 @@ def about(request):
 
     return render(request, 'panda/about.html', context=context_dict)
 
+def contact_us(request):
+	context_dict = {}
+	return render(request, 'panda/contact_us.html', context = context_dict)
 
 #View for games page, returns games list sorted by catergory
 def games(request):
@@ -284,38 +287,37 @@ def user_logout(request):
 
 #Sign up view for player
 def sign_up(request):
-    registered = False
+	registered = False
+	if request.method == 'POST':
+		user_form = UserForm(data=request.POST)
+		profile_form = PlayerProfileForm(data=request.POST)
+		if user_form.is_valid() and profile_form.is_valid():
+			user = user_form.save()
+			user.set_password(user.password) #Hash users password for safety
+			user.save()
 
-    if request.method == 'POST':
+			profile = profile_form.save(commit=False)
+			profile.user = user
 
-        user_form = UserForm(data=request.POST)
-        profile_form = PlayerProfileForm(data=request.POST)
+			if 'picture' in request.FILES:
 
-        if user_form.is_valid() and profile_form.is_valid():
-            user = user_form.save()
-            user.set_password(user.password) #Hash users password for safety
-            user.save()
+				profile.picture = request.FILES['picture']
 
-            profile = profile_form.save(commit=False)
-            profile.user = user
+			profile.save()
 
-            if 'picture' in request.FILES:
+			registered=True
 
-                profile.picture = request.FILES['picture']
+		else:
+			print(user_form.errors, profile_form.errors)
 
-            profile.save()
+	else:
+		user_form = UserForm()
+		profile_form = PlayerProfileForm()
 
-            registered=True
+	return render(request, 'panda/sign_up.html', {'user_form': user_form, 'profile_form':profile_form, 'registered': registered, 'player': True})
 
-        else:
-            print(user_form.errors, profile_form.errors)
 
-    else:
-        user_form = UserForm()
-        profile_form = PlayerProfileForm()
-
-    return render(request, 'panda/sign_up.html', {'user_form': user_form, 'profile_form':profile_form, 'registered': registered, 'player': True})
-
+	
 #Sign up view for studio
 def studio_sign_up(request):
     registered = False

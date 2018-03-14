@@ -24,5 +24,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', RedirectView.as_view(url='/panda/', permanent=False), name='empty'),
     url(r'^googleb00694232a77d6d0.html$', google_veri),
-    ]
+]
 
