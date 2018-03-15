@@ -2,9 +2,10 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [ url(r'^$', views.index, name='index'),
-                url(r'^about/', views.index, name='about'),
+                url(r'^about/', views.about, name='about'),
                 url(r'^games/', views.games, name='games'),
-                url(r'^players/', views.players, name='players'),
+                url(r'^contact_us/', views.contact_us, name = "contact_us"),
+				url(r'^players/', views.players, name='players'),
                 url(r'^search/games/', views.games_search, name='games_search'),
                 url(r'search/players/', views.player_search, name='player_search'),
                 url(r'report/(?P<player_name_slug>[\w\-]+)/$', views.report_player, name='report_player'),
@@ -23,7 +24,7 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/(?P<comment_id>\d+)/delete_comment/$', views.delete_game_comment, name='delete_game_comment'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/(?P<comment_id>\d+)/edit_comment/$', views.edit_game_comment, name='edit_game_comment'),
 
-
+				
 
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/$', views.show_player, name='show_player'),
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/make_rating/$', views.make_player_rating, name='player_rating'),
