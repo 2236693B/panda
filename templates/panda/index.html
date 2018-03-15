@@ -7,16 +7,16 @@
 
 {% block body_block %}
 		
-			<h7>Player</br> 
+			<h7>Player
 			    and </br> 
 				Networking </br> 
 				Database   </br>
-				Application </br>
+				Application. </br>
 			</h7>
 
-		<div class="Panda-padding-32">
+		<div class="Panda-padding-32 Panda-margin-left" style="width:70%;" >
                {% if games %}
-            <ul class="Panda-left">
+            <ul class="Panda-left" >
                 <strong> Top Five games</strong>
                 {% for game in games %}
                     <highlight>
@@ -30,7 +30,7 @@
 			
 			
 			{% if players %}
-			<ul class="Panda-right Panda-margin-right">
+			<ul class="Panda-right Panda-margin-right" >
 			<strong> Top Five Players</strong>
                 {% if user.is_authenticated %}
                 {% for player in players %}
