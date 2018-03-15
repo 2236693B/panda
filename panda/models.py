@@ -181,6 +181,7 @@ class ForumCategory(models.Model):
     is_votable = models.BooleanField(default=False)
     created_on = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(max_length=1000)
+    is_active = models.BooleanField(default=False)
     description = models.TextField()
 
     def get_topics(self):

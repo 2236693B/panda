@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, CategoryForm, TopicForm, ForumCommentForm
 from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DetailView, DeleteView, View
-
+from django.views.generic.edit import FormView
 
 
 
@@ -566,7 +566,7 @@ def edit_game_profile(request, game_name_slug):
     return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form, 'studio':studio})
 
 class CategoryList(ListView):
-    model = ForumCategroy
+    model = ForumCategory
     template_name = 'forum_categories.html'
     context_object_name = 'forum_categories'
 
@@ -592,7 +592,7 @@ class CategoryDetailView(DetailView):
     model = ForumCategory
     template_name = 'view_category.html'
     slug_field = "slug"
-    context_object_name 'forum_category'
+    context_object_name ='forum_category'
 
     def get_object(self):
         return get_object_or_404(ForumCategory, slug=self.kwargs['slug'])
@@ -618,7 +618,7 @@ class CategoryAdd(CreateView):
         return JsonResponse(data)
 
     def form_invalid(self, form):
-        data = {'error':True, 'response': from.errors}
+        data = {'error':True, 'response': form.errors}
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
@@ -680,7 +680,7 @@ class ForumIndexView(FormView):
     template_name = 'topic_list.html'
     form_class = UserForm
 
-    def get _context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
         topics = Topic.objects.filter(status='Publsihed')
         context['topic_list'] = topics
@@ -743,7 +743,7 @@ class TopicList(ListView):
 
         else:
             query = Q(status='Published')
-        queryset = Topic.objects.filter(query).order_by('-created_on')
+        queryset = Topic.objects.filter(query).order_by('created_on')
         return queryset
         
 class TopicView(TemplateView):
@@ -840,7 +840,7 @@ class ForumCommentDelete(DeleteView):
 
 class ForumCategoryList(ListView):
     queryset = ForumCategory.objects.filter(
-        is_active=True, is_votable=True).order_by('-created_on')
+        is_active=True, is_votable=True).order_by('created_on')
     template_name = 'forum_categories.html'
     context_object_name = "forum_categories"
 
