@@ -1,16 +1,16 @@
 html,body{font-family:Lato,sans-serif;font-size:19px;line-height:1.5}html{overflow-x:hidden}
 head{font-family:Lato,sans-serif;font-size:24px;line-height:1.5}html{overflow-x:hidden}
-h1{font-size:36px}h2{font-size:30px}h3{font-size:24px}h4{font-size:20px}h5{font-size:18px}h6{font-size:16px}.Panda-serif{font-family:serif}
+h1{font-size:36px}h2{font-size:30px}h3{font-size:24px}h4{font-size:20px}h5{font-size:18px}h6{font-size:16px}h7{font-size:60px}.Panda-serif{font-family:serif}
 h1,h2,h3,h4,h5,h6{font-family:"Lato",Arial,sans-serif;font-weight:400;margin:10px 0}.Panda-wide{letter-spacing:4px}
+h7{font-family:"Roboto Condensed",Arial,sans-serif;font-weight:600;margin:10px 0}.Panda-wide{letter-spacing:4px}
+
 hr{border:0;border-top:0px solid #eee;margin:20px 0}
 ol, ul {list-style: none;}
 a img {
   border: none;
 }
 
-#top1,#top2,#top3,#top4,#top5,#top6,#top7,#top8{
-	vertical-align: middle;
-}
+
 #main {
   padding: 1em;
   width: 10%;
@@ -307,6 +307,7 @@ a img {
 .Panda-button:hover{color:#000!important;background-color:#ccc!important}
 .Panda-transparent,.Panda-hover-none:hover{background-color:transparent!important}
 .Panda-hover-none:hover{box-shadow:none!important}
+
 /* Colors */
 .Panda-amber,.Panda-hover-amber:hover{color:#000!important;background-color:#ffc107!important}
 .Panda-aqua,.Panda-hover-aqua:hover{color:#000!important;background-color:#00ffff!important}

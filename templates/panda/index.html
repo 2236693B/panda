@@ -5,13 +5,22 @@
 {% endblock %}
 <script src='{% static "js/index.js" %}'></script>
 
-{% block body_block %}		
+{% block body_block %}
+		
+			<h7>Player</br> 
+			    and </br> 
+				Networking </br> 
+				Database   </br>
+				Application </br>
+			</h7>
+
+		<div class="Panda-padding-32">
                {% if games %}
-            <ul>
+            <ul class="Panda-left">
                 <strong> Top Five games</strong>
                 {% for game in games %}
                     <highlight>
-                    <li></id><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>{{game.rating}}</i> /li>
+                    <li></id><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>{{game.rating}}</i> </li>
                     </highlight>
                 {% endfor  %}
             </ul>
@@ -21,7 +30,7 @@
 			
 			
 			{% if players %}
-			<ul>
+			<ul class="Panda-right Panda-margin-right">
 			<strong> Top Five Players</strong>
                 {% if user.is_authenticated %}
                 {% for player in players %}

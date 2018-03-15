@@ -13,6 +13,7 @@
 		<link rel="stylesheet" href="{% static 'css\site2.css' %}">
 		<script src='{% static "js/index.js" %}'></script>
 		<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+		<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
         <meta charset="UTF-8">
         <title>Panda-
         {% block title_block %}
@@ -54,7 +55,7 @@
 		
       
 		<footer class="Panda-center Panda-padding-64">
-		  <a href="#home" class="Panda-button Panda-light-grey"><i class="fas fa-arrow-up Panda-margin-right"></i>To the top</a>
+		  <a href="#home" class="Panda-button Panda-light-grey" onclick="topFunction()"><i class="fas fa-arrow-up Panda-margin-right"></i>To the top</a>
 		  <div class="panda-xlarge panda-section">
 			<i class="fab fa-facebook-f"></i>
 			<i class="fab fa-instagram"></i>
@@ -64,7 +65,12 @@
 		  </div>
             <div class="Panda-dark-gray"> <gcse:search></gcse:search></div>
 		</footer>
-
+ <script>
+ function topFunction() {
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+}
+</script>
     </body>
 
 </html>
