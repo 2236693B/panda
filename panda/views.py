@@ -856,6 +856,72 @@ class ForumCategoryView(ListView):
         topics = category.topic_set.filter(query)
         return topics
 
+class Topicetail(TemplateView):
+    template_name = 'view_topic.html'
+
+    def get_object(self):
+        return get_object_or_404(Topic, slug=self.kwargs['slug'])
+
+    def get_context_data(self, **kwargs):
+        context = super(TopicDetail, self).get_context_data(**kwargs)
+        context['topic'] = self.get_object()
+        return context
+
+class TopicStatus(View):
+    model = Topic
+    slug_field = 'slug'
+
+    def get_object(self):
+        return get_object_or_404(Topic, slug=self.kwargs['slug'])
+
+    def post(self, request, *args, **kwargs):
+        topic = self.get_object()
+        if topic.status == 'Draft':
+            topic.status = 'Published'
+        elif topic.status == 'Published':
+            topic.status = 'Draft'
+        else:
+            topic.status = 'Disabled'
+        topic.save()
+        return JsonResponse({'error': False, 'response': 'Successfully Updated Topic Status'}) 
+
+
+class TopicVoteUpView(View):
+
+    def get(self, request, *args, **kwargs):
+        topic = get_object_or_404(Topic, slug=kwargs.get("slug"))
+        vote = topic.votes.filter(user=request.user).first()
+        if not vote:
+            vote = Vote.objects.create(user=request.user, type="U")
+            topic.votes.add(vote)
+            topic.save()
+            status = "up"
+        elif vote and vote.type == "D":
+            vote.delete()
+            status = "removed"
+        else:
+            status = "neutral"
+        return JsonResonse({"status": status})
+
+class TopicVoteDownView(View):
+
+    def get(self, request, *args, **kwargs):
+        topic = get_object_or_404(Topic, slug=kwargs.get("slug"))
+        vote = topic.votes.filter(user=request.user).first()
+        if not vote:
+            vote = Vote.objects.create(user=request.user, type="D")
+            topic.votes.add(vote)
+            topic.save()
+            status = "down"
+        elif vote and vote.type == "U":
+            vote.delete()
+            status="removed"
+        else:
+            status = "neutral"
+        return JsonResponse({"status": status})
+
+    
+
 #Helper Functions
 
 def check_comment(comment_id):
