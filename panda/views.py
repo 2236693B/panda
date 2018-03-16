@@ -792,6 +792,23 @@ class CommentVoteUpView(View):
             status = "neutral"
         return JsonResponse({"status": status})
 
+class CommentVoteDownView(View):
+
+    def get(self, request, *args, **kwargs):
+        comment = get_object_or_404(Comment, pk=kwargs.get("pk"))
+        vote = comment.votes.filter(user=request.user).first()
+        if not vote:
+            vote = Vote.objects.create(user=request.user, type="D")
+            comment.votes.add(vote)
+            comment.save()
+            status = "down"
+        elif vote and vote.type == "U":
+            vote.delete()
+            status = "removed"
+        else:
+            status = "neutral"
+        return JsonResponse({"status": status})
+
 class ForumCommentAdd(CreateView):
     model = Topic
     form_class = ForumCommentForm
@@ -856,7 +873,7 @@ class ForumCategoryView(ListView):
         topics = category.topic_set.filter(query)
         return topics
 
-class Topicetail(TemplateView):
+class TopicDetail(TemplateView):
     template_name = 'view_topic.html'
 
     def get_object(self):
