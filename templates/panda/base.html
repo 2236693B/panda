@@ -1,24 +1,22 @@
 <!DOCTYPE html>
-{% load staticfiles %}
-<script src='{% static "js/jquery.min.js" %}'></script>
-<script src='{% static "js/panda-jquery.js" %}'></script>
-<script src='{% static "js/gameCatShow-jquery.js" %}'></script>
-<script src='{% static "js/googleCSE.js" %}'></script>
-<script src='{% static "js/hideDisplay-jquery.js" %}'></script>
-<script src="static\ajax\jquery-2.1.0.min.js"></script>
-<script src="static\ajax\app.js"></script>
 
-<html>
-
-    <head lang="en">
+<head>
+        {% load staticfiles %}
+        <script src='{% static "js/jquery.min.js" %}'></script>
+        <script src='{% static "js/panda-jquery.js" %}'></script>
+        <script src='{% static "js/googleCSE.js" %}'></script>
+        <script src='{% static "js/hideDisplay-jquery.js" %}'></script>
+        <script src='{% static "ajax/jquery-2.1.0.min.js" %}'></script>
+        <script src='{% static "ajax/app.js"%} '></script>
 		<link rel="stylesheet" href="{% static 'css\site2.css' %}">
 		<script src='{% static "js/index.js" %}'></script>
 		<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 		<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
         <meta charset="UTF-8">
+        {% block script_block %}
+        {% endblock %}
         <title>Panda-
         {% block title_block %}
-
         {% endblock %}
         </title>
     </head>
@@ -28,7 +26,7 @@
 		<div class="Panda-white Panda-padding-16 ">
 					<img src="{% static 'images\logo5.png' %}" style="width:200px" class="Panda-bar-item Panda-left Panda-img ">
 				<div class="Panda-padding-small">
-					<a id="top1" href="{% url 'index'%}" class="Panda-bar-item Panda-button " style="vertical-align:middle"></i><i class="fas fa-home"></i>  Home</a>
+					<a id="top1" href="{% url 'index'%}" class="Panda-bar-item Panda-button " style="vertical-align:middle"><i class="fas fa-home"></i>  Home</a>
 					<a id="top2" href="{% url 'games' %}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-gamepad"></i>  Games</a>
 					<a id="top3" href="{% url 'about' %}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-user"></i>  About</a>
 					<a id="top4" href="{% url 'players'%}" class="Panda-bar-item Panda-button"><i class="fas fa-users"></i>  Players</a>

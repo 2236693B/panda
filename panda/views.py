@@ -54,18 +54,6 @@ def games(request):
     response = render(request, 'panda/games.html', context_dict)
     return response
 
-def games_search(request):
-
-    if request.method == 'POST':
-        search = request.POST.get('search')
-        game_list = Game.objects.filter(name__icontains=search)
-        context_dict = {'results': game_list, 'search_request':search, "search":True}
-
-        response = render(request, 'panda/games.html', context_dict)  # Return to game page after making rating
-        return response
-
-    return games(request)
-
 #View for displaying indivdual game
 def show_game(request, game_name_slug):
     played = False
@@ -120,6 +108,26 @@ def show_game(request, game_name_slug):
     context_dict['owner'] = owner
 
     return render(request, 'panda/game.html', context_dict)
+
+def get_game_players(request, game_name_slug):
+    """
+    returns an XML of the most latest posts
+    """
+    context_dict = {}
+    game = check_game(game_name_slug)
+    if game != None:
+        player_list = game.players.all()
+        context_dict = {'results': player_list, 'game': False, 'Search': False}
+
+    return render(request, 'ajax_results/results.txt', context_dict)
+
+def games_search(request):
+    search = request.GET.get('query', '')
+    game_list = Game.objects.filter(name__icontains=search)
+    context_dict = {'results': game_list , 'game': True, 'Search': True}
+
+    response = render(request, 'ajax_results/results.txt', context_dict)  # Return to game page after making rating
+    return response
 
 #View for handling making a rating on game
 @login_required
@@ -316,8 +324,6 @@ def sign_up(request):
 
 	return render(request, 'panda/sign_up.html', {'user_form': user_form, 'profile_form':profile_form, 'registered': registered, 'player': True})
 
-
-	
 #Sign up view for studio
 def studio_sign_up(request):
     registered = False
@@ -374,16 +380,12 @@ def show_player(request, player_name_slug):
     return render(request, 'panda/player.html', context_dict)
 
 def player_search(request):
+    search = request.GET.get('query', '')
+    player_list = Player.objects.filter(user__username__icontains=search)
+    context_dict = {'results': player_list, 'game': False, 'Search': True}
 
-    if request.method == 'POST':
-        search = request.POST.get('search')
-        player_list = Player.objects.filter(user__username__icontains=search)
-        context_dict = {'results': player_list, 'search_request':search, "search":True}
-
-        response = render(request, 'panda/players.html', context_dict)  # Return to game page after making rating
-        return response
-
-    return players(request)
+    response = render(request, 'ajax_results/results.txt', context_dict)  # Return to game page after making rating
+    return response
 
 #View to make player rating
 @login_required
@@ -454,7 +456,6 @@ def report_player(request, player_name_slug):
 
     return render(request, 'panda/report.html', context_dict)
 
-
 #Show studio or player's own profile
 @login_required
 def show_profile(request):
@@ -476,7 +477,6 @@ def show_profile(request):
             return render(request, 'panda/my_profile_studio.html', context_dict)
     else:
         return HttpResponse("Please login in at the admin site <a href ='/admin/'>Here</a>")
-
 
 #View to allow studio to register game
 @login_required
@@ -575,9 +575,6 @@ def edit_game_profile(request, game_name_slug):
             return show_profile(request)
 
     return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form, 'studio':studio})
-
-
-
 
 #Helper Functions
 
