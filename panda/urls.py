@@ -37,3 +37,4 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^googleb00694232a77d6d0.html$', views.google_veri, name='google_veri'),
                 url(r'^sitemap/$', views.sitemap, name='sitemap'),
               ]
+
