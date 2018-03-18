@@ -1,0 +1,20 @@
+{% if Search %}
+<h2> Search Results </h2>
+<ul>
+  {% for result in results %}
+  <li>
+      {% if game %}
+ 	  <highlight> <a href = "/panda/game/{{ result.slug }}"> {{ result.name }} </a> </highlight>
+ 	  {% else %}
+ 	  <highlight> <a href = "/panda/player/{{ result.slug }}"> {{ result.user.username }} </a> </highlight>
+ 	  {% endif %}
+      {% if result.rating != -1 %}
+      {{result.rating}}
+      {% else %}
+      unrated
+      {% endif %}
+  </li>
+  {% endfor %}
+  {% else %}
+  No games exist containing {{query}}
+{% endif %}
