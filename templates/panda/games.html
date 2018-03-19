@@ -12,12 +12,13 @@
 
 {% block body_block %}
 
-                  Click category to reveal games
-
                   Search: <input type="text" id="searchtext" name="search" value="" size="50" />
                   <input type="submit"  id="search" value="search" onclick = "search('games')" />
+                  <input type="submit"  id="clear" value="clear" onclick = "hide()" />
 
                  <div id = "content" ></div>
+
+    Click category to reveal games
 
           <div>
                {% if games %}
