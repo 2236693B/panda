@@ -117,14 +117,22 @@ def get_game_players(request, game_name_slug):
     game = check_game(game_name_slug)
     if game != None:
         player_list = game.players.all()
-        context_dict = {'results': player_list, 'game': False, 'Search': False}
+        context_dict = {'results': player_list, 'game': False, 'Valid': True}
+
+    return render(request, 'ajax_results/results.txt', context_dict)
+
+def reset(request):
+    """
+    returns an XML of the most latest posts
+    """
+    context_dict = {}
 
     return render(request, 'ajax_results/results.txt', context_dict)
 
 def games_search(request):
     search = request.GET.get('query', '')
     game_list = Game.objects.filter(name__icontains=search)
-    context_dict = {'results': game_list , 'game': True, 'Search': True}
+    context_dict = {'results': game_list , 'game': True, 'Valid': True, 'Search' : True}
 
     response = render(request, 'ajax_results/results.txt', context_dict)  # Return to game page after making rating
     return response
@@ -375,14 +383,19 @@ def show_player(request, player_name_slug):
     context_dict = {}
 
     player = check_player(player_name_slug)
-    context_dict['player'] = player
+
+    if player != None:
+        if player.user == request.user:
+            return show_profile(request)
+        else:
+            context_dict['player'] = player
 
     return render(request, 'panda/player.html', context_dict)
 
 def player_search(request):
     search = request.GET.get('query', '')
     player_list = Player.objects.filter(user__username__icontains=search)
-    context_dict = {'results': player_list, 'game': False, 'Search': True}
+    context_dict = {'results': player_list, 'game': False, 'Valid': True, 'Search':True}
 
     response = render(request, 'ajax_results/results.txt', context_dict)  # Return to game page after making rating
     return response

@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block script_block %}
-     <script src='{% static "ajax/get-players.js"%} '></script>
+     <script src='{% static "ajax/search.js"%} '></script>
 {% endblock %}
 
 {% block title_block %}
@@ -80,9 +80,9 @@
                 <h4> Players : {{game.players.count}}</h4>
                     {% if user.is_authenticated %}
                         {% if game.players %}
-                         <button type="button" onclick="loadDoc('minecraft')">Show Players</button>
-                         <button type="button" onclick="hideDoc()">Hide Players</button>
-                         <div id="players">
+                         <button type="button" onclick="loadPlayers('minecraft')">Show Players</button>
+                         <button type="button" onclick="hide()">Hide Players</button>
+                         <div id="content">
                          </div>
                         {% endif %}
                         {% if player %}
