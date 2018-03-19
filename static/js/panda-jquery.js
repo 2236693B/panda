@@ -6,7 +6,7 @@ $(document).ready( function() {
 
     },
     function() {
-        $(this).css('color', 'black');
+        $(this).css('color', 'white');
         $(this).css('font-weight', 'normal');
 
     });
