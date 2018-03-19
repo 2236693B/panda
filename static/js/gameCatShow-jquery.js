@@ -1,6 +1,11 @@
 $(document).ready( function() {
 	$('div.catergory').on('click', 'toggleButton', function(e){
 		cat = $(e.delegateTarget).find('catGames');
-		cat.is(':hidden') ? cat.show() : cat.hide();
+		if (cat.is(':hidden')){
+			cat.show()
+		} 
+		else{
+			cat.hide()
+		}
 	});
 });
