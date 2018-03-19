@@ -34,9 +34,9 @@
 			<strong> Top Five Players</strong>
                 {% if user.is_authenticated %}
                 {% for player in players %}
-                    <highlight>
-                    <li><a href="/panda/player/{{ player.slug }}">{{ player.user.username }}</a> : <i>{{player.rating}}</i></li>
-                    </highlight>
+                    
+                    <li><a href="/panda/player/{{ player.slug }}"><highlight>{{ player.user.username }}</highlight></a> : <i>{{player.rating}}</i></li>
+                    
                 {% endfor  %}
 
                 {% else %}
