@@ -1,29 +1,37 @@
 {% extends 'panda/base.html' %}
-
+{% load staticfiles %}
 {% block title_block %}
     Home
 {% endblock %}
+<script src='{% static "js/index.js" %}'></script>
 
 {% block body_block %}
-        <div class="panda-row">
+		
+			<h7>Player
+			    and </br> 
+				Networking </br> 
+				Database   </br>
+				Application. </br>
+			</h7>
+
+		<div class="Panda-padding-32 Panda-margin-left" style="width:70%;" >
                {% if games %}
-            <ul class="panda-col 1">
+            <ul class="Panda-left" >
                 <strong> Top Five games</strong>
                 {% for game in games %}
                     <highlight>
-                    <li></id><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>{{game.rating}}</i></li>
+                    <li></id><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>{{game.rating}}</i> </li>
                     </highlight>
                 {% endfor  %}
             </ul>
             {% else %}
                 <strong> There are no games present.</strong>
             {%  endif %}
-
-
-
-               {% if players %}
-            <ul class="panda-col 2">
-                <strong> Top Five Players</strong>
+			
+			
+			{% if players %}
+			<ul class="Panda-right Panda-margin-right" >
+			<strong> Top Five Players</strong>
                 {% if user.is_authenticated %}
                 {% for player in players %}
                     <highlight>
@@ -43,5 +51,9 @@
                 <strong> There are no players present.</strong>
             {%  endif %}
         </div>
-
 {% endblock %}
+
+
+
+
+			

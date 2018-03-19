@@ -1,4 +1,9 @@
 {% extends 'panda/base.html' %}
+{% load staticfiles %}
+
+{% block script_block %}
+     <script src='{% static "ajax/get-players.js"%} '></script>
+{% endblock %}
 
 {% block title_block %}
     {{ game.name }}
@@ -73,15 +78,13 @@
                     {% endif %}
 
                 <h4> Players : {{game.players.count}}</h4>
-                <ul>
-
                     {% if user.is_authenticated %}
-
-                        {% for player in game.players.all %}
-                            <highlight>
-                            <li><a href = "/panda/player/{{player.slug}}/">{{player.user.username}} </a></li>
-                            </highlight>
-                        {% endfor %}
+                        {% if game.players %}
+                         <button type="button" onclick="loadDoc('minecraft')">Show Players</button>
+                         <button type="button" onclick="hideDoc()">Hide Players</button>
+                         <div id="players">
+                         </div>
+                        {% endif %}
                         {% if player %}
                             {% if played %}
                                 <highlight>
@@ -93,12 +96,12 @@
                                 </highlight>
                             {% endif %}
                         {% endif %}
-
                     {% else %}
                         <highlight><NL>
                         	<a href="{% url 'login' %}?next={{ request.path|urlencode }}"><i>Login to view</i></a>
                         </NL></highlight>
                     {% endif %}
+
 
                 </ul>
 
