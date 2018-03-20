@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect#, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse,JsonResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.auth import logout
 from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, CategoryForm, TopicForm, ForumCommentForm
 from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DetailView, DeleteView, View
@@ -596,7 +597,13 @@ class DashboardView(TemplateView):
 
 
 
-
+def getout(request):
+    if not request.user.is_superuser:
+        logout(request)
+        return HttpResponseRedirect(reverse('topic_list'))
+    else:
+        logout(request)
+        return HttpResponseRedirect(reverse('forum_dashboard'))
 
 
 
@@ -627,7 +634,8 @@ class CategoryDetailView(DetailView):
     model = ForumCategory
     template_name = 'forum_dashboard/view_category.html'
     slug_field = "slug"
-    context_object_name ='forum_category'
+    context_object_name ='category'
+   
 
     def get_object(self):
         return get_object_or_404(ForumCategory, slug=self.kwargs['slug'])
@@ -637,7 +645,7 @@ class CategoryAdd(CreateView):
     model = ForumCategory
     form_class = CategoryForm
     template_name = "forum_dashboard/category_add.html"
-    
+    success_url = '/forum/dashboard/categories/add/'
 
     def get_form_kwargs(self):
         kwargs = super(CategoryAdd, self).get_form_kwargs()
@@ -652,6 +660,9 @@ class CategoryAdd(CreateView):
 
         data = {'error': False, 'response': 'Successfully Created Category'}
         return JsonResponse(data)
+
+    def get_success_url(self):
+        return redirect(reverse('categories'))
 
     def form_invalid(self, form):
         data = {'error':True, 'response': form.errors}
@@ -669,9 +680,13 @@ class CategoryDelete(DeleteView):
     model = ForumCategory
     slug_field = 'slug'
     template_name = "forum_dashboard/categories.html"
+    success_url = '/forum/dashboard/categories/'
 
     def get_object(self):
         return get_object_or_404(ForumCategory, slug=self.kwargs['slug'])
+
+    def get_success_url(self):
+        return redirect(reverse('django_simple_forum:categories'))
 
     def post(self, request, *args, **kwargs):
         category = self.get_object()
@@ -731,7 +746,7 @@ class ForumIndexView(FormView):
     form_class = UserForm
 
     def get_context_data(self, **kwargs):
-        context = super(IndexView, self).get_context_data(**kwargs)
+        context = super(ForumIndexView, self).get_context_data(**kwargs)
         topics = Topic.objects.filter(status='Publsihed')
         context['topic_list'] = topics
         return context
@@ -744,17 +759,38 @@ class ForumIndexView(FormView):
         user.save()
         UserProfile.objects.create(user=user, user_roles='Publisher')
         login(self.request, user)
-
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
         data = {'error': False, 'response': 'Successfully Created Badge'}
         return JsonResponse(data)
 
     def form_invalid(self, form):
         return JsonResponse({'error': True, 'response': form.errors})
 
+
+class ForumLoginView(FormView):
+    template_name = 'forum/topic_list.html'
+    #form_class = login_form
+
+    def get_context_data(self, **kwargs):
+        context = super(ForumLoginView, self).get_context_data(**kwargs)
+        topics = Topic.objects.filter(status='Published')
+        context['topic_list'] = topics
+        return context
+
+    def form_valid(self, form):
+        login(self.request, form.get_user())
+        data = {'error': False, 'response': 'Successfully user loggedin'}
+        return JsonResponse(data)
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': True, 'response': form.errors})
+
+
 class TopicAdd(CreateView):
     model = Topic
     form_class = TopicForm
     template_name = "forum/new_topic.html"
+    success_url = reverse_lazy('sign_up')
 
     def get_form_kwargs(self):
         kwargs = super(TopicAdd, self).get_form_kwargs()
@@ -810,6 +846,7 @@ class TopicView(TemplateView):
 class TopicDeleteView(DeleteView):
     model = Topic
     template_name = "forum/topic_delete.html"
+    success_url = reverse_lazy("topic_list")
 
     def get_object(self):
         if not hasattr(self, "object"):
@@ -864,7 +901,6 @@ class ForumCommentAdd(CreateView):
     form_class = ForumCommentForm
     template_name = 'forum/view_topic.html'
     form_class = ForumCommentForm
-    slug_field = 'slug'
 
     def get_form_kwargs(self):
         kwargs = super(ForumCommentAdd, self).get_form_kwargs()
@@ -879,6 +915,9 @@ class ForumCommentAdd(CreateView):
 
         data = {'error': False, 'response': 'Successfully Created Topic'}
         return JsonResponse(data)
+
+    def get_success_url(self):
+        return redirect(reverse('sign_up'))
 
     def form_invalid(self, form):
         return JsonResponse({'error': True, 'response': form.errors})
@@ -896,6 +935,9 @@ class ForumCommentDelete(DeleteView):
 
     def get_object(self):
         return get_object_or_404(ForumComment, id=self.kwargs['comment_id'])
+
+    def get_success_url(self):
+        return redirect(reverse('django_simple_forum:categories'))
 
     def post(self, request, *args, **kwargs):
         comment = self.get_object()

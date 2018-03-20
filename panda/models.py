@@ -19,7 +19,7 @@ USER_ROLES = (
 
 
 
-
+User = settings.AUTH_USER_MODEL
 
 class GameStudio(models.Model):  #Game Studios that make multiplayer games
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -30,8 +30,8 @@ class GameStudio(models.Model):  #Game Studios that make multiplayer games
 
 
 class Player(models.Model):
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User)
+    #user = models.OneToOneField(User, on_delete=models.CASCADE)
     Bio = models.CharField(max_length=200, null = True, blank= True)
     Steam = models.CharField(max_length=31, null = True, blank= True)
     PSN = models.CharField(max_length=16, null = True, blank= True)
@@ -180,6 +180,7 @@ class ForumCategory(models.Model):
     created_by = models.ForeignKey(User)
     title = models.CharField(max_length=1000)
     is_votable = models.BooleanField(default=False)
+    color = models.CharField(max_length=20, default="#999999")
     created_on = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(max_length=1000)
     is_active = models.BooleanField(default=False)
@@ -218,6 +219,15 @@ class Topic(models.Model):
     no_of_likes = models.IntegerField(default='0')
     votes = models.ManyToManyField(Vote)
 
+    def get_comments(self):
+        comments = Comment.objects.filter(topic=self, parent=None)
+        return comments
+
+    def get_all_comments(self):
+        comments = Comment.objects.filter(topic=self)
+        return comments
+
+
     def up_votes_count(self):
         return self.votes.filter(type="U").count()
 
@@ -244,6 +254,9 @@ class ForumComment(models.Model):
     def up_votes_count(self):
         return self.votes.filter(type="U").count()
 
+    def down_votes_count(self):
+        return self.votes.filter(type="D").count()
+
 class ReportingMessage(models.Model):
     reporter = models.ForeignKey(User, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
@@ -251,5 +264,4 @@ class ReportingMessage(models.Model):
 
 
 
-    def down_votes_count(self):
-        return self.votes.filter(type="D").count()
+    
