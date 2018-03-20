@@ -89,7 +89,8 @@ class Game(models.Model):  #
 
     studio = models.ForeignKey(GameStudio, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null = False, unique =True)
-    players = models.ManyToManyField(Player, blank= True)
+    players = models.ManyToManyField(Player, blank= True, related_name='casual')
+    comp_players = models.ManyToManyField(Player, blank=True, related_name='comp')
     extract = models.CharField(max_length=500, blank= False, default = 'Extract missing')
     site = models.URLField(null = True)
     date = models.DateField(null = True)

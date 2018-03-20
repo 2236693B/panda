@@ -43,22 +43,9 @@
                     <li><b>Nintendo: </b>{{player.Nintendo}}</li>
                     {% endif %}
 
-                <h4>Games</h4>
-                <ul>
-                {% if games %}
-                    {% for game in games %}
-                    <highlight>
-                    <li><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> </li>
-                    </highlight>
-                {% endfor  %}
-                </ul>
-                <highlight>
-                <a href="{% url 'edit_player_profile' %}">Edit profile</a>
-                </highlight>
 
-            {% else %}
-                <strong> You play no games </strong>
-            {%  endif %}
+                </ul>
+
         </div>
 
 

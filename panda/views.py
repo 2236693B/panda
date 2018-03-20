@@ -9,6 +9,8 @@ from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameComment
 
 from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio
 
+from itertools import chain
+
 import requests as r
 import json
 
@@ -96,7 +98,7 @@ def show_game(request, game_name_slug):
             player = True
 
             #Check if player plays game
-            if game.players.filter(user=request.user).exists():
+            if game.players.filter(user=request.user).exists() | game.comp_players.filter(user=request.user).exists() :
                 played = True
 
         #If not user, check if user is owner
@@ -109,6 +111,7 @@ def show_game(request, game_name_slug):
 
     return render(request, 'panda/game.html', context_dict)
 
+@login_required
 def get_game_players(request, game_name_slug):
     """
     returns an XML of the most latest posts
@@ -116,7 +119,14 @@ def get_game_players(request, game_name_slug):
     context_dict = {}
     game = check_game(game_name_slug)
     if game != None:
-        player_list = game.players.all()
+        type = request.GET.get('type', '')
+        if type =='all':
+            player_list = list(chain(game.players.all(), game.comp_players.all()))
+        elif type =="comp":
+            player_list = game.comp_players.all()
+        elif type =="casual":
+            player_list = game.players.all()
+
         context_dict = {'results': player_list, 'game': False, 'Valid': True}
 
     return render(request, 'ajax_results/results.txt', context_dict)
@@ -245,11 +255,19 @@ def add_player(request, game_name_slug):
 
     game = check_game(game_name_slug)
     context_dict['game'] = game
-
-    if request.user.is_authenticated():
-        if not game.players.filter(user=request.user).exists():
-                player = Player.objects.get(user=request.user)
-                game.players.add(player)
+    types = request.GET.get('type', '')
+    if game != None:
+        if request.user.is_authenticated():
+            if types == "casual":
+                if (not game.players.filter(user=request.user).exists()) and (not game.comp_players.filter(user=request.user).exists()):
+                        player = Player.objects.get(user=request.user)
+                        if player != None:
+                            game.players.add(player)
+            elif types == "comp":
+                if (not game.comp_players.filter(user=request.user).exists()) and (not game.players.filter(user=request.user).exists()):
+                        player = Player.objects.get(user=request.user)
+                        if player != None:
+                            game.comp_players.add(player)
 
     return show_game(request, game_name_slug)
 
@@ -389,6 +407,8 @@ def show_player(request, player_name_slug):
             return HttpResponseRedirect(reverse('my_profile'))
         else:
             context_dict['player'] = player
+            context_dict['casual'] = player.casual.all()
+            context_dict['comp'] = player.comp.all()
 
     return render(request, 'panda/player.html', context_dict)
 
@@ -480,8 +500,10 @@ def show_profile(request):
         try:
             player = Player.objects.get(user = request.user)
             context_dict['player'] = player
-            context_dict['games'] = player.game_set.all()
-            return render(request, 'panda/my_profile_player.html', context_dict)
+            context_dict['casual'] = player.casual.all()
+            context_dict['comp'] = player.comp.all()
+            context_dict['profile'] = True
+            return render(request, 'panda/player.html', context_dict)
 
         except Player.DoesNotExist:
             studio = GameStudio.objects.get(user = request.user)

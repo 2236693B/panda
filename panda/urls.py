@@ -22,7 +22,7 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/delete_game_profile/$', views.delete_game_profile, name='delete_game_profile'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/(?P<comment_id>\d+)/delete_comment/$', views.delete_game_comment, name='delete_game_comment'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/(?P<comment_id>\d+)/edit_comment/$', views.edit_game_comment, name='edit_game_comment'),
-                url(r'^game/(?P<game_name_slug>[\w\-]+)/players/$', views.get_game_players, name='Player_AJAX'),
+                url(r'^game/(?P<game_name_slug>[\w\-]+)/players$', views.get_game_players, name='Player_AJAX'),
                 url(r'^reset/$', views.reset, name='Reset'),
 
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/$', views.show_player, name='show_player'),
