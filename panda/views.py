@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect#, HttpResponse
 from django.core.urlresolvers import reverse
@@ -7,7 +7,7 @@ from django.contrib.auth import logout
 from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, CategoryForm, TopicForm, ForumCommentForm
 from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DetailView, DeleteView, View
 from django.views.generic.edit import FormView
-
+from django.db.models import Q
 
 
 from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio, ForumCategory, STATUS, Topic, ForumComment
@@ -46,7 +46,31 @@ def about(request):
 
     return render(request, 'panda/about.html', context=context_dict)
 
+def contact_us(request):
 
+    context_dict = {}
+    return render(request, 'panda/contact_us.html', context = context_dict)
+
+def report_player(request, player_name_slug):
+
+    player = check_player(player_name_slug)
+
+    form = ReportingPlayerForm()
+
+    if request.method == 'POST':
+        form = ReportingPlayerForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.reporter = request.user
+            report.player = player
+
+            report.save()
+
+            return show_player(request, player_name_slug)
+
+    context_dict = {'form': form, 'player': player}
+
+    return render(request, 'panda/report.html', context_dict)
 #View for games page, returns games list sorted by catergory
 def games(request):
     context_dict = {}
@@ -565,15 +589,26 @@ def edit_game_profile(request, game_name_slug):
 
     return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form, 'studio':studio})
 
+
+
+class DashboardView(TemplateView):
+    template_name = 'forum_dashboard/forum_dashboard.html'
+
+
+
+
+
+
+
 class CategoryList(ListView):
     model = ForumCategory
-    template_name = 'forum_categories.html'
-    context_object_name = 'forum_categories'
+    template_name = 'forum_dashboard/categories.html'
+    context_object_name = 'categories_list'
 
     def get_context_data(self, **kwargs):
         context = super(CategoryList, self).get_context_data(**kwargs)
-        forum_categories = ForumCategory.objects.filter(parent=None)
-        context['forum_categories'] = forum_categories
+        categories_list = ForumCategory.objects.filter(parent=None)
+        context['categories_list'] = categories_list
         return context
 
     def post(self, request, *args, **kwargs):
@@ -585,12 +620,12 @@ class CategoryList(ListView):
             forum_categories = forum_categories.filter(
                 title_icontains=request.POST.get('search_text')
             )
-        return render(request, self.template_name, {'forum_categories':forum_categories})
+        return render(request, self.template_name, {'categories_list':categories_list})
 
 
 class CategoryDetailView(DetailView):
     model = ForumCategory
-    template_name = 'view_category.html'
+    template_name = 'forum_dashboard/view_category.html'
     slug_field = "slug"
     context_object_name ='forum_category'
 
@@ -601,7 +636,8 @@ class CategoryDetailView(DetailView):
 class CategoryAdd(CreateView):
     model = ForumCategory
     form_class = CategoryForm
-    template_name = "category_add.html"
+    template_name = "forum_dashboard/category_add.html"
+    
 
     def get_form_kwargs(self):
         kwargs = super(CategoryAdd, self).get_form_kwargs()
@@ -632,7 +668,7 @@ class CategoryAdd(CreateView):
 class CategoryDelete(DeleteView):
     model = ForumCategory
     slug_field = 'slug'
-    template_name = "forum_categories.html"
+    template_name = "forum_dashboard/categories.html"
 
     def get_object(self):
         return get_object_or_404(ForumCategory, slug=self.kwargs['slug'])
@@ -646,7 +682,7 @@ class CategoryDelete(DeleteView):
 class CategoryEdit(UpdateView):
     model = ForumCategory
     form_class = CategoryForm
-    template_name = "category_add.html"
+    template_name = "forum_dashboard/category_add.html"
     context_object_name = 'category'
 
     def get_object(self):
@@ -676,8 +712,22 @@ class CategoryEdit(UpdateView):
         context['menus'] = menus
         return context
 
+class DashboardTopicList(ListView):
+    template_name = 'forum_dashboard/topics.html'
+    context_object_name = "topic_list"
+
+    def get_queryset(self):
+        queryset = Topic.objects.all()
+        search_text = self.request.POST.get('search_text')
+        if search_text:
+            queryset = queryset.filter(
+                Q(title__icontains=search_text) | Q(created_by__username__icontains=search_text)
+            )
+        return queryset
+
+
 class ForumIndexView(FormView):
-    template_name = 'topic_list.html'
+    template_name = 'forum/topic_list.html'
     form_class = UserForm
 
     def get_context_data(self, **kwargs):
@@ -704,7 +754,7 @@ class ForumIndexView(FormView):
 class TopicAdd(CreateView):
     model = Topic
     form_class = TopicForm
-    template_name = "new_topic.html"
+    template_name = "forum/new_topic.html"
 
     def get_form_kwargs(self):
         kwargs = super(TopicAdd, self).get_form_kwargs()
@@ -747,7 +797,7 @@ class TopicList(ListView):
         return queryset
         
 class TopicView(TemplateView):
-    template_name = 'view_topic.html'
+    template_name = 'forum/view_topic.html'
 
     def get_object(self):
         return get_object_or_404(Topic, slug=self.kwargs['slug'])
@@ -759,7 +809,7 @@ class TopicView(TemplateView):
 
 class TopicDeleteView(DeleteView):
     model = Topic
-    template_name = "topic_delete.html"
+    template_name = "forum/topic_delete.html"
 
     def get_object(self):
         if not hasattr(self, "object"):
@@ -812,7 +862,7 @@ class CommentVoteDownView(View):
 class ForumCommentAdd(CreateView):
     model = Topic
     form_class = ForumCommentForm
-    template_name = 'view_topic.html'
+    template_name = 'forum/view_topic.html'
     form_class = ForumCommentForm
     slug_field = 'slug'
 
@@ -842,7 +892,7 @@ class ForumCommentAdd(CreateView):
 class ForumCommentDelete(DeleteView):
     model = ForumComment
     slug_field = 'comment_id'
-    template_name = "forum_categories.html"
+    template_name = "forum_dashboard/categories.html"
 
     def get_object(self):
         return get_object_or_404(ForumComment, id=self.kwargs['comment_id'])
@@ -858,11 +908,12 @@ class ForumCommentDelete(DeleteView):
 class ForumCategoryList(ListView):
     queryset = ForumCategory.objects.filter(
         is_active=True, is_votable=True).order_by('created_on')
-    template_name = 'forum_categories.html'
-    context_object_name = "forum_categories"
+    template_name = 'forum/categories.html'
+    context_object_name = "categories"
+    paginate_by = '10'
 
 class ForumCategoryView(ListView):
-    template_name = 'topic_list.html'
+    template_name = 'forum/topic_list.html'
 
     def get_queryset(self, queryset=None):
         if self.request.user.is_authenticated():
@@ -874,7 +925,7 @@ class ForumCategoryView(ListView):
         return topics
 
 class TopicDetail(TemplateView):
-    template_name = 'view_topic.html'
+    template_name = 'forum_dashboard/view_topic.html'
 
     def get_object(self):
         return get_object_or_404(Topic, slug=self.kwargs['slug'])

@@ -119,7 +119,7 @@ class Game(models.Model):  #
 
     steam_id = models.IntegerField(default = None, null=True, blank= True)
 
-    rating = models.FloatField(blank = True)
+    rating = models.FloatField(default = -1)
     comments = models.ManyToManyField(Comment, blank= True)
 
     Playstation = models.BooleanField(default = False)
@@ -175,6 +175,7 @@ def average(query):
         average = sum/count
     return average
 
+
 class ForumCategory(models.Model):
     created_by = models.ForeignKey(User)
     title = models.CharField(max_length=1000)
@@ -183,6 +184,7 @@ class ForumCategory(models.Model):
     slug = models.SlugField(max_length=1000)
     is_active = models.BooleanField(default=False)
     description = models.TextField()
+    parent = models.ForeignKey('self', blank=True, null=True)
 
     def get_topics(self):
         topics = Topic.objects.filter(category=self, status='Published')
@@ -241,6 +243,13 @@ class ForumComment(models.Model):
 
     def up_votes_count(self):
         return self.votes.filter(type="U").count()
+
+class ReportingMessage(models.Model):
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    message = models.CharField(max_length=1000)
+
+
 
     def down_votes_count(self):
         return self.votes.filter(type="D").count()

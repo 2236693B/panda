@@ -13,9 +13,6 @@
         <h1>Rate {{game.name}}</h1>
 
         Your current rating is : {{value}}
-
-        <div>
-
             <form id = "game_rating_form" method="post" action="/panda/game/{{ game.slug }}/make_rating/" />
 
                 {% csrf_token %}
@@ -46,8 +43,11 @@
         </div>
 
         {% else %}
-            {%if studio_warning %}
-                Studios cannot make Ratings
+           {% if request.user.is_superuser %}
+                Admin cannot make ratings
+                <a href = '/panda/game/{{return}}/'>Return</a>
+            {%elif studio_warning %}
+                Studios cannot make ratings
                 <a href = '/panda/game/{{return}}/'>Return</a>
             {% else %}
                 A game by this name does not exist

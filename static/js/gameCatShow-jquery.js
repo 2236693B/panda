@@ -1,9 +1,6 @@
 $(document).ready( function() {
-    $('toggleGames').click(function() {
-        if ($('catGames').is(':visible')) {
-            $('catGames').hide();
-        } else {
-            $('catGames').show();
-        }
-    });
+	$('div.catergory').on('click', 'toggleButton', function(e){
+		cat = $(e.delegateTarget).find('catGames');
+		cat.is(':hidden') ? cat.show() : cat.hide();
+	});
 });

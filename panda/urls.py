@@ -2,11 +2,13 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [ url(r'^$', views.index, name='index'),
-                url(r'^about/', views.index, name='about'),
+                url(r'^about/', views.about, name='about'),
                 url(r'^games/', views.games, name='games'),
-                url(r'^players/', views.players, name='players'),
+                url(r'^contact_us/', views.contact_us, name = "contact_us"),
+				url(r'^players/', views.players, name='players'),
                 url(r'^search/games/', views.games_search, name='games_search'),
                 url(r'search/players/', views.player_search, name='player_search'),
+                url(r'report/(?P<player_name_slug>[\w\-]+)/$', views.report_player, name='report_player'),
 
                 url(r'^login/$', views.user_login, name='login'),
                 url(r'^sign_up/$', views.sign_up, name='sign_up'),
@@ -22,7 +24,7 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/(?P<comment_id>\d+)/delete_comment/$', views.delete_game_comment, name='delete_game_comment'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/(?P<comment_id>\d+)/edit_comment/$', views.edit_game_comment, name='edit_game_comment'),
 
-
+				
 
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/$', views.show_player, name='show_player'),
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/make_rating/$', views.make_player_rating, name='player_rating'),
@@ -32,6 +34,10 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^my_profile/edit_player_profile/$', views.edit_player_profile, name='edit_player_profile'),
                 url(r'^my_profile/edit_studio_profile/$', views.edit_studio_profile, name='edit_studio_profile'),
 
+
+
+
+                url(r'forum_dashboard/$', views.DashboardView.as_view(), name="forum_dashboard"),
 
                 url(r'^$', views.TopicList.as_view(), name="topic_list"),
                 url(r'^topic/add/$', views.TopicAdd.as_view(), name="new_topic"),
@@ -50,19 +56,19 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^comment/votes/(?P<pk>[-\w]+)/up/$', views.CommentVoteUpView.as_view(), name="comment_vote_up"),
                 url(r'^comment/votes/(?P<pk>[-\w]+)/down/$', views.CommentVoteDownView.as_view(), name="comment_vote_down"),
 
-                url(r'^category/list/$', views.CategoryList.as_view(), name="categories"),
-                url(r'^category/add/$', views.CategoryAdd.as_view(), name="add_category"),
-                url(r'^category/delete/(?P<slug>[-\w]+)/$',
+                url(r'^forum_dashboard/category/list/$', views.CategoryList.as_view(), name="categories"),
+                url(r'^forum_dashboard/category/add/$', views.CategoryAdd.as_view(), name="add_category"),
+                url(r'^forum_dashboard/category/delete/(?P<slug>[-\w]+)/$',
                     views.CategoryDelete.as_view(), name="delete_category"),
-                url(r'^category/edit/(?P<slug>[-\w]+)/$',
+                url(r'^forum_dashboard/category/edit/(?P<slug>[-\w]+)/$',
                     views.CategoryEdit.as_view(), name="edit_category"),
-                url(r'^category/view/(?P<slug>[-\w]+)/$',
+                url(r'^forum_dashboard/category/view/(?P<slug>[-\w]+)/$',
                     views.CategoryDetailView.as_view(), name="view_category"),
 
-                url(r'^topics/list/$', views.TopicList.as_view(), name="topics"),
-                url(r'^topics/delete/(?P<slug>[-\w]+)/$', views.TopicDeleteView.as_view(), name="delete_topic"),
-                url(r'^topic/view/(?P<slug>[-\w]+)/$', views.TopicDetail.as_view(), name="topic_detail"),
-                url(r'^topic/status/(?P<slug>[-\w]+)/$', views.TopicStatus.as_view(), name="topic_status"),
+                url(r'^forum_dashboard/topics/list/$', views.DashboardTopicList.as_view(), name="topics"),
+                url(r'^forum_dashboard/topics/delete/(?P<slug>[-\w]+)/$', views.TopicDeleteView.as_view(), name="delete_topic"),
+                url(r'^forum_dashboard/topic/view/(?P<slug>[-\w]+)/$', views.TopicDetail.as_view(), name="topic_detail"),
+                url(r'^forum_dashboard/topic/status/(?P<slug>[-\w]+)/$', views.TopicStatus.as_view(), name="topic_status"),
 
                 
 

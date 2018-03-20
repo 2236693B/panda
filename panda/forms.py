@@ -1,6 +1,10 @@
 from django import forms
 from django.contrib.auth.models import User
+
 from panda.models import Player, GameRating, Comment, Game, GameStudio, ForumCategory, Topic,ForumComment
+
+from panda.models import Player, GameRating, Comment, Game, GameStudio, ReportingMessage
+
 import datetime
 from django.template.defaultfilters import slugify
 
@@ -72,6 +76,7 @@ class GameRegisterForm (forms.ModelForm):
             raise forms.ValidationError("The date cannot be in the future!")
         return date
 
+
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = ForumCategory
@@ -83,14 +88,39 @@ class CategoryForm(forms.ModelForm):
 
         return self.cleaned_data['title']
 
-    #def __init__(self, *args, **kwargs):
-        #self.user = kwargs.pop('user', None)
-        #super(CategoryForm, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(CategoryForm, self).__init__(*args, **kwargs)
 
-    
+    def save(self, commit=True):
+        instance = super(CategoryForm, self).save(commit=False)
+        instance.created_by = self.user
+        instance.title = self.cleaned_data['title']
+        if str(self.cleaned_data['is_votable']) == 'True':
+            instance.is_votable = True
+        else:
+            instance.is_votable = False
+        if str(self.cleaned_data['is_active']) == 'True':
+            instance.is_active = True
+        else:
+            instance.is_active = False
+        if not self.instance.id:
+            instance.slug = slugify(self.cleaned_data['title'])
+
+        if commit:
+            instance.save()
+        return instance
 class TopicForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(TopicForm, self).__init__(*args, **kwargs)
+        self.fields["category"].widget.attrs = {"class": "form-control select2"}
+        self.fields["title"].widget.attrs = {"class": "form-control"}
+        self.fields["tags"].widget.attrs = {"class": "form-control tags"}
+
     tags = forms.CharField(required=False)
+
     class Meta:
         model = Topic
         fields = ("title", "category", "description", "tags")
@@ -102,6 +132,19 @@ class TopicForm(forms.ModelForm):
 
         return self.cleaned_data['title']
 
+    def save(self, commit=True):
+        instance = super(TopicForm, self).save(commit=False)
+        instance.title = self.cleaned_data['title']
+        instance.description = self.cleaned_data['description']
+        instance.category = self.cleaned_data['category']
+        if not self.instance.id:
+            instance.slug = slugify(self.cleaned_data['title'])
+            instance.created_by = self.user
+            instance.status = 'Draft'
+        if commit:
+            instance.save()
+        return instance
+
 class ForumCommentForm(forms.ModelForm):
 
     class Meta:
@@ -112,4 +155,26 @@ class ForumCommentForm(forms.ModelForm):
         if self.cleaned_data['comment']:
             return self.cleaned_data['comment']
         raise forms.ValidationError('This field is required')
-    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(CommentForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        instance = super(CommentForm, self).save(commit=False)
+        instance.comment = self.cleaned_data['comment']
+        instance.topic = self.cleaned_data['topic']
+        if not self.instance.id:
+            instance.commented_by = self.user
+            if 'parent' in self.cleaned_data.keys() and self.cleaned_data['parent']:
+                instance.parent = self.cleaned_data['parent']
+        if commit:
+            instance.save()
+        return instance
+
+class ReportingPlayerForm(forms.ModelForm):
+    message = forms.CharField(widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
+
+    class Meta:
+        model = ReportingMessage
+        fields = ('message',)
+
