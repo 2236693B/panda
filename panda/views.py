@@ -386,7 +386,7 @@ def show_player(request, player_name_slug):
 
     if player != None:
         if player.user == request.user:
-            return show_profile(request)
+            return HttpResponseRedirect(reverse('my_profile'))
         else:
             context_dict['player'] = player
 
@@ -588,6 +588,25 @@ def edit_game_profile(request, game_name_slug):
             return show_profile(request)
 
     return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form, 'studio':studio})
+
+@login_required
+def delete_game_profile(request,game_name_slug):
+
+    studio = check_studio_user(request.user)
+    game = check_game(game_name_slug)
+
+    if game != None and game.studio == studio:  #If game exists and user owns it
+        game.delete()
+
+    return show_profile(request)
+
+
+def delete_profile(request):
+    user = request.user
+    logout(request)
+    user.delete()
+    return HttpResponseRedirect(reverse('index'))
+
 
 #Helper Functions
 
