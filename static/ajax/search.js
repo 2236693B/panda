@@ -10,7 +10,7 @@ function search(model) {
   xhttp.send();
 }
 
-function loadPlayers(game) {
+function loadPlayers(game, types) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -18,7 +18,7 @@ function loadPlayers(game) {
       this.responseText;
     }
   };
-  xhttp.open("GET", ("/panda/game/"+ game + "/players/"), true);
+  xhttp.open("GET", ("/panda/game/"+ game + "/players?type=" + types +""), true);
   xhttp.send();
 }
 
