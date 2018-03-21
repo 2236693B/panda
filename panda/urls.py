@@ -28,6 +28,8 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/$', views.show_player, name='show_player'),
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/make_rating/$', views.make_player_rating, name='player_rating'),
 
+                url(r'^studio/(?P<studio_name_slug>[\w\-]+)/$', views.show_studio, name='show_studio'),
+
                 url(r'^search/games', views.games_search, name='games_search'),
                 url(r'^search/players', views.player_search, name='player_search'),
 

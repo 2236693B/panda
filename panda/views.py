@@ -111,6 +111,17 @@ def show_game(request, game_name_slug):
 
     return render(request, 'panda/game.html', context_dict)
 
+def show_studio(request, studio_name_slug):
+
+    context_dict = {}
+    studio = check_studio(studio_name_slug)
+    context_dict['studio'] = studio
+
+    if studio !=None:
+        context_dict['games'] = Game.objects.filter(studio=studio)
+
+    return render(request,'panda/studio.html', context_dict)
+
 @login_required
 def get_game_players(request, game_name_slug):
     """
@@ -677,6 +688,15 @@ def check_game(game_name_slug): #Check if trying to valid access game page
         game = None
 
     return game
+
+def check_studio(studio_name_slug): #Check if trying to acces valid user page
+    try:
+        studio = GameStudio.objects.get(slug = studio_name_slug)
+
+    except GameStudio.DoesNotExist:
+        studio = None
+
+    return studio
 
 def user_check(request, game_name_slug):  #Get details abouit current user
     studio_warning = False #Indicator if studio attempting to rate

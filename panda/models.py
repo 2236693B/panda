@@ -5,6 +5,15 @@ from django.contrib.auth.models import User
 class GameStudio(models.Model):  #Game Studios that make multiplayer games
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, unique = True)
+    bio = models.CharField(max_length=200, null = True, blank= True)
+    TwitterHandle = models.CharField(max_length=15, null=True, blank=True)
+    picture = models.ImageField(upload_to='studio_images', blank=True)
+
+    slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwaargs):
+        self.slug = slugify(self.name)
+        super(GameStudio, self).save(*args, **kwaargs)
 
     def __str__(self):
         return self.name
@@ -109,7 +118,6 @@ class Game(models.Model):  #
     Mobile = models.BooleanField(default = False)
 
     slug = models.SlugField(unique = True)
-
 
     def save(self, *args, **kwaargs):
         self.slug = slugify(self.name)

@@ -21,7 +21,7 @@
 
                 <h1 class="panda-center" font-family="Lato-Black">{{ game.name }}</h1>
 
-                <h2>{{game.studio}}</h2>
+                <h2><a href = "/panda/studio/{{ game.studio.slug }}">{{game.studio.name}}</a></h2>
 
                 <img src="{{ MEDIA_URL }}{{game.picture}}" alt = "Game cover art"/>
 

@@ -1,0 +1,36 @@
+{% extends 'panda/base.html' %}
+
+{% block title_block %}
+ {{ studio.name }}
+{% endblock %}
+
+{% block body_block %}
+
+    <h1> {{ studio.name }}</h1>
+     <img src="{{ MEDIA_URL }}{{studio.picture}}" alt = "Studio cover art"/>
+    <h3>Bio:</h3>
+    {{ studio.bio }}
+
+    <h3>Games:</h3>
+    <ul>
+        {% for game in games %}
+            <li><highlight> <a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>
+                {% if game.rating != -1 %}
+                    {{game.rating}}
+                {% else %}
+                    unrated
+                {% endif %}
+            </i></highlight></li>
+        {% endfor %}
+    </ul>
+
+    {% if studio.TwitterHandle %}
+        <h3>Twitter</h3>
+        <a class="twitter-timeline" data-width="1000" data-height="1000" data-theme="dark" data-link-color="#2B7BB9" href="https://twitter.com/{{ studio.TwitterHandle }}">
+            Tweets by @{{ studio.TwitterHandle }}
+        </a>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8">
+
+    {%  endif %}
+
+{%  endblock %}
