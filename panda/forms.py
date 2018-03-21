@@ -44,7 +44,7 @@ class StudioProfileForm(forms.ModelForm):
 
     class Meta:
         model = GameStudio
-        fields = ('name',)
+        fields = ('name','bio', 'TwitterHandle', 'picture')
         exclude = ('user',)
 
 #Details form for Player, used for registeration and changing details
