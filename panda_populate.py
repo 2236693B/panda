@@ -121,7 +121,7 @@ def populate():
                    Company's growing library of intellectual properties includes such major franchises as The Elder Scrolls®, Fallout®, Dishonored®, DOOM®, QUAKE®, Wolfenstein®, Prey®, The Evil Within®, and 
                    RAGE®.'''},
 
-        "Mojang":{"username":"m0j@ng", "password":"micrcosoft$$", "email":"money@microsoft.com","games": mojang_games , 'picture': 'studio_images/mojang.jpg' ,'twitter':'Mojang',
+        "Mojang":{"username":"m0j@ng", "password":"micrcosoft$$", "email":"money@microsoft.com","games": mojang_games , 'picture': 'studio_images/mojang.png' ,'twitter':'Mojang',
                   'bio':'''Mojang AB is a games studio based in Stockholm, Sweden. We were founded in 2009 by Markus “Notch” Persson. He’s also the creator of our best-selling game to date: 
                   Minecraft. Since then, we’ve released our second game, the card-collecting tactical battler Scrolls, and have dabbled in publishing with Oxeye Game Studio’s awesome side-
                   scrolling robo-blaster Cobalt. We’re developing more games, too, but we’re not ready to talk about those quite yet.'''},
