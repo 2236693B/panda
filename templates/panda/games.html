@@ -1,4 +1,10 @@
 {% extends 'panda/base.html' %}
+{% load staticfiles %}
+
+{% block script_block %}
+     <script src='{% static "ajax/search.js"%} '></script>
+     <script src='{% static "js/gameCatShow-jquery.js" %}'></script>
+{% endblock %}
 
 {% block title_block %}
     Games
@@ -6,40 +12,13 @@
 
 {% block body_block %}
 
+                  Search: <input type="text" id="searchtext" name="search" value="" size="50" />
+                  <input type="submit"  id="search" value="search" onclick = "search('games')" />
+                  <input type="submit"  id="clear" value="clear" onclick = "hide()" />
 
+                 <div id = "content" ></div>
 
-              <form id="login_form" method="post" action="{% url 'games_search' %}">
-                  {% csrf_token %}
-                  Search: <input type="text" name="search" value="" size="50" /> <br />
-
-                  <input type="hidden" name="next" value="{{ request.GET.next }}">
-                  <input type="submit"  value="submit" />
-
-              </form>
-
-    {% if search %}
-        {% if results %}
-          <div>
-              <strong> Search results</strong> <br/>
-            <ul>
-                   {% for game in results %}
-                               <li><highlight> <a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>
-                                   {% if game.rating != -1 %}
-                                       {{game.rating}}
-                                   {% else %}
-                                       unrated
-                                   {% endif %}
-                               </i></highlight></li>
-                           {% endfor  %}
-            </ul>
-                       <br/>
-    {% else %}
-        There are no games present with containg "{{ search_request }}" <br>
-    {% endif %}
-         <a href ="{% url 'games' %}">Return</a>
-        </div>
-
-    {% else %}
+    Click category to reveal games
 
           <div>
                {% if games %}
@@ -56,18 +35,18 @@
 										   unrated
 									   {% endif %}
 								   </i></highlight></li></catGames>
-                              
+
                            {% endfor  %}
-						 
+
                        </ul>
                        <br/>
 					   </div>
-					   
+
                    {% endfor %}
                {% else %}
                    <strong> There are no games present.</strong>
-               {% endif %}
         </div>
+
 
     {%  endif %}
 

@@ -1,4 +1,11 @@
 {% extends 'panda/base.html' %}
+{% load staticfiles %}
+
+{% block script_block %}
+     <script src='{% static "ajax/search.js"%} '></script>
+     <script src = '{% static "js/dropdownBox.js" %}'></script>
+     <link rel="stylesheet" href="{% static 'css\dropbox.css' %}">
+{% endblock %}
 
 {% block title_block %}
     {{ game.name }}
@@ -16,7 +23,7 @@
 				
 				<a href ="{% url 'forum_dashboard'%}" >Forum </a>
 
-                <h2>{{game.studio}}</h2>
+                <h2><a href = "/panda/studio/{{ game.studio.slug }}">{{game.studio.name}}</a></h2>
 
                 <img src="{{ MEDIA_URL }}{{game.picture}}" alt = "Game cover art"/>
 
@@ -74,33 +81,39 @@
                     <li>Playstation</li>
                     {% endif %}
 
-                <h4> Players : {{game.players.count}}</h4>
-                <ul>
-
+                <h4> Players : {{game.players.count|add:game.comp_players.count}}</h4>
+                <h4> Casual Players : {{game.players.count }}</h4>
+                <h4> Competitive Players : {{game.comp_players.count}}</h4>
                     {% if user.is_authenticated %}
-
-                        {% for player in game.players.all %}
-                            <highlight>
-                            <li><a href = "/panda/player/{{player.slug}}/">{{player.user.username}} </a></li>
-                            </highlight>
-                        {% endfor %}
+                        {% if game.players %}
+                         <button type="button" onclick="loadPlayers('{{ game.slug }}', 'all')">Show All Players</button>
+                         <button type="button" onclick="loadPlayers('{{ game.slug }}', 'casual')">Show Casual Players</button>
+                         <button type="button" onclick="loadPlayers('{{ game.slug }}', 'comp')">Show Competitive Players</button>
+                         <button type="button" onclick="hide()">Hide Players</button>
+                         <div id="content">
+                         </div>
+                        {% endif %}
                         {% if player %}
                             {% if played %}
                                 <highlight>
                                 <a href = "/panda/game/{{game.slug}}/remove_player">Remove from my games</a>
                                 </highlight>
                             {% else %}
-                                <highlight>
-                                <a href = "/panda/game/{{game.slug}}/add_player">Add to my games</a>
-                                </highlight>
+                                <div class="dropdown">
+                                    <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+                                    <div id="addPlayers" class="dropdown-content">
+                                        <a href = "/panda/game/{{game.slug}}/add_player?type=casual">Casual</a>
+                                        <a href = "/panda/game/{{game.slug}}/add_player?type=comp">Competitive</a>
+                                    </div>
+                                </div>
                             {% endif %}
                         {% endif %}
-
                     {% else %}
                         <highlight><NL>
                         	<a href="{% url 'login' %}?next={{ request.path|urlencode }}"><i>Login to view</i></a>
                         </NL></highlight>
                     {% endif %}
+
 
                 </ul>
 

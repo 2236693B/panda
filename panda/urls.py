@@ -6,8 +6,6 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^games/', views.games, name='games'),
                 url(r'^contact_us/', views.contact_us, name = "contact_us"),
 				url(r'^players/', views.players, name='players'),
-                url(r'^search/games/', views.games_search, name='games_search'),
-                url(r'search/players/', views.player_search, name='player_search'),
                 url(r'report/(?P<player_name_slug>[\w\-]+)/$', views.report_player, name='report_player'),
 
                 url(r'^login/$', views.user_login, name='login'),
@@ -21,18 +19,25 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/add_player/$', views.add_player, name='add_player'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/remove_player/$', views.remove_player, name='remove_player'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/edit_game_profile/$', views.edit_game_profile, name='edit_game_profile'),
+                url(r'^game/(?P<game_name_slug>[\w\-]+)/delete_game_profile/$', views.delete_game_profile, name='delete_game_profile'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/(?P<comment_id>\d+)/delete_comment/$', views.delete_game_comment, name='delete_game_comment'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/(?P<comment_id>\d+)/edit_comment/$', views.edit_game_comment, name='edit_game_comment'),
-
-				
+                url(r'^game/(?P<game_name_slug>[\w\-]+)/players$', views.get_game_players, name='Player_AJAX'),
+                url(r'^reset/$', views.reset, name='Reset'),
 
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/$', views.show_player, name='show_player'),
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/make_rating/$', views.make_player_rating, name='player_rating'),
+
+                url(r'^studio/(?P<studio_name_slug>[\w\-]+)/$', views.show_studio, name='show_studio'),
+
+                url(r'^search/games', views.games_search, name='games_search'),
+                url(r'^search/players', views.player_search, name='player_search'),
 
                 url(r'^my_profile/$', views.show_profile, name='my_profile'),
                 url(r'^my_profile/register_game/$', views.register_game, name='register_game'),
                 url(r'^my_profile/edit_player_profile/$', views.edit_player_profile, name='edit_player_profile'),
                 url(r'^my_profile/edit_studio_profile/$', views.edit_studio_profile, name='edit_studio_profile'),
+                url(r'^my_profile/delete_profile/$', views.delete_profile, name='delete_profile'),
 
 
 
@@ -78,5 +83,5 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                    
                 url(r'^googleb00694232a77d6d0.html$', views.google_veri, name='google_veri'),
                 url(r'^sitemap/$', views.sitemap, name='sitemap'),
-
               ]
+

@@ -24,6 +24,15 @@ User = settings.AUTH_USER_MODEL
 class GameStudio(models.Model):  #Game Studios that make multiplayer games
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, unique = True)
+    bio = models.CharField(max_length=200, null = True, blank= True)
+    TwitterHandle = models.CharField(max_length=15, null=True, blank=True)
+    picture = models.ImageField(upload_to='studio_images', blank=True)
+
+    slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwaargs):
+        self.slug = slugify(self.name)
+        super(GameStudio, self).save(*args, **kwaargs)
 
     def __str__(self):
         return self.name
@@ -110,7 +119,8 @@ class Game(models.Model):  #
 
     studio = models.ForeignKey(GameStudio, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null = False, unique =True)
-    players = models.ManyToManyField(Player, blank= True)
+    players = models.ManyToManyField(Player, blank= True, related_name='casual')
+    comp_players = models.ManyToManyField(Player, blank=True, related_name='comp')
     extract = models.CharField(max_length=500, blank= False, default = 'Extract missing')
     site = models.URLField(null = True)
     date = models.DateField(null = True)
@@ -129,7 +139,6 @@ class Game(models.Model):  #
     Mobile = models.BooleanField(default = False)
 
     slug = models.SlugField(unique = True)
-
 
     def save(self, *args, **kwaargs):
         self.slug = slugify(self.name)

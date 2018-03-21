@@ -13,6 +13,8 @@ from django.db.models import Q
 
 from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio, ForumCategory, STATUS, Topic, ForumComment
 
+from itertools import chain
+
 import requests as r
 import json
 
@@ -91,18 +93,6 @@ def games(request):
     response = render(request, 'panda/games.html', context_dict)
     return response
 
-def games_search(request):
-
-    if request.method == 'POST':
-        search = request.POST.get('search')
-        game_list = Game.objects.filter(name__icontains=search)
-        context_dict = {'results': game_list, 'search_request':search, "search":True}
-
-        response = render(request, 'panda/games.html', context_dict)  # Return to game page after making rating
-        return response
-
-    return games(request)
-
 #View for displaying indivdual game
 def show_game(request, game_name_slug):
     played = False
@@ -145,7 +135,7 @@ def show_game(request, game_name_slug):
             player = True
 
             #Check if player plays game
-            if game.players.filter(user=request.user).exists():
+            if game.players.filter(user=request.user).exists() | game.comp_players.filter(user=request.user).exists() :
                 played = True
 
         #If not user, check if user is owner
@@ -157,6 +147,53 @@ def show_game(request, game_name_slug):
     context_dict['owner'] = owner
 
     return render(request, 'panda/game.html', context_dict)
+
+def show_studio(request, studio_name_slug):
+
+    context_dict = {}
+    studio = check_studio(studio_name_slug)
+    context_dict['studio'] = studio
+
+    if studio !=None:
+        context_dict['games'] = Game.objects.filter(studio=studio)
+
+    return render(request,'panda/studio.html', context_dict)
+
+@login_required
+def get_game_players(request, game_name_slug):
+    """
+    returns an XML of the most latest posts
+    """
+    context_dict = {}
+    game = check_game(game_name_slug)
+    if game != None:
+        type = request.GET.get('type', '')
+        if type =='all':
+            player_list = list(chain(game.players.all(), game.comp_players.all()))
+        elif type =="comp":
+            player_list = game.comp_players.all()
+        elif type =="casual":
+            player_list = game.players.all()
+
+        context_dict = {'results': player_list, 'game': False, 'Valid': True}
+
+    return render(request, 'ajax_results/results.txt', context_dict)
+
+def reset(request):
+    """
+    returns an XML of the most latest posts
+    """
+    context_dict = {}
+
+    return render(request, 'ajax_results/results.txt', context_dict)
+
+def games_search(request):
+    search = request.GET.get('query', '')
+    game_list = Game.objects.filter(name__icontains=search)
+    context_dict = {'results': game_list , 'game': True, 'Valid': True, 'Search' : True}
+
+    response = render(request, 'ajax_results/results.txt', context_dict)  # Return to game page after making rating
+    return response
 
 #View for handling making a rating on game
 @login_required
@@ -266,11 +303,19 @@ def add_player(request, game_name_slug):
 
     game = check_game(game_name_slug)
     context_dict['game'] = game
-
-    if request.user.is_authenticated():
-        if not game.players.filter(user=request.user).exists():
-                player = Player.objects.get(user=request.user)
-                game.players.add(player)
+    types = request.GET.get('type', '')
+    if game != None:
+        if request.user.is_authenticated():
+            if types == "casual":
+                if (not game.players.filter(user=request.user).exists()) and (not game.comp_players.filter(user=request.user).exists()):
+                        player = Player.objects.get(user=request.user)
+                        if player != None:
+                            game.players.add(player)
+            elif types == "comp":
+                if (not game.comp_players.filter(user=request.user).exists()) and (not game.players.filter(user=request.user).exists()):
+                        player = Player.objects.get(user=request.user)
+                        if player != None:
+                            game.comp_players.add(player)
 
     return show_game(request, game_name_slug)
 
@@ -354,7 +399,9 @@ def sign_up(request):
         user_form = UserForm()
         profile_form = PlayerProfileForm()
 
+
     return render(request, 'panda/sign_up.html', {'user_form': user_form, 'profile_form':profile_form, 'registered': registered, 'player': True})
+
 
 #Sign up view for studio
 def studio_sign_up(request):
@@ -407,21 +454,24 @@ def show_player(request, player_name_slug):
     context_dict = {}
 
     player = check_player(player_name_slug)
-    context_dict['player'] = player
+
+    if player != None:
+        if player.user == request.user:
+            return HttpResponseRedirect(reverse('my_profile'))
+        else:
+            context_dict['player'] = player
+            context_dict['casual'] = player.casual.all()
+            context_dict['comp'] = player.comp.all()
 
     return render(request, 'panda/player.html', context_dict)
 
 def player_search(request):
+    search = request.GET.get('query', '')
+    player_list = Player.objects.filter(user__username__icontains=search)
+    context_dict = {'results': player_list, 'game': False, 'Valid': True, 'Search':True}
 
-    if request.method == 'POST':
-        search = request.POST.get('search')
-        player_list = Player.objects.filter(user__username__icontains=search)
-        context_dict = {'results': player_list, 'search_request':search, "search":True}
-
-        response = render(request, 'panda/players.html', context_dict)  # Return to game page after making rating
-        return response
-
-    return players(request)
+    response = render(request, 'ajax_results/results.txt', context_dict)  # Return to game page after making rating
+    return response
 
 #View to make player rating
 @login_required
@@ -470,6 +520,28 @@ def make_player_rating(request,player_name_slug):
 
     return render(request, 'panda/player_rating.html', context_dict)
 
+
+def report_player(request, player_name_slug):
+
+    player = check_player(player_name_slug)
+
+    form = ReportingPlayerForm()
+
+    if request.method == 'POST':
+        form = ReportingPlayerForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.reporter = request.user
+            report.player = player
+
+            report.save()
+
+            return show_player(request, player_name_slug)
+
+    context_dict = {'form': form, 'player': player}
+
+    return render(request, 'panda/report.html', context_dict)
+
 #Show studio or player's own profile
 @login_required
 def show_profile(request):
@@ -482,11 +554,28 @@ def show_profile(request):
         context_dict['games'] = player.game_set.all()
         return render(request, 'panda/my_profile_player.html', context_dict)
 
+
     except Player.DoesNotExist:
         studio = GameStudio.objects.get(user = request.user)
         context_dict['studio'] = studio
         context_dict['games'] = Game.objects.filter(studio=studio)
         return render(request, 'panda/my_profile_studio.html', context_dict)
+
+        try:
+            player = Player.objects.get(user = request.user)
+            context_dict['player'] = player
+            context_dict['casual'] = player.casual.all()
+            context_dict['comp'] = player.comp.all()
+            context_dict['profile'] = True
+            return render(request, 'panda/player.html', context_dict)
+
+        except Player.DoesNotExist:
+            studio = GameStudio.objects.get(user = request.user)
+            context_dict['studio'] = studio
+            context_dict['games'] = Game.objects.filter(studio=studio)
+            return render(request, 'panda/my_profile_studio.html', context_dict)
+    else:
+        return HttpResponse("Please login in at the admin site <a href ='/admin/'>Here</a>")
 
 
 #View to allow studio to register game
@@ -590,7 +679,23 @@ def edit_game_profile(request, game_name_slug):
 
     return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form, 'studio':studio})
 
+@login_required
+def delete_game_profile(request,game_name_slug):
 
+    studio = check_studio_user(request.user)
+    game = check_game(game_name_slug)
+
+    if game != None and game.studio == studio:  #If game exists and user owns it
+        game.delete()
+
+    return show_profile(request)
+
+
+def delete_profile(request):
+    user = request.user
+    logout(request)
+    user.delete()
+    return HttpResponseRedirect(reverse('index'))
 
 class DashboardView(TemplateView):
     template_name = 'forum_dashboard/forum_dashboard.html'
@@ -1079,6 +1184,15 @@ def check_game(game_name_slug): #Check if trying to valid access game page
         game = None
 
     return game
+
+def check_studio(studio_name_slug): #Check if trying to acces valid user page
+    try:
+        studio = GameStudio.objects.get(slug = studio_name_slug)
+
+    except GameStudio.DoesNotExist:
+        studio = None
+
+    return studio
 
 def user_check(request, game_name_slug):  #Get details abouit current user
     studio_warning = False #Indicator if studio attempting to rate
