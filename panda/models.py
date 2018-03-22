@@ -39,8 +39,7 @@ class GameStudio(models.Model):  #Game Studios that make multiplayer games
 
 
 class Player(models.Model):
-    user = models.ForeignKey(User)
-    #user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     Bio = models.CharField(max_length=500, null = True, blank= True)
     Steam = models.CharField(max_length=31, null = True, blank= True)
     PSN = models.CharField(max_length=16, null = True, blank= True)
@@ -50,6 +49,8 @@ class Player(models.Model):
     picture = models.ImageField(upload_to='profile_images', blank=True)
     user_votes = models.IntegerField(default='0')
     user_roles = models.CharField(choices=USER_ROLES, max_length=10)
+
+    approved = models.BooleanField(default = False)
 
     slug = models.SlugField(unique = True)
 
@@ -272,6 +273,6 @@ class ReportingMessage(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     message = models.CharField(max_length=1000)
 
-
-
-    
+class ApprovalRequest(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    message = models.CharField(max_length=500)

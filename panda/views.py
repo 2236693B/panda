@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.auth import logout
-from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, CategoryForm, TopicForm, ForumCommentForm
+from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, ApprovingPlayerForm, CategoryForm, TopicForm, ForumCommentForm
 from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DetailView, DeleteView, View
 from django.views.generic.edit import FormView
 from django.db.models import Q
@@ -520,7 +520,7 @@ def make_player_rating(request,player_name_slug):
 
     return render(request, 'panda/player_rating.html', context_dict)
 
-
+@login_required
 def report_player(request, player_name_slug):
 
     player = check_player(player_name_slug)
@@ -549,10 +549,12 @@ def show_profile(request):
     context_dict = {}
 
     try:
-        player = Player.objects.get(user = request.user)
+        player = Player.objects.get(user=request.user)
         context_dict['player'] = player
-        context_dict['games'] = player.game_set.all()
-        return render(request, 'panda/my_profile_player.html', context_dict)
+        context_dict['casual'] = player.casual.all()
+        context_dict['comp'] = player.comp.all()
+        context_dict['profile'] = True
+        return render(request, 'panda/player.html', context_dict)
 
 
     except Player.DoesNotExist:
@@ -576,7 +578,6 @@ def show_profile(request):
             return render(request, 'panda/my_profile_studio.html', context_dict)
     else:
         return HttpResponse("Please login in at the admin site <a href ='/admin/'>Here</a>")
-
 
 #View to allow studio to register game
 @login_required
@@ -688,12 +689,37 @@ def delete_game_profile(request,game_name_slug):
 
     return show_profile(request)
 
-
 def delete_profile(request):
     user = request.user
     logout(request)
     user.delete()
     return HttpResponseRedirect(reverse('index'))
+
+@login_required
+def approve_player(request):
+
+    player = check_player_user(request.user)
+
+    form = ApprovingPlayerForm()
+
+    if request.method == 'POST':
+        form = ApprovingPlayerForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.player = player
+            report.save()
+
+            return show_profile(request)
+
+    context_dict = {'form': form, 'player': player}
+
+    return render(request, 'panda/requestApproval.html', context_dict)
+
+
+
+
+
+
 
 class DashboardView(TemplateView):
     template_name = 'forum_dashboard/forum_dashboard.html'

@@ -1,0 +1,39 @@
+{% extends 'panda/base.html' %}
+
+{% block title_block %}
+ Report {{ player.user.username }}
+{% endblock %}
+
+
+
+{% block body_block %}
+
+    {% if player %}
+
+        {% if not player.approved %}
+
+        <h3>Why should you be added to Approved Players </h3>
+
+        <div>
+
+            <form id = "player_report_form" method="post" action="{% url 'approve_my_profile' %}" />
+
+                {% csrf_token %}
+                {{ form.as_p }}
+
+            <input type="submit" name="submit" value="Approve player" />
+
+            </form>
+
+        </div>
+
+        {% else %}
+            You are already approved
+        {% endif %}
+
+       {% else %}
+                Cannot be Approved as you are not a player
+                <a href = '{% url "my_profile" %}'>Return</a>
+        {% endif %}
+
+{% endblock %}

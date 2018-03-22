@@ -214,6 +214,9 @@ def populate():
         }
 
 
+    #Create admin users
+    if not User.objects.filter(username='admin').exists():
+        User.objects.get_create_superuser('admin', 'admin@test.com', 'ProjectPanda123')
 
     #Create users for studio, studio and games owned by that studio
 

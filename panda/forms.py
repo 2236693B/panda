@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from panda.models import Player, GameRating, Comment, Game, GameStudio, ReportingMessage, ForumCategory, Topic,ForumComment
+from panda.models import Player, GameRating, Comment, Game, GameStudio, ReportingMessage, ApprovalRequest, ForumCategory, Topic,ForumComment
 import datetime
 from django.template.defaultfilters import slugify
 
@@ -174,5 +174,12 @@ class ReportingPlayerForm(forms.ModelForm):
 
     class Meta:
         model = ReportingMessage
+        fields = ('message',)
+
+class ApprovingPlayerForm(forms.ModelForm):
+    message = forms.CharField(widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
+
+    class Meta:
+        model = ApprovalRequest
         fields = ('message',)
 

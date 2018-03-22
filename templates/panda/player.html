@@ -1,4 +1,5 @@
 {% extends 'panda/base.html' %}
+{% load staticfiles %}
 
 {% block title_block %}
     {{ player.user.username }}
@@ -8,7 +9,9 @@
     <div>
         {% if player %}
 
-            <h1>{{ player.user.username }}</h1>
+            <h1>{{ player.user.username }} {% if player.approved %}
+                <img src="{% static '/images/approved.png'%}" alt = "Approved Tick" id="approved"/>
+            {% endif %}</h1>
 
             <img src="{{ MEDIA_URL }}{{player.picture}}" alt = "Player Profile image"/>
 
@@ -68,6 +71,11 @@
                 <highlight>
                 <a href="{% url 'edit_player_profile' %}">Edit profile</a>
                 </highlight>
+            {% if not player.approved %}
+                 <highlight>
+                <a href="{% url 'approve_my_profile' %}">Get approval for my account</a>
+                </highlight>
+            {% endif %}
 
             {%  endif %}
 

@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 {% if Valid %}
     {% if Search %}
     <h2> Search Results </h2>
@@ -17,6 +19,9 @@
               {% else %}
               unrated
               {% endif %}
+              {% if result.approved %}
+             <img src="{% static '/images/approved.png'%}" alt = "Approved Tick" id="approved"/>
+         {% endif %}
           </li>
           {% endfor %}
         </ul>

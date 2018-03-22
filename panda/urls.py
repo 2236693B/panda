@@ -38,6 +38,7 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^my_profile/edit_player_profile/$', views.edit_player_profile, name='edit_player_profile'),
                 url(r'^my_profile/edit_studio_profile/$', views.edit_studio_profile, name='edit_studio_profile'),
                 url(r'^my_profile/delete_profile/$', views.delete_profile, name='delete_profile'),
+                url(r'^my_profile/approve/$', views.approve_player, name='approve_my_profile'),
 
 
 

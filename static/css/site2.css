@@ -186,6 +186,12 @@ a img {
   height: 0;
   overflow: hidden;
 }
+
+#approved {
+    height: 2%;
+    width: 2%;
+}
+
 .center {
     display: block;
     margin-left: auto;
@@ -393,6 +399,3 @@ a img {
 .Panda-border-dark-grey,.Panda-hover-border-dark-grey:hover,.Panda-border-dark-gray,.Panda-hover-border-dark-gray:hover{border-color:#616161!important}
 .Panda-border-pale-red,.Panda-hover-border-pale-red:hover{border-color:#ffe7e7!important}.Panda-border-pale-green,.Panda-hover-border-pale-green:hover{border-color:#e7ffe7!important}
 .Panda-border-pale-yellow,.Panda-hover-border-pale-yellow:hover{border-color:#ffffcc!important}.Panda-border-pale-blue,.Panda-hover-border-pale-blue:hover{border-color:#e7ffff!important}
-
-
-
