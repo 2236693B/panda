@@ -1,10 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-
-from panda.models import Player, GameRating, Comment, Game, GameStudio, ForumCategory, Topic,ForumComment
-
-from panda.models import Player, GameRating, Comment, Game, GameStudio, ReportingMessage
-
+from panda.models import Player, GameRating, Comment, Game, GameStudio, ReportingMessage, ForumCategory, Topic,ForumComment
 import datetime
 from django.template.defaultfilters import slugify
 
@@ -62,7 +58,9 @@ class PlayerProfileForm(forms.ModelForm):
 
 #Details form for Game, used for registeration and changing details by studio
 class GameRegisterForm (forms.ModelForm):
-    date = forms.DateField(initial=datetime.date.today, ) #widget=forms.widgets.DateInput(format="%d/%m/%Y"))
+    today = datetime.date.today()
+    YEARS = [x for x in range(1970, today.year+1)]  # Limit rating choices from 0-5
+    date =forms.DateField(initial=datetime.date.today, widget=forms.SelectDateWidget(years=YEARS))
 
     class Meta:
         model = Game
