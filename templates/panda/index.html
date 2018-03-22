@@ -3,7 +3,10 @@
 {% block title_block %}
     Home
 {% endblock %}
-<script src='{% static "js/index.js" %}'></script>
+
+{% block script_block %}
+     <script src='{% static "js/index.js" %}'></script>
+{% endblock %}
 
 {% block body_block %}
 		
@@ -33,7 +36,9 @@
                 {% else %}
                 {% for player in players %}
                     <highlight><NL>
-                    <li>{{ player.user.username }} : <i>{{player.rating}}</i></li>
+                    <li>{{ player.user.username }} : <i>{{player.rating}}</i> {% if player.approved %}
+             <img src="{% static '/images/approved.png'%}" alt = "Approved Tick" id="approved"/>
+         {% endif %} </li>
                     </NL></highlight>
                 {% endfor  %}
                 {% endif %}

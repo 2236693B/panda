@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.auth import logout
-from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, CategoryForm, TopicForm, ForumCommentForm
+from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, ApprovingPlayerForm, CategoryForm, TopicForm, ForumCommentForm
 from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DetailView, DeleteView, View
 from django.views.generic.edit import FormView
 from django.db.models import Q
@@ -52,7 +52,7 @@ def about(request):
 def contact_us(request):
 
     context_dict = {}
-    return render(request, 'panda/contact_us.html', context = context_dict)
+    return render(request, 'panda/contact_us.html', context_dict)
 
 def report_player(request, player_name_slug):
 
@@ -85,8 +85,9 @@ def games(request):
     mmo_cat = Game.objects.filter(catergory ='MMO')
     fps_cat = Game.objects.filter(catergory ='FPS')
     spo_cat = Game.objects.filter(catergory ='SPO')
+    mob_cat = Game.objects.filter(catergory='MOB')
 
-    game_list = [no_cat, act_cat, adv_cat, rol_cat, mmo_cat, fps_cat, spo_cat, ]
+    game_list = [no_cat, act_cat, adv_cat, rol_cat, mmo_cat, fps_cat, spo_cat, mob_cat ]
 
     context_dict['games'] = game_list
 
@@ -99,6 +100,8 @@ def show_game(request, game_name_slug):
     player = False
     owner = False
 
+    other_games = None
+
     context_dict = {}
 
     game = check_game(game_name_slug)
@@ -106,6 +109,7 @@ def show_game(request, game_name_slug):
 
     #Steam API
     if game != None:
+        other_games = Game.objects.exclude(pk__in=game.recommend.all())
         if game.steam_id != None:
             try:
                 new_request = "http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=" + str(game.steam_id) + "&count=3&maxlength=300&format=json"
@@ -125,26 +129,25 @@ def show_game(request, game_name_slug):
                 context_dict['news'] = None
                 context_dict['world_players'] = None
 
+        #If user is logged in
+        if request.user.is_authenticated() :
 
+            #Check if player object
+            if Player.objects.filter(user=request.user).exists():
+                player = True
 
-    #If user is logged in
-    if request.user.is_authenticated():
+                #Check if player plays game
+                if game.players.filter(user=request.user).exists() | game.comp_players.filter(user=request.user).exists() :
+                    played = True
 
-        #Check if player object
-        if Player.objects.filter(user=request.user).exists():
-            player = True
-
-            #Check if player plays game
-            if game.players.filter(user=request.user).exists() | game.comp_players.filter(user=request.user).exists() :
-                played = True
-
-        #If not user, check if user is owner
-        elif game.studio.user == request.user:
-            owner = True
+            #If not player, check if user is owner
+            elif game.studio.user == request.user:
+                owner = True
 
     context_dict['played'] = played
     context_dict['player'] = player
     context_dict['owner'] = owner
+    context_dict['others'] = other_games
 
     return render(request, 'panda/game.html', context_dict)
 
@@ -520,7 +523,7 @@ def make_player_rating(request,player_name_slug):
 
     return render(request, 'panda/player_rating.html', context_dict)
 
-
+@login_required
 def report_player(request, player_name_slug):
 
     player = check_player(player_name_slug)
@@ -549,10 +552,12 @@ def show_profile(request):
     context_dict = {}
 
     try:
-        player = Player.objects.get(user = request.user)
+        player = Player.objects.get(user=request.user)
         context_dict['player'] = player
-        context_dict['games'] = player.game_set.all()
-        return render(request, 'panda/my_profile_player.html', context_dict)
+        context_dict['casual'] = player.casual.all()
+        context_dict['comp'] = player.comp.all()
+        context_dict['profile'] = True
+        return render(request, 'panda/player.html', context_dict)
 
 
     except Player.DoesNotExist:
@@ -576,7 +581,6 @@ def show_profile(request):
             return render(request, 'panda/my_profile_studio.html', context_dict)
     else:
         return HttpResponse("Please login in at the admin site <a href ='/admin/'>Here</a>")
-
 
 #View to allow studio to register game
 @login_required
@@ -651,6 +655,7 @@ def edit_game_profile(request, game_name_slug):
 
     try:
        game = Game.objects.get(slug = game_name_slug)
+       name = game.name #Keeps track of old game name for form
        form = GameRegisterForm( {'studio':game.studio, 'name':game.name, 'extract':game.extract, 'site':game.site,'date':game.date,'catergory':game.catergory,'picture':game.picture, 'Playstation':game.Playstation, 'Xbox':game.Xbox, 'PC':game.PC, 'Nintendo':game.Nintendo, 'Mobile':game.Mobile})
 
     except Game.DoesNotExist:
@@ -674,10 +679,7 @@ def edit_game_profile(request, game_name_slug):
 
             return show_profile(request)
 
-        else:
-            print(form.errors)
-
-    return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form, 'studio':studio})
+    return render(request, 'panda/edit_game_profile.html', {'game': game, 'name':name, 'edit':edit, 'form': form, 'studio':studio})
 
 @login_required
 def delete_game_profile(request,game_name_slug):
@@ -690,12 +692,59 @@ def delete_game_profile(request,game_name_slug):
 
     return show_profile(request)
 
-
 def delete_profile(request):
     user = request.user
     logout(request)
     user.delete()
     return HttpResponseRedirect(reverse('index'))
+
+@login_required
+def approve_player(request):
+
+    player = check_player_user(request.user)
+
+    form = ApprovingPlayerForm()
+
+    if request.method == 'POST':
+        form = ApprovingPlayerForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.player = player
+            report.save()
+
+            return show_profile(request)
+
+    context_dict = {'form': form, 'player': player}
+
+    return render(request, 'panda/requestApproval.html', context_dict)
+
+@login_required
+def recommend_game(request, game_name_slug):
+    game = check_game(game_name_slug)
+
+    if game !=None:
+        rec = request.GET.get('suggestion', '')
+        recGame = check_game(rec)
+
+        if recGame != None and recGame != game:
+            game.recommend.add(recGame)
+            recGame.recommend.add(game)
+        context_dict = {'results': game.recommend.all(), 'game': True, 'Valid': True}
+
+        response = render(request, 'ajax_results/results.txt', context_dict)  # Return to game page after making rating
+        return response
+
+@login_required
+def update_game(request, game_name_slug):
+    game = check_game(game_name_slug)
+
+    if game !=None:
+        response = render(request, 'ajax_results/options.txt',{'others': Game.objects.exclude(pk__in=game.recommend.all())})  # Return to game page after making rating
+        return response
+
+
+
+
 
 class DashboardView(TemplateView):
     template_name = 'forum_dashboard/forum_dashboard.html'

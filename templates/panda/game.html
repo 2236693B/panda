@@ -4,6 +4,7 @@
 {% block script_block %}
      <script src='{% static "ajax/search.js"%} '></script>
      <script src = '{% static "js/dropdownBox.js" %}'></script>
+     <script src = '{% static "ajax/recommend.js" %}'></script>
      <link rel="stylesheet" href="{% static 'css\dropbox.css' %}">
 {% endblock %}
 
@@ -142,15 +143,6 @@
                     <a href ="/panda/game/{{game.slug}}/edit_game_profile" >Edit game profile</a>
                     </highlight>
                 {% endif %}
-                {% else %}
-
-                    The specified game does not exist!
-                    <highlight>
-                    <a href = '{% url "games" %}'>Return</a>
-                    </highlight>
-
-            {%  endif %}
-
         </div>
         <br>
 
@@ -165,5 +157,29 @@
                 <a href = "{{item.url}}" target="_blank"> Read more</a> <br>
             {% endfor %}
         {% endif %}
+    <h3>Recommended games</h3>
+    <div id = "RecommendGame">
+    {% include 'panda/../Snippets/gameSnippet.html' with games=game.recommend.all %}
+    </div>
+
+    {%  if player %}
+    <div id="options">
+        <select id="recommending">
+        {% for other in others %}
+            <option value="{{ other.slug }}">{{ other.name }}</option>
+        {% endfor %}
+        </select>
+    </div>
+        <input type="submit"  id="submit" value="submit" onclick = "add('{{ game.slug }}')" />
+    {%  endif %}
+
+{% else %}
+                    The specified game does not exist!
+                    <highlight>
+                    <a href = '{% url "games" %}'>Return</a>
+                    </highlight>
+
+            {%  endif %}
+
 
 {% endblock %}
