@@ -651,6 +651,7 @@ def edit_game_profile(request, game_name_slug):
 
     try:
        game = Game.objects.get(slug = game_name_slug)
+       name = game.name #Keeps track of old game name for form
        form = GameRegisterForm( {'studio':game.studio, 'name':game.name, 'extract':game.extract, 'site':game.site,'date':game.date,'catergory':game.catergory,'picture':game.picture, 'Playstation':game.Playstation, 'Xbox':game.Xbox, 'PC':game.PC, 'Nintendo':game.Nintendo, 'Mobile':game.Mobile})
 
     except Game.DoesNotExist:
@@ -674,10 +675,7 @@ def edit_game_profile(request, game_name_slug):
 
             return show_profile(request)
 
-        else:
-            print(form.errors)
-
-    return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form, 'studio':studio})
+    return render(request, 'panda/edit_game_profile.html', {'game': game, 'name':name, 'edit':edit, 'form': form, 'studio':studio})
 
 @login_required
 def delete_game_profile(request,game_name_slug):

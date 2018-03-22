@@ -1,6 +1,6 @@
 {% extends 'panda/base.html' %}
 
-{% block title %} Edit - {{game.name}}{% endblock %}
+{% block title_block %} Edit - {{name}}{% endblock %}
 {% block body_block %}
 
 
@@ -8,7 +8,22 @@
     {%if edit %}
     <form method="post" action="/panda/game/{{game.slug}}/edit_game_profile/" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+
+                {% for hidden in form.hidden_fields %}
+                    {{hidden}}
+                {% endfor %}
+
+                {% for field in form.visible_fields %}
+                    {% if not field.value == name %}
+                        {{ field.errors}}
+                    {% endif %}
+                    {{ field.help_text }}
+                    {{ field.name.capitalize }}: {{ field }}
+                    <br>
+
+
+
+                {% endfor %}
     <input type="submit" value="Update" />
     </form>
 
