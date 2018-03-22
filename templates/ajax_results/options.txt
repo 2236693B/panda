@@ -1,0 +1,5 @@
+<select id="recommending">
+        {% for other in others %}
+            <option value="{{ other.slug }}">{{ other.name }}</option>
+        {% endfor %}
+</select>

@@ -135,9 +135,11 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-uk'
 
 TIME_ZONE = 'UTC'
+
+DATE_INPUT_FORMATS = ('%d-%m-%Y','%Y-%m-%d')
 
 USE_I18N = True
 

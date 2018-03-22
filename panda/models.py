@@ -24,7 +24,7 @@ User = settings.AUTH_USER_MODEL
 class GameStudio(models.Model):  #Game Studios that make multiplayer games
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, unique = True)
-    bio = models.CharField(max_length=200, null = True, blank= True)
+    bio = models.CharField(max_length=500, null = True, blank= True)
     TwitterHandle = models.CharField(max_length=15, null=True, blank=True)
     picture = models.ImageField(upload_to='studio_images', blank=True)
 
@@ -39,9 +39,8 @@ class GameStudio(models.Model):  #Game Studios that make multiplayer games
 
 
 class Player(models.Model):
-    #user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, default=None) 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    Bio = models.CharField(max_length=200, null = True, blank= True)
+    Bio = models.CharField(max_length=500, null = True, blank= True)
     Steam = models.CharField(max_length=31, null = True, blank= True)
     PSN = models.CharField(max_length=16, null = True, blank= True)
     Xbox = models.CharField(max_length=15, null = True, blank= True)
@@ -50,6 +49,8 @@ class Player(models.Model):
     picture = models.ImageField(upload_to='profile_images', blank=True)
     user_votes = models.IntegerField(default='0')
     user_roles = models.CharField(choices=USER_ROLES, max_length=10)
+
+    approved = models.BooleanField(default = False)
 
     slug = models.SlugField(unique = True)
 
@@ -106,7 +107,8 @@ class Game(models.Model):  #
     ROLEPLAYING = 'ROL'
     MMO = 'MMO'
     FPS = 'FPS'
-    SPO ='SPO'
+    SPORT ='SPO'
+    MOBA = 'MOB'
 
     CATERGORY = (
         (ACTION, 'Action'),
@@ -114,14 +116,15 @@ class Game(models.Model):  #
         (ROLEPLAYING, 'Roleplaying'),
         (MMO, 'MMO'),
         (FPS, 'FPS'),
-        (SPO, 'Sport'),
+        (SPORT, 'Sport'),
+        (MOBA, 'MOBA')
     )
 
     studio = models.ForeignKey(GameStudio, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, null = False, unique =True)
     players = models.ManyToManyField(Player, blank= True, related_name='casual')
     comp_players = models.ManyToManyField(Player, blank=True, related_name='comp')
-    extract = models.CharField(max_length=500, blank= False, default = 'Extract missing')
+    extract = models.CharField(max_length=1000, blank= False, default = 'Extract missing')
     site = models.URLField(null = True)
     date = models.DateField(null = True)
     catergory = models.CharField(max_length=3, choices=CATERGORY, default = NONE)
@@ -139,6 +142,8 @@ class Game(models.Model):  #
     Mobile = models.BooleanField(default = False)
 
     slug = models.SlugField(unique = True)
+
+    recommend = models.ManyToManyField("self", blank=True)
 
     def save(self, *args, **kwaargs):
         self.slug = slugify(self.name)
@@ -182,6 +187,7 @@ def average(query):
             sum += rating.value
             count += 1
         average = sum/count
+        average = round(average, 2)
     return average
 
 
@@ -271,6 +277,6 @@ class ReportingMessage(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     message = models.CharField(max_length=1000)
 
-
-
-    
+class ApprovalRequest(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    message = models.CharField(max_length=500)

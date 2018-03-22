@@ -1,100 +1,92 @@
 {% extends 'panda/base.html' %}
+{% load staticfiles %}
 
 {% block title_block %}
     {{ player.user.username }}
 {% endblock %}
 
-
-
 {% block body_block %}
+    <div>
+        {% if player %}
 
-    <body>
-        <div>
-            {% if player %}
+            <h1>{{ player.user.username }} {% if player.approved %}
+                <img src="{% static '/images/approved.png'%}" alt = "Approved Tick" id="approved"/>
+            {% endif %}</h1>
 
-                <h1>{{ player.user.username }}</h1>
+            <img src="{{ MEDIA_URL }}{{player.picture}}" alt = "Player Profile image"/>
 
-                <img src="{{ MEDIA_URL }}{{player.picture}}" alt = "Player Profile image"/>
+            <h4>Bio</h4>
+            {{player.Bio}}
 
-                <h4>Bio</h4>
-                {{player.Bio}}
+            <h4>Rating</h4>
 
-                <h4>Rating</h4>
+            {% if player.rating != -1 %}
+                {{player.rating}}
 
-                {% if player.rating != -1 %}
-                    {{player.rating}}
+            {% else %}
+                <i>unrated</i>
 
-                {% else %}
-                    <i>unrated</i>
+            {% endif %}
 
+            <highlight>
+            <a href ="/panda/player/{{player.slug}}/make_rating" >Make a rating</a>
+            </highlight>
+
+            <h4>Usernames</h4>
+            <ul>
+                {%if player.PSN != None %}
+                <li><b>Playstation: </b>{{player.PSN}}</li>
                 {% endif %}
 
+                {%if player.Xbox != None %}
+                <li><b>Xbox: </b>{{player.PSN}}</li>
+                {% endif %}
+
+                {%if player.Steam != None %}
+                <li><b>Steam: </b>{{player.Steam}}</li>
+                {% endif %}
+
+                {%if player.Nintendo != None %}
+                <li><b>Nintendo: </b>{{player.Nintendo}}</li>
+                {% endif %}
+            </ul>
+
+            <a href = "/panda/report/{{ player.slug }}/">Report player</a>
+
+            <h4>Games : {{casual.count|add:comp.count}}</h4>
+
+            {% if casual %}
+                Casual : {{ casual.count }}
+                {% include 'panda/../Snippets/gameSnippet.html' with games=casual %}
+            {% endif %}
+
+            {% if comp %}
+                Competitive : {{ comp.count }}
+                 {% include 'panda/../Snippets/gameSnippet.html' with games=comp %}
+            {% endif %}
+
+            {%  if profile %}
+                <br>
+                <br>
                 <highlight>
-                <a href ="/panda/player/{{player.slug}}/make_rating" >Make a rating</a>
+                <a href="{% url 'edit_player_profile' %}">Edit profile</a>
                 </highlight>
-
-                <h4>Usernames</h4>
-                <ul>
-                    {%if player.PSN != None %}
-                    <li><b>Playstation: </b>{{player.PSN}}</li>
-                    {% endif %}
-
-                    {%if player.Xbox != None %}
-                    <li><b>Xbox: </b>{{player.PSN}}</li>
-                    {% endif %}
-
-                    {%if player.Steam != None %}
-                    <li><b>Steam: </b>{{player.Steam}}</li>
-                    {% endif %}
-
-                    {%if player.Nintendo != None %}
-                    <li><b>Nintendo: </b>{{player.Nintendo}}</li>
-                    {% endif %}
-                </ul>
-
-                <a href = "/panda/report/{{ player.slug }}/">Report player</a>
-
-                <h4>Games : {{casual.count|add:comp.count}}</h4>
-
-                {% if casual %}
-                    Casual : {{ casual.count }}
-                <ul>
-                    {% for game in casual %}
-                    <highlight>
-                    <li><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> </li>
-                    </highlight>
-                {% endfor  %}
-                </ul>
-                {% endif %}
-
-                {% if comp %}
-                    Competitive : {{ comp.count }}
-                <ul>
-                    {% for game in comp %}
-                    <highlight>
-                    <li><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> </li>
-                    </highlight>
-                {% endfor  %}
-                </ul>
-                {% endif %}
-
-                {%  if profile %}
-                    <br>
-                    <br>
-                    <highlight>
-                    <a href="{% url 'edit_player_profile' %}">Edit profile</a>
-                    </highlight>
-
-                {%  endif %}
-
-
-                {% else %}
-
-                    The specified player does not exist!
-                    <a href = '{% url "players" %}'>Return</a>
+            {% if not player.approved %}
+                 <highlight>
+                <a href="{% url 'approve_my_profile' %}">Get approval for my account</a>
+                </highlight>
+            {% endif %}
 
             {%  endif %}
-        </div>
+
+
+            {% else %}
+
+                The specified player does not exist!
+                <a href = '{% url "players" %}'>Return</a>
+
+        {%  endif %}
+    </div>
 
 
 {% endblock %}

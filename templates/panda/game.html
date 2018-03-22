@@ -4,6 +4,7 @@
 {% block script_block %}
      <script src='{% static "ajax/search.js"%} '></script>
      <script src = '{% static "js/dropdownBox.js" %}'></script>
+     <script src = '{% static "ajax/recommend.js" %}'></script>
      <link rel="stylesheet" href="{% static 'css\dropbox.css' %}">
 {% endblock %}
 
@@ -14,9 +15,7 @@
 
 
 {% block body_block %}
-
-    <body>
-        <div>
+    <div>
             {%  if game %}
 
                 <h1 class="panda-center" font-family="Lato-Black">{{ game.name }}</h1>
@@ -25,7 +24,7 @@
 
                 <h2><a href = "/panda/studio/{{ game.studio.slug }}">{{game.studio.name}}</a></h2>
 
-                <img src="{{ MEDIA_URL }}{{game.picture}}" alt = "Game cover art"/>
+                <img src="{{ MEDIA_URL }}{{game.picture}}" style="width:70%" alt = "Game cover art"/>
 
                 <h3>{{ game.get_catergory_display }}</h3>
 
@@ -47,7 +46,10 @@
                 <NL>
                 {% endif %}
                 <a href ="/panda/game/{{game.slug}}/make_rating" >Make a rating</a>
-                </NL>
+                 {% if not user.is_authenticated %}
+                 </NL>
+                 {% endif %}
+
                 </highlight>
 
 
@@ -59,7 +61,7 @@
                 <h4>Released</h4>
                 {{game.date}}
 
-                <h4>Platform</h4
+                <h4>Platform</h4>
                 <ul>
                     {%if game.Playstation %}
                     <li>Playstation</li>
@@ -100,7 +102,7 @@
                                 </highlight>
                             {% else %}
                                 <div class="dropdown">
-                                    <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+                                    <button onclick="myFunction()" class="dropbtn">Add to me games</button>
                                     <div id="addPlayers" class="dropdown-content">
                                         <a href = "/panda/game/{{game.slug}}/add_player?type=casual">Casual</a>
                                         <a href = "/panda/game/{{game.slug}}/add_player?type=comp">Competitive</a>
@@ -121,7 +123,7 @@
                 <ul>
                         {% for comment in game.comments.all %}
                             <li><b>{{comment.player}}</b> : {{comment.comment}}</li>
-                            {% if comment.player.user == user %} <a href = "/panda/game/{{game.slug}}/{{comment.id}}/edit_comment/"> Edit </a><a href = "/panda/game/{{game.slug}}/{{comment.id}}/delete_comment/"> Delete </a> {% endif %}
+                            {% if comment.player.user == user %} <a href = "/panda/game/{{game.slug}}/{{comment.id}}/edit_comment/"> Edit </a> &nbsp;&nbsp;&nbsp;&nbsp; <a href = "/panda/game/{{game.slug}}/{{comment.id}}/delete_comment/"> Delete </a> {% endif %}
                         {% endfor %}
                 </ul>
 
@@ -131,7 +133,9 @@
                 <NL>
                 {% endif %}
                 <a href ="/panda/game/{{game.slug}}/make_comment" >Make a comment</a>
-                </NL>
+                {% if not user.is_authenticated %}
+                 </NL>
+                 {% endif %}
                 </highlight>
 
                 {% if owner %}
@@ -139,15 +143,6 @@
                     <a href ="/panda/game/{{game.slug}}/edit_game_profile" >Edit game profile</a>
                     </highlight>
                 {% endif %}
-                {% else %}
-
-                    The specified game does not exist!
-                    <highlight>
-                    <a href = '{% url "games" %}'>Return</a>
-                    </highlight>
-
-            {%  endif %}
-
         </div>
         <br>
 
@@ -162,5 +157,29 @@
                 <a href = "{{item.url}}" target="_blank"> Read more</a> <br>
             {% endfor %}
         {% endif %}
+    <h3>Recommended games</h3>
+    <div id = "RecommendGame">
+    {% include 'panda/../Snippets/gameSnippet.html' with games=game.recommend.all %}
+    </div>
+
+    {%  if player %}
+    <div id="options">
+        <select id="recommending">
+        {% for other in others %}
+            <option value="{{ other.slug }}">{{ other.name }}</option>
+        {% endfor %}
+        </select>
+    </div>
+        <input type="submit"  id="submit" value="submit" onclick = "add('{{ game.slug }}')" />
+    {%  endif %}
+
+{% else %}
+                    The specified game does not exist!
+                    <highlight>
+                    <a href = '{% url "games" %}'>Return</a>
+                    </highlight>
+
+            {%  endif %}
+
 
 {% endblock %}

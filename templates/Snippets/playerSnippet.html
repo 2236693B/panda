@@ -1,0 +1,22 @@
+{% load staticfiles %}
+
+{% if not class %}
+<ul>
+{% endif %}
+    {% for player in players %}
+        <li>
+            <highlight> <a href = "/panda/game/{{ player.slug }}"> {{ player.user.username }} </a> </highlight> :
+            <i>{% if player.rating != -1 %}
+                {{player.rating}}
+            {% else %}
+                unrated
+            {% endif %} </i>
+        {% if player.approved %}
+             <img src="{% static '/images/approved.png'%}" alt = "Approved Tick" id="approved"/>
+         {% endif %}
+        </li>
+    {% endfor %}
+
+{% if not class %}
+</ul>
+{% endif %}

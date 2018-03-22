@@ -12,17 +12,8 @@
     {{ studio.bio }}
 
     <h3>Games:</h3>
-    <ul>
-        {% for game in games %}
-            <li><highlight> <a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>
-                {% if game.rating != -1 %}
-                    {{game.rating}}
-                {% else %}
-                    unrated
-                {% endif %}
-            </i></highlight></li>
-        {% endfor %}
-    </ul>
+
+    {% include 'panda/../Snippets/gameSnippet.html' with games=games %}
 
     {% if studio.TwitterHandle %}
         <h3>Twitter</h3>

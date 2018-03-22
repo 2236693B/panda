@@ -1,0 +1,17 @@
+{% if not class %}
+<ul>
+{% endif %}
+    {% for game in games %}
+        <li>
+            <highlight> <a href = "/panda/game/{{ game.slug }}"> {{ game.name }} </a> </highlight> :
+            <i>{% if game.rating != -1 %}
+                {{game.rating}}
+            {% else %}
+                unrated
+            {% endif %}</i>
+        </li>
+    {% endfor %}
+
+{%  if not class %}
+</ul>
+{% endif %}

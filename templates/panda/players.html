@@ -20,21 +20,8 @@
 
           <div>
                {% if players %}
-            <ul>
                 <strong> Players</strong>
-                {% for player in players %}
-                    <highlight>
-                    <li><a href="/panda/player/{{ player.slug }}">{{ player.user.username }}</a> : <i>
-                    {% if player.rating != -1 %}
-                        {{player.rating}}
-                    {% else %}
-                        unrated
-                    {% endif %}
-
-                    </i></li>
-                    </highlight>
-                {% endfor  %}
-            </ul>
+                {% include 'panda/../Snippets/playerSnippet.html' with players=players class=True %}
             {% else %}
                 <strong> There are no players present.</strong>
             {%  endif %}

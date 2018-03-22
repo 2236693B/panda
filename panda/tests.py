@@ -2,7 +2,6 @@ from django.test import TestCase
 from panda.models import Player, PlayerRating, GameStudio, Game, GameRating
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.test import Client
 
 class GameRatingMethodTests(TestCase):
 
@@ -197,8 +196,6 @@ class LoggedInUserViewTests(TestCase):
     def test_unloggedIn_user_player_view_redirects(self):
         response = self.client.get('/panda/player/test2/')
         self.assertEqual(response.status_code, 302)  #Redirects to login status code
-
-        
 
 #Helper functions
 

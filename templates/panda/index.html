@@ -3,46 +3,42 @@
 {% block title_block %}
     Home
 {% endblock %}
-<script src='{% static "js/index.js" %}'></script>
+
+{% block script_block %}
+     <script src='{% static "js/index.js" %}'></script>
+{% endblock %}
 
 {% block body_block %}
 		
 			<h7>Player
-			    and </br> 
-				Networking </br> 
-				Database   </br>
-				Application. </br>
+			    and <br>
+				Networking <br>
+				Database   <br>
+				Application. <br>
 			</h7>
 
 		<div class="Panda-padding-32 Panda-margin-left" style="width:70%;" >
                {% if games %}
             <ul class="Panda-left" >
                 <strong> Top Five games</strong>
-                {% for game in games %}
-                    <highlight>
-                    <li></id><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> : <i>{{game.rating}}</i> </li>
-                    </highlight>
-                {% endfor  %}
-            </ul>
+                   {% include 'panda/../Snippets/gameSnippet.html' with games=games class=True %}
             {% else %}
                 <strong> There are no games present.</strong>
             {%  endif %}
-			
+
+            </ul>
 			
 			{% if players %}
 			<ul class="Panda-right Panda-margin-right" >
 			<strong> Top Five Players</strong>
                 {% if user.is_authenticated %}
-                {% for player in players %}
-                    
-                    <li><a href="/panda/player/{{ player.slug }}"><highlight>{{ player.user.username }}</highlight></a> : <i>{{player.rating}}</i></li>
-                    
-                {% endfor  %}
-
+                     {% include 'panda/../Snippets/playerSnippet.html' with players=players class=True %}
                 {% else %}
                 {% for player in players %}
                     <highlight><NL>
-                    <li>{{ player.user.username }} : <i>{{player.rating}}</i></li>
+                    <li>{{ player.user.username }} : <i>{{player.rating}}</i> {% if player.approved %}
+             <img src="{% static '/images/approved.png'%}" alt = "Approved Tick" id="approved"/>
+         {% endif %} </li>
                     </NL></highlight>
                 {% endfor  %}
                 {% endif %}

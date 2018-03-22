@@ -1,13 +1,16 @@
 {% extends 'panda/base.html' %}
+{% load staticfiles %}
 
 {% block title_block %}
     Contact Us
 {% endblock %}
 
+{% block script_block %}
+<link rel='stylesheet' href= "{% static 'ajax/style.css' %}">
+{% endblock %}
+
 
 {% block body_block %}
-	<link rel='stylesheet' href= 'static\ajax\style.css'>
-	<div id="form-messages"></div>
 	<form id="ajax-contact" method="post" action="mailer.php">
 		{% csrf_token %}
 		<div class="field">
