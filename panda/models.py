@@ -39,8 +39,8 @@ class GameStudio(models.Model):  #Game Studios that make multiplayer games
 
 
 class Player(models.Model):
-    user = models.ForeignKey(User)
-    #user = models.OneToOneField(User, on_delete=models.CASCADE)
+    #user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, default=None) 
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     Bio = models.CharField(max_length=200, null = True, blank= True)
     Steam = models.CharField(max_length=31, null = True, blank= True)
     PSN = models.CharField(max_length=16, null = True, blank= True)
@@ -186,7 +186,7 @@ def average(query):
 
 
 class ForumCategory(models.Model):
-    created_by = models.ForeignKey(User)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     title = models.CharField(max_length=1000)
     is_votable = models.BooleanField(default=False)
     color = models.CharField(max_length=20, default="#999999")
