@@ -57,7 +57,7 @@ class PlayerProfileForm(forms.ModelForm):
 
 #Details form for Game, used for registeration and changing details by studio
 class GameRegisterForm (forms.ModelForm):
-    date = forms.DateField(initial=datetime.date.today, widget=forms.widgets.DateInput(format="%d/%m/%Y"))
+    date = forms.DateField(initial=datetime.date.today, ) #widget=forms.widgets.DateInput(format="%d/%m/%Y"))
 
     class Meta:
         model = Game

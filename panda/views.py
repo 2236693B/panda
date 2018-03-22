@@ -732,6 +732,6 @@ def google_veri(request):
 
     context_dict = { }
 
-    return render(request, 'panda/googleb00694232a77d6d0.html', context=context_dict)
+    return render(request, 'panda/../templates/google/googleb00694232a77d6d0.html', context=context_dict)
 
 

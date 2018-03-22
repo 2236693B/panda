@@ -15,34 +15,9 @@
         <div>
 
             <form id = "game_register_form" method="post" action="{% url 'register_game' %}" />
-
-                {% csrf_token %}
-
-                {% for hidden in form.hidden_fields %}
-
-                    {{hidden}}
-
-                {% endfor %}
-
-
-                {% for field in form.visible_fields %}
-
-                    {{ field.errors }}
-
-                    {{ field.help_text }}
-
-                    {{field.name}}
-
-                    {{ field }}
-
-                    <br>
-
-                {% endfor %}
-
+            {% csrf_token %}
+            {{ form.as_p }}
             <input type="submit" name="submit" value="Register game" />
-
-
-
             </form>
 
         </div>
