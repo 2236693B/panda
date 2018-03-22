@@ -19,7 +19,7 @@ USER_ROLES = (
 
 
 
-User = settings.AUTH_USER_MODEL
+
 
 class GameStudio(models.Model):  #Game Studios that make multiplayer games
     user = models.OneToOneField(User, on_delete=models.CASCADE)
