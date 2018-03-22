@@ -36,7 +36,9 @@
                 {% else %}
                 {% for player in players %}
                     <highlight><NL>
-                    <li>{{ player.user.username }} : <i>{{player.rating}}</i></li>
+                    <li>{{ player.user.username }} : <i>{{player.rating}}</i> {% if player.approved %}
+             <img src="{% static '/images/approved.png'%}" alt = "Approved Tick" id="approved"/>
+         {% endif %} </li>
                     </NL></highlight>
                 {% endfor  %}
                 {% endif %}

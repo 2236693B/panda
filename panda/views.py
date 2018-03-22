@@ -52,7 +52,7 @@ def about(request):
 def contact_us(request):
 
     context_dict = {}
-    return render(request, 'panda/contact_us.html', context = context_dict)
+    return render(request, 'panda/contact_us.html', context_dict)
 
 def report_player(request, player_name_slug):
 
@@ -85,8 +85,9 @@ def games(request):
     mmo_cat = Game.objects.filter(catergory ='MMO')
     fps_cat = Game.objects.filter(catergory ='FPS')
     spo_cat = Game.objects.filter(catergory ='SPO')
+    mob_cat = Game.objects.filter(catergory='MOB')
 
-    game_list = [no_cat, act_cat, adv_cat, rol_cat, mmo_cat, fps_cat, spo_cat, ]
+    game_list = [no_cat, act_cat, adv_cat, rol_cat, mmo_cat, fps_cat, spo_cat, mob_cat ]
 
     context_dict['games'] = game_list
 
@@ -99,6 +100,8 @@ def show_game(request, game_name_slug):
     player = False
     owner = False
 
+    other_games = None
+
     context_dict = {}
 
     game = check_game(game_name_slug)
@@ -106,6 +109,7 @@ def show_game(request, game_name_slug):
 
     #Steam API
     if game != None:
+        other_games = Game.objects.exclude(pk__in=game.recommend.all())
         if game.steam_id != None:
             try:
                 new_request = "http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=" + str(game.steam_id) + "&count=3&maxlength=300&format=json"
@@ -125,26 +129,25 @@ def show_game(request, game_name_slug):
                 context_dict['news'] = None
                 context_dict['world_players'] = None
 
+        #If user is logged in
+        if request.user.is_authenticated() :
 
+            #Check if player object
+            if Player.objects.filter(user=request.user).exists():
+                player = True
 
-    #If user is logged in
-    if request.user.is_authenticated():
+                #Check if player plays game
+                if game.players.filter(user=request.user).exists() | game.comp_players.filter(user=request.user).exists() :
+                    played = True
 
-        #Check if player object
-        if Player.objects.filter(user=request.user).exists():
-            player = True
-
-            #Check if player plays game
-            if game.players.filter(user=request.user).exists() | game.comp_players.filter(user=request.user).exists() :
-                played = True
-
-        #If not user, check if user is owner
-        elif game.studio.user == request.user:
-            owner = True
+            #If not player, check if user is owner
+            elif game.studio.user == request.user:
+                owner = True
 
     context_dict['played'] = played
     context_dict['player'] = player
     context_dict['owner'] = owner
+    context_dict['others'] = other_games
 
     return render(request, 'panda/game.html', context_dict)
 
@@ -715,7 +718,29 @@ def approve_player(request):
 
     return render(request, 'panda/requestApproval.html', context_dict)
 
+@login_required
+def recommend_game(request, game_name_slug):
+    game = check_game(game_name_slug)
 
+    if game !=None:
+        rec = request.GET.get('suggestion', '')
+        recGame = check_game(rec)
+
+        if recGame != None and recGame != game:
+            game.recommend.add(recGame)
+            recGame.recommend.add(game)
+        context_dict = {'results': game.recommend.all(), 'game': True, 'Valid': True}
+
+        response = render(request, 'ajax_results/results.txt', context_dict)  # Return to game page after making rating
+        return response
+
+@login_required
+def update_game(request, game_name_slug):
+    game = check_game(game_name_slug)
+
+    if game !=None:
+        response = render(request, 'ajax_results/options.txt',{'others': Game.objects.exclude(pk__in=game.recommend.all())})  # Return to game page after making rating
+        return response
 
 
 

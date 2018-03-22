@@ -23,7 +23,10 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/(?P<comment_id>\d+)/delete_comment/$', views.delete_game_comment, name='delete_game_comment'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/(?P<comment_id>\d+)/edit_comment/$', views.edit_game_comment, name='edit_game_comment'),
                 url(r'^game/(?P<game_name_slug>[\w\-]+)/players$', views.get_game_players, name='Player_AJAX'),
+                url(r'^game/(?P<game_name_slug>[\w\-]+)/recommend$', views.recommend_game, name='Recommend_game'),
+                url(r'^game/(?P<game_name_slug>[\w\-]+)/update/$', views.update_game, name='update_game'),
                 url(r'^reset/$', views.reset, name='Reset'),
+
 
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/$', views.show_player, name='show_player'),
                 url(r'^player/(?P<player_name_slug>[\w\-]+)/make_rating/$', views.make_player_rating, name='player_rating'),

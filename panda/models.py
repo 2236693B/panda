@@ -107,7 +107,8 @@ class Game(models.Model):  #
     ROLEPLAYING = 'ROL'
     MMO = 'MMO'
     FPS = 'FPS'
-    SPO ='SPO'
+    SPORT ='SPO'
+    MOBA = 'MOB'
 
     CATERGORY = (
         (ACTION, 'Action'),
@@ -115,7 +116,8 @@ class Game(models.Model):  #
         (ROLEPLAYING, 'Roleplaying'),
         (MMO, 'MMO'),
         (FPS, 'FPS'),
-        (SPO, 'Sport'),
+        (SPORT, 'Sport'),
+        (MOBA, 'MOBA')
     )
 
     studio = models.ForeignKey(GameStudio, on_delete=models.CASCADE)
@@ -140,6 +142,8 @@ class Game(models.Model):  #
     Mobile = models.BooleanField(default = False)
 
     slug = models.SlugField(unique = True)
+
+    recommend = models.ManyToManyField("self", blank=True)
 
     def save(self, *args, **kwaargs):
         self.slug = slugify(self.name)
