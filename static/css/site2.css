@@ -11,6 +11,7 @@ a img {
 }
 
 
+
 #main {
   padding: 1em;
   width: 10%;
@@ -302,7 +303,7 @@ a img {
 .Panda-padding-small{padding:4px 8px!important}.Panda-padding{padding:8px 16px!important}.Panda-padding-large{padding:12px 24px!important}
 .Panda-padding-16{padding-top:16px!important;padding-bottom:16px!important}.Panda-padding-24{padding-top:24px!important;padding-bottom:24px!important}
 .Panda-padding-32{padding-top:32px!important;padding-bottom:32px!important}.Panda-padding-48{padding-top:48px!important;padding-bottom:48px!important}
-.Panda-padding-64{padding-top:64px!important;padding-bottom:64px!important}
+.Panda-padding-64{padding-top:20px!important;padding-bottom:64px!important}
 .Panda-left{float:left!important}.Panda-right{float:right!important}
 .Panda-button:hover{color:#000!important;background-color:#ccc!important}
 .Panda-transparent,.Panda-hover-none:hover{background-color:transparent!important}

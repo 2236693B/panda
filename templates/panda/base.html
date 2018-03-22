@@ -21,24 +21,26 @@
         </title>
     </head>
 
-    <body class="Panda-dark-gray">
+    <body class="Panda-dark-gray ">
       
-		<div class="Panda-white Panda-padding-16 ">
+		<div id="navbar" class=" Panda-white " style="padding-top:20px;padding-bottom:64px">
 					<img src="{% static 'images\logo5.png' %}" style="width:200px" class="Panda-bar-item Panda-left Panda-img ">
-				<div class="Panda-padding-small">
+				<div class="Panda-padding-small ">
+					
 					<a id="top1" href="{% url 'index'%}" class="Panda-bar-item Panda-button " style="vertical-align:middle"><i class="fas fa-home"></i>  Home</a>
 					<a id="top2" href="{% url 'games' %}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-gamepad"></i>  Games</a>
 					<a id="top3" href="{% url 'about' %}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-user"></i>  About</a>
-					<a id="top4" href="{% url 'players'%}" class="Panda-bar-item Panda-button"><i class="fas fa-users"></i>  Players</a>
-					<a id="top4" href="{% url 'contact_us'%}" class="Panda-bar-item Panda-button">Contact Us</a>
-
+					<a id="top4" href="{% url 'players'%}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-users"></i>  Players</a>
+					<a id="top4" href="{% url 'contact_us'%}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-phone"></i> Contact Us</a>
+					
 					{% if user.is_authenticated %}
-					<a id="top5" href="{% url 'my_profile'%}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-user-plus"></i> Welcome {{user.username}} </a>
-					<a id="top6" href="{% url 'logout'%}" class="Panda-bar-item Panda-button Panda-right"><i class="fas fa-sign-in-alt"></i>  Log Out</a>
+					<a id="top5" href="{% url 'my_profile'%}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right Panda-white"><i class="fas fa-user-plus"></i> Welcome {{user.username}} </a>
+					<a id="top6" href="{% url 'logout'%}" class="Panda-bar-item Panda-button Panda-right Panda-white"><i class="fas fa-sign-in-alt"></i>  Log Out</a>
 					{% else %}
-					<a id="top7" href="{% url 'login' %}?next={{ request.path|urlencode }}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-sign-in-alt"></i>  Login</a>
-					<a id="top8" href="{% url 'sign_up'%}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right"><i class="fas fa-user-plus"></i>  Sign Up</a>
+					<a id="top7" href="{% url 'login' %}?next={{ request.path|urlencode }}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right Panda-white"><i class="fas fa-sign-in-alt"></i>  Login</a>
+					<a id="top8" href="{% url 'sign_up'%}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right Panda-white"><i class="fas fa-user-plus"></i>  Sign Up</a>
 					{% endif %}
+				
 				</div>
 
 		</div>
@@ -55,20 +57,24 @@
 		<footer class="Panda-center Panda-padding-64">
 		  <a href="#home" class="Panda-button Panda-light-grey" onclick="topFunction()"><i class="fas fa-arrow-up Panda-margin-right"></i>To the top</a>
 		  <div class="panda-xlarge panda-section">
-			<i class="fab fa-facebook-f"></i>
-			<i class="fab fa-instagram"></i>
-			<i class="fab fa-snapchat"></i>
-			<i class="fab fa-twitter"></i>
+			<a href="https://www.facebook.com/PANDA-1801254259936705/"><i style="height:40px" class="fab fa-facebook-f Panda-padding-8"></i></a>
+			<a href="https://www.instagram.com/PlayerAndNetworkDatabaseApp/?hl=en"> <i style="height:40px" class="fab fa-instagram Panda-padding-8"></i></a>
+			<a href="https://twitter.com/PANDA38427164" ><i style="height:40px" class="fab fa-twitter Panda-padding-8"></i></a>
 
 		  </div>
-            <div class="Panda-dark-gray"> <gcse:search></gcse:search></div>
+            <div class="Panda-content" style=""> <gcse:searchbox-only></gcse:searchbox-only></div>
+			
 		</footer>
+		
+		
  <script>
+
  function topFunction() {
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 }
 </script>
     </body>
+
 
 </html>
