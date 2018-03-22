@@ -1,19 +1,19 @@
-<!DOCTYPE html>
-<html>
-<body>
+{% extends 'panda/base.html' %}
 
-<h2>Send e-mail to someone@example.com:</h2>
+{% block title_block %}
+    Contact Us
+{% endblock %}
 
-<form action="mailto:someone@example.com" method="post" enctype="text/plain">
-Name:<br>
-<input type="text" name="name"><br>
-E-mail:<br>
-<input type="text" name="mail"><br>
-Comment:<br>
-<input type="text" name="comment" size="50"><br><br>
-<input type="submit" value="Send">
-<input type="reset" value="Reset">
+
+{% block body_block %}
+
+<h1> Contact Us </h1>
+
+<form role="form" action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
 </form>
 
-</body>
-</html>
+
+{% endblock %}

@@ -280,3 +280,6 @@ class ReportingMessage(models.Model):
 class ApprovalRequest(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     message = models.CharField(max_length=500)
+
+
+
