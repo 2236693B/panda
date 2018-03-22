@@ -11,35 +11,14 @@
     {% if game %}
 
         <h1>Rate {{game.name}}</h1>
-
+        <div>
         Your current rating is : {{value}}
-            <form id = "game_rating_form" method="post" action="/panda/game/{{ game.slug }}/make_rating/" />
-
-                {% csrf_token %}
-
-                {% for hidden in form.hidden_fields %}
-
-                    {{hidden}}
-
-                {% endfor %}
-
-
-                {% for field in form.visible_fields %}
-
-                    {{ field.errors }}
-
-                    {{ field.help_text }}
-
-                    {{ field }}
-
-                {% endfor %}
-
+            <form id = "game_rating_form" method="post" action="/panda/game/{{ game.slug }}/make_rating/" >
+            {% csrf_token %}
+            {{ form.as_p }}
             <input type="submit" name="submit" value="Make Rating" />
 
-
-
             </form>
-
         </div>
 
         {% else %}

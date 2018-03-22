@@ -6,29 +6,21 @@
 
 {% block body_block %}
 
-    <body>
-        <div>
-                <h1>{{ studio.name }}</h1>
+    <div>
+            <h1>{{ studio.name }}</h1>
 
-                <h4>Games</h4>
-                <ul>
+            <h4>Games</h4>
 
-                {% for game in games %}
-                    <highlight>
-                    <li><a href="/panda/game/{{ game.slug }}">{{game.name}}</a> </li>
-                    </highlight>
-                {% endfor %}
+            {% include 'panda/../Snippets/gameSnippet.html' with games=games %}
 
-                </ul>
+            <highlight>
+            <a href = "{% url 'register_game' %}">Register new game</a>
+            </highlight>
 
-                <highlight>
-                <a href = "{% url 'register_game' %}">Register new game</a>
-                </highlight>
+            <highlight>
+            <a href = "{% url 'edit_studio_profile' %}"> Edit details</a>
+            </highlight>
 
-                <highlight>
-                <a href = "{% url 'edit_studio_profile' %}"> Edit details</a>
-                </highlight>
-
-        </div>
+    </div>
 
 {% endblock %}
