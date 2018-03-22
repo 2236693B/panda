@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'panda.apps.PandaConfig',
-	'simple_pagination',
+	#'simple_pagination',
 	'sorl.thumbnail',
 	
 ]

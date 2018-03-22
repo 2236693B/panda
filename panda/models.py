@@ -192,7 +192,7 @@ def average(query):
 
 
 class ForumCategory(models.Model):
-    created_by = models.ForeignKey(User)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     title = models.CharField(max_length=1000)
     is_votable = models.BooleanField(default=False)
     color = models.CharField(max_length=20, default="#999999")

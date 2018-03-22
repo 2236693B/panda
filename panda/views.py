@@ -807,6 +807,8 @@ class CategoryAdd(CreateView):
         return kwargs
 
     def form_valid(self, form):
+        if self.request.user.is_authenticated():
+            form.instance.user = self.request.user
         menu = form.save()
         if self.request.POST.get('parent'):
             menu.parent_id = self.request.POST.get('parent')

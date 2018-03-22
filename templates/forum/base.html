@@ -10,7 +10,8 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
       <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
-
+      <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}">
       <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.tagsinput.css' %}" />
       <link rel="stylesheet" type="text/css" href="{% static 'css/forum.css' %}">
       <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-suggest.css' %}">
@@ -39,7 +40,7 @@
                 <li><a href="#" data-toggle="modal" data-target="#demo-2"><i class="fa fa-plus-circle"></i> <span>Sign Up</span></a></li>
               {% else %}
                 <li><a href="#" data-toggle="modal" data-target="#demo-4"><i class="fa fa-sign-out"></i> <span>Change Password</span></a></li>
-                <li><a href="{% url "django_simple_forum:out" %}"><i class="fa fa-sign-out"></i> <span>Sign Out</span></a></li>
+                <a id="top6" href="{% url 'logout'%}" class="Panda-bar-item Panda-button Panda-right"><i class="fas fa-sign-in-alt"></i>  Log Out</a>
               {% endif %}
               </ul>
             </div>
@@ -187,6 +188,14 @@
    </body>
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://malsup.github.com/jquery.form.js"></script>
+	<script src='{% static "js/jquery.min.js" %}'></script>
+     <script src='{% static "js/panda-jquery.js" %}'></script>
+     <script src='{% static "js/googleCSE.js" %}'></script>
+     <script src='{% static "js/hideDisplay-jquery.js" %}'></script>
+      <script src='{% static "ajax/jquery-2.1.0.min.js" %}'></script>
+     <script src='{% static "ajax/app.js"%} '></script>
+	 <script src='{% static "js/index.js" %}'></script>
+		<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
    <!-- Latest compiled and minified JavaScript -->
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
       <!-- ck editor -->

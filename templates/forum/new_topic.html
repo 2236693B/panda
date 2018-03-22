@@ -14,7 +14,7 @@
               <div class="panel-body">
                <div class="new_topic_container">
                   <!--<h3 class="create_topic_heading">Please ask your question here</h3>-->
-                  <form name="newtopicform" id="newtopicform" method="post">
+                  <form name="newtopicform" id="newtopicform" method="post">{% csrf_token %}
                     <div class="form-group">
                       <label for="exampleInputEmail1">Please enter your question </label>
                       {{ form.title }}
