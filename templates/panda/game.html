@@ -20,6 +20,8 @@
             {%  if game %}
 
                 <h1 class="panda-center" font-family="Lato-Black">{{ game.name }}</h1>
+				
+				<a href ="{% url 'forum_dashboard'%}" >Forum </a>
 
                 <h2><a href = "/panda/studio/{{ game.studio.slug }}">{{game.studio.name}}</a></h2>
 
