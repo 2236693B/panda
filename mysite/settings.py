@@ -156,7 +156,8 @@ STATIC_URL = '/static/'
 
 EMAIL_BACKEND ='django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'PANDAprojectWAD2@gmail.com'
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_USE_TLS = False
-EMAIL_PORT = 1025
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = '2237628c'
+EMAIL_HOST_PASSWORD = 'p@55w0rd'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
