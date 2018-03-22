@@ -86,5 +86,8 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                    
                 url(r'^googleb00694232a77d6d0.html$', views.google_veri, name='google_veri'),
                 url(r'^sitemap/$', views.sitemap, name='sitemap'),
+
+                    url(r'^$',ContactFormView.as_view(),name='contact_form'),
+                url(r'^sent/$',TemplateView.as_view(template_name='contact_form/contact_form_sent.html'),name='contact_form_sent'),
               ]
 
