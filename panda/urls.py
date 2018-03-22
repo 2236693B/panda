@@ -49,17 +49,17 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'forum_dashboard/$', views.DashboardView.as_view(), name="forum_dashboard"),
 
                 url(r'^forum/', views.TopicList.as_view(), name="topic_list"),
-                url(r'^topic/add/$', views.TopicAdd.as_view(), name="new_topic"),
-                url(r'^topic/view/(?P<slug>[-\w]+)/$', views.TopicView.as_view(), name="view_topic"),
-                url(r'^topic/votes/(?P<slug>[-\w]+)/up/$', views.TopicVoteUpView.as_view(), name="topic_vote_up"),
-                url(r'^topic/votes/(?P<slug>[-\w]+)/down/$', views.TopicVoteDownView.as_view(), name="topic_vote_down"),
+                url(r'^forum/topic/add/$', views.TopicAdd.as_view(), name="new_topic"),
+                url(r'^forum/topic/view/(?P<slug>[-\w]+)/$', views.TopicView.as_view(), name="view_topic"),
+                url(r'^forum/topic/votes/(?P<slug>[-\w]+)/up/$', views.TopicVoteUpView.as_view(), name="topic_vote_up"),
+                url(r'^forum/topic/votes/(?P<slug>[-\w]+)/down/$', views.TopicVoteDownView.as_view(), name="topic_vote_down"),
 
                 url(r'^comment/delete/(?P<comment_id>[-\w]+)/$',
                     views.ForumCommentDelete.as_view(), name="comment_delete"),
                 
 
-                url(r'^categories/$', views.ForumCategoryList.as_view(), name="forum_categories"),
-                url(r'^category/(?P<slug>[-\w]+)/$', views.ForumCategoryView.as_view(), name="forum_category_detail"),
+                url(r'^forum/categories/$', views.ForumCategoryList.as_view(), name="forum_categories"),
+                url(r'^forum/category/(?P<slug>[-\w]+)/$', views.ForumCategoryView.as_view(), name="forum_category_detail"),
 
                 url(r'^comment/add/$', views.ForumCommentAdd.as_view(), name="new_comment"),
                 url(r'^comment/votes/(?P<pk>[-\w]+)/up/$', views.CommentVoteUpView.as_view(), name="comment_vote_up"),

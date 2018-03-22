@@ -903,7 +903,7 @@ class ForumIndexView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(ForumIndexView, self).get_context_data(**kwargs)
-        topics = Topic.objects.filter(status='Publsihed')
+        topics = Topic.objects.filter(status='Published')
         context['topic_list'] = topics
         return context
 
@@ -946,7 +946,7 @@ class TopicAdd(CreateView):
     model = Topic
     form_class = TopicForm
     template_name = "forum/new_topic.html"
-    success_url = reverse_lazy('sign_up')
+    success_url = "panda/sign_up.html"
 
     def get_form_kwargs(self):
         kwargs = super(TopicAdd, self).get_form_kwargs()
@@ -1021,12 +1021,12 @@ class TopicDeleteView(DeleteView):
 class CommentVoteUpView(View):
 
     def get(self, request, *args, **kwargs):
-        comment = get_object_or_404(Comment, pk=kwargs.get("pk"))
-        vote = comment.votes.filter(user=request.user).first()
+        ForumComment = get_object_or_404(ForumComment, pk=kwargs.get("pk"))
+        vote = ForumComment.votes.filter(user=request.user).first()
         if not vote:
             vote = Vote.objects.create(user=request.user, type="U")
-            comment.votes.add(vote)
-            comment.save()
+            ForumComment.votes.add(vote)
+            ForumComment.save()
             status = "up"
         elif vote and vote.type == "D":
             vote.delete()
@@ -1038,12 +1038,12 @@ class CommentVoteUpView(View):
 class CommentVoteDownView(View):
 
     def get(self, request, *args, **kwargs):
-        comment = get_object_or_404(Comment, pk=kwargs.get("pk"))
-        vote = comment.votes.filter(user=request.user).first()
+        ForumComment = get_object_or_404(ForumComment, pk=kwargs.get("pk"))
+        vote = ForumComment.votes.filter(user=request.user).first()
         if not vote:
             vote = Vote.objects.create(user=request.user, type="D")
-            comment.votes.add(vote)
-            comment.save()
+            ForumComment.votes.add(vote)
+            ForumComment.save()
             status = "down"
         elif vote and vote.type == "U":
             vote.delete()
@@ -1064,10 +1064,10 @@ class ForumCommentAdd(CreateView):
         return kwargs
 
     def form_valid(self, form):
-        comment = form.save()
+        ForumComment = form.save()
         if self.request.POST['parent']:
-            comment.parent_id = self.request.POST['parent']
-            comment.save()
+            ForumComment.parent_id = self.request.POST['parent']
+            ForumComment.save()
 
         data = {'error': False, 'response': 'Successfully Created Topic'}
         return JsonResponse(data)
@@ -1079,8 +1079,8 @@ class ForumCommentAdd(CreateView):
         return JsonResponse({'error': True, 'response': form.errors})
 
     def get_context_data(self, **kwargs):
-        context = super(CommentAdd, self).get_context_data(**kwargs)
-        form = CommentForm(self.request.GET)
+        context = super(ForumCommentAdd, self).get_context_data(**kwargs)
+        form = ForumCommentForm(self.request.GET)
         context['form'] = form
         return context
 
@@ -1093,12 +1093,12 @@ class ForumCommentDelete(DeleteView):
         return get_object_or_404(ForumComment, id=self.kwargs['comment_id'])
 
     def get_success_url(self):
-        return redirect(reverse('django_simple_forum:categories'))
+        return redirect(reverse('categories'))
 
     def post(self, request, *args, **kwargs):
-        comment = self.get_object()
-        if self.request.user == comment.commented_by:
-            comment.delete()
+        Forumomment = self.get_object()
+        if self.request.user == ForumComment.commented_by:
+            ForumComment.delete()
             return JsonResponse({'error': False, 'response': 'Successfully Deleted Your Comment'})
         else:
             return JsonResponse({'error': False, 'response': 'Only commented user can delete this comment'})

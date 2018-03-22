@@ -235,11 +235,11 @@ class Topic(models.Model):
     votes = models.ManyToManyField(Vote)
 
     def get_comments(self):
-        comments = Comment.objects.filter(topic=self, parent=None)
+        comments = ForumComment.objects.filter(topic=self, parent=None)
         return comments
 
     def get_all_comments(self):
-        comments = Comment.objects.filter(topic=self)
+        comments = ForumComment.objects.filter(topic=self)
         return comments
 
 
@@ -253,7 +253,7 @@ class Topic(models.Model):
         return self.title
 
 class ForumComment(models.Model):
-    comment = models.TextField(null=True, blank=True)
+    ForumComment = models.TextField(null=True, blank=True)
     commented_by = models.ForeignKey(User, related_name="commented_by")
     topic = models.ForeignKey(Topic, related_name="topic_comments")
     created_on = models.DateTimeField(auto_now_add=True)
@@ -263,7 +263,7 @@ class ForumComment(models.Model):
     votes = models.ManyToManyField(Vote)
 
     def get_comments(self):
-        comments = self.comment_parent.all()
+        comments = self.ForumComment_parent.all()
         return comments
 
     def up_votes_count(self):
