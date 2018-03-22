@@ -18,7 +18,7 @@ def populate():
         Overwatch ended the crisis, and helped maintain peace in the decades that followed, inspiring an era of exploration, innovation, and discovery.
         But, after many years, Overwatch’s influence waned, and it was eventually disbanded.
         Now, conflict is rising across the world again, and the call has gone out to heroes old and new. Are you with us?''',
-        'recommend': ['Team Fortress 2', 'CS:GO'], },
+        },
 
         'World of Warcraft':
             {'catergory':'MMO', 'URL':'https://worldofwarcraft.com/en-gb/', 'date':datetime.datetime.strptime('23-11-2004', '%d-%m-%Y'), 'picture':'game_images/wow.jpg',
@@ -26,7 +26,7 @@ def populate():
         'extract':'''Explore the world of Azeroth, a place of never-ending adventure and action. Experience epic stories and quests. Face deadly dragons, find mythical artifacts,
         or just visit a nice, quiet corner of the world to do some fishing.Pledge allegiance to one of two warring factions, the Alliance or the Horde. Join or create a hand-picked group
         or guild of adventurers like yourself, and take on Azeroth's foes as one of twelve unique classes and thirteen races. Level up and amass power at your own pace.''',
-         'recommend': ['Elder Scrolls Online'], },
+         },
         }
 
     EA_games = {
@@ -35,7 +35,7 @@ def populate():
         'PC':True, 'Playstation':True,'Xbox':True,'Nintendo':False, 'Mobile':False, 'id':None,
         'extract':'''Heroes are born on the battlefront, and in Star Wars Battlefront 2, you're able to experience it for yourself. Play as heroes from all three eras of Star Wars in massive battles across iconic locations,
         and take part in a thrilling single-player story as Iden Versio fights to avenge the Emperor.''',
-        'recommend': ['Battlefield 1', 'Titanfall 2'], },
+        },
 
         "Fifa 18":
             {'catergory':'SPO', 'URL':'https://www.easports.com/fifa', 'date':datetime.datetime.strptime('29-09-2017', '%d-%m-%Y'), 'picture': 'game_images/fifa.jpg',
@@ -43,20 +43,20 @@ def populate():
         'extract':'''Powered by Frostbite, FIFA 18 blurs the line between the virtual and real worlds, bringing to life the players, teams and atmospheres of The World’s Game. Move with Real Player Motion Technology - an all-new
         animation system that creates a new level of responsiveness and player personality - to unlock dramatic moments in the world’s most immersive atmospheres. Then go on a global journey as Alex Hunter along with a star-
         studded cast of characters, including Cristiano Ronaldo and other European football stars. ''',
-        'recommend': [], },
+        },
 
         "Titanfall 2":
             {'catergory':'FPS', 'URL':'https://www.ea.com/en-gb/games/titanfall/titanfall-2', 'date':datetime.datetime.strptime('28-10-2016', '%d-%m-%Y'), 'picture':'game_images/titanfall.png',
         'PC':True, 'Playstation':True,'Xbox':True,'Nintendo':False, 'Mobile':False, 'id':None,
         'extract':'''Call down your Titan and get ready for an exhilarating first-person shooter experience in Titanfall™ 2! The sequel introduces a new single player campaign that explores the bond between Pilot and Titan.
         Or blast your way through an even more innovative and intense multiplayer experience - featuring 6 new Titans, deadly new Pilot abilities, expanded customization, new maps, modes, and much more. ''',
-        'recommend': ['Battlefield 1', 'Star Wars Battlefront II'],},
+        },
 
         "Battlefield 1":
             { 'catergory':'FPS', 'URL':'https://www.battlefield.com/en-gb', 'date':datetime.datetime.strptime('21-10-2016', '%d-%m-%Y'), 'picture':'game_images/battlefield.jpg',
         'PC':True, 'Playstation':True,'Xbox':True,'Nintendo':False, 'Mobile':False, 'id':None,
         'extract':'''Discover a world at war through an adventure-filled campaign, or join in epic team-based multiplayer battles with up to 64 players. Fight as infantry or take control of amazing vehicles on land,
-        air and sea.''', 'recommend' : ['Titanfall 2', 'Star Wars Battlefront II'],}
+        air and sea.''', }
 
 
         }
@@ -68,7 +68,7 @@ def populate():
         'extract':'''Our BATTLE ROYALE game-mode will put up to 100 players on a remote island
         for a winner-takes-allshowdown where strategic gameplay is as important as shooting skills.
         Players will enter a last-man-standing battle where they try to locate weapons, vehicles and supplies in a graphically and tactically rich battleground
-        that eventually forces players into a shrinking play zone as they engage in a tense and spectacular fight to the death.''', 'recommend' : ['Overwatch'],}
+        that eventually forces players into a shrinking play zone as they engage in a tense and spectacular fight to the death.''', }
         }
 
     valve_games = {
@@ -77,14 +77,14 @@ def populate():
         'PC':True, 'Playstation':False,'Xbox':False,'Nintendo':False, 'Mobile':False, 'id':440,
         'extract':'''The most highly-rated free game of all time! One of the most popular online action games of all time, Team Fortress 2 delivers constant free updates—new game modes, maps, equipment and, most importantly,
         hats.Nine distinct classes provide a broad range of tactical abilities and personalities, and lend themselves to a variety of player skills.''',
-        'recommend': ['Overwatch', 'CS:GO'], },
+         },
 
         "CS:GO":
             {'catergory':'FPS', 'URL':'http://blog.counter-strike.net/', 'date':datetime.datetime.strptime('21-08-2012', '%d-%m-%Y'), 'picture':'game_images/csgo.jpg',
         'PC':True, 'Playstation':False,'Xbox':False,'Nintendo':False, 'Mobile':False, 'id': 730,
         'extract':'''Counter-Strike: Global Offensive (CS: GO) will expand upon the team-based action gameplay that it pioneered when it was launched 14 years ago.CS: GO features new maps, characters, and weapons and delivers
         updated versions of the classic CS content (de_dust2, etc.). In addition, CS: GO will introduce new gameplay modes, matchmaking, leader boards, and more.''',
-        'recommend': ['Overwatch', 'Team Fortress 2'], }
+         }
         }
 
     zenimax_games ={
@@ -94,7 +94,7 @@ def populate():
         'extract':'''The award-winning fantasy role-playing series, The Elder Scrolls goes online – no game subscription required. Experience this multiplayer role-playing game on your own or together with your friends,
         guild mates, and thousands of alliance members. Explore dangerous caves and dungeons in Skyrim, or craft quality goods to sell in the city of Daggerfall. Embark upon adventurous quests across Tamriel and engage in
         massive player versus player battles, or spend your days at the nearest fishing hole or reading one of many books of lore. The choices are yours in the persistent world of The Elder Scrolls Online: Tamriel Unlimited.''',
-        'recommend': ['World of Warcraft'], }
+         }
         }
 
     mojang_games ={
@@ -103,7 +103,7 @@ def populate():
         'PC':True, 'Playstation':True,'Xbox':True,'Nintendo':True, 'Mobile':True, 'id':None,
         'extract':'''Endless exploration. Create and explore your very own world where the only limit is what you can imagine.Build almost anything. Crafting has never been faster, easier or more fun. More fun with friends
         Play with up to four players in split screen for free, or invite hundreds of friends to a massive gameplay server or your own private Realm!''',
-        'recommend' : [],}
+        }
         }
     epic_games = {
         'Fortnite Battle Royal':
@@ -113,7 +113,7 @@ def populate():
              'extract': '''As a battle royale game, Fortnite Battle Royale features up to 100 players, alone or in small squads, attempting to be the last player alive by killing other players or evading them, while staying within a 
              constantly shrinking safe zone to prevent taking lethal damage from being outside it. Players must scavenge for weapons and armor to gain the upper hand on their opponents. The game adds the construction element 
              from Fortnite; players can break down most objects in the game world to gain resources they can use to build fortifications as part of their strategy. ''',
-             'recommend': [],},}
+             },}
 
     riot_games = {
         'League of Legends':
@@ -124,7 +124,7 @@ def populate():
              goal is usually to destroy the opposing team's "nexus", a structure which lies at the heart of a base protected by defensive structures, although other distinct game modes exist as well. Each League of Legends 
              match is discrete, with all champions starting off fairly weak but increasing in strength by accumulating items and experience over the course of the game.The champions and setting blend a variety of elements, 
              including high fantasy, steampunk, and Lovecraftian horror.''',
-             'recommend': [],},}
+             },}
 
     studios = {
         "Blizzard":{"username":"bli55ard", "password":"snow", "email":"info@Blizzard.com","games": blizzard_games, 'picture': 'studio_images/Blizzard.png' , 'twitter': 'Blizzard_Ent' ,
@@ -264,10 +264,13 @@ def populate():
             },
         }
 
+    Recommend = {'Overwatch': ['Team Fortress 2', 'CS:GO', "PLAYERUNKNOWN'S BATTLEGROUNDS"], 'World of Warcraft': ['Elder Scrolls Online'], 'Star Wars Battlefront II': ['Battlefield 1', 'Titanfall 2'], 'Fifa 18': [],'Titanfall 2': ['Battlefield 1', 'Star Wars Battlefront II'],
+                 'Battlefield 1': ['Titanfall 2', 'Star Wars Battlefront II'], "PLAYERUNKNOWN'S BATTLEGROUNDS" : ['Overwatch'], 'Team Fortress 2': ['Overwatch', 'CS:GO'], 'CS:GO': ['Overwatch', 'Team Fortress 2'],
+                 'Elder Scrolls Online': ['World of Warcraft'], 'Minecraft' : [], 'Fortnite Battle Royal': [], 'League of Legends' :[] }
 
     #Create admin users
     if not User.objects.filter(username='admin').exists():
-        User.objects.get_create_superuser('admin', 'admin@test.com', 'ProjectPanda123')
+        User.objects.create_superuser('admin', 'admin@test.com', 'ProjectPanda123')
 
     #Create users for studio, studio and games owned by that studio
 
@@ -301,6 +304,13 @@ def populate():
 
         for game,comment in player_data["game_comments"].items():
             make_comment(p, game, comment)
+
+    for g in Game.objects.all():
+        game_data = Recommend[g.name]
+        for game in game_data:
+            print(game)
+            g.recommend.add(Game.objects.get(name=game))
+        g.save()
 
     #Pretty print games
     print("\n Games:")
@@ -341,9 +351,6 @@ def add_game(studio,name,game_data):
     g.Mobile = game_data["Mobile"]
     g.steam_id = game_data['id']
 
-    for game in game_data['recommend']:
-        g.recommend.add(Game.objects.get(name=game))
-    g.save()
     return g
 
 def add_player_user(username, email, password, first, last):
