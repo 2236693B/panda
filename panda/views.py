@@ -1212,10 +1212,3 @@ def user_check(request, game_name_slug):  #Get details abouit current user
        player = None
 
     return studio_warning,game,player
-
-
-
-
-
-
-

@@ -14,9 +14,7 @@
 
 
 {% block body_block %}
-
-    <body>
-        <div>
+    <div>
             {%  if game %}
 
                 <h1 class="panda-center" font-family="Lato-Black">{{ game.name }}</h1>
@@ -47,7 +45,10 @@
                 <NL>
                 {% endif %}
                 <a href ="/panda/game/{{game.slug}}/make_rating" >Make a rating</a>
-                </NL>
+                 {% if not user.is_authenticated %}
+                 </NL>
+                 {% endif %}
+
                 </highlight>
 
 
@@ -59,7 +60,7 @@
                 <h4>Released</h4>
                 {{game.date}}
 
-                <h4>Platform</h4
+                <h4>Platform</h4>
                 <ul>
                     {%if game.Playstation %}
                     <li>Playstation</li>
@@ -100,7 +101,7 @@
                                 </highlight>
                             {% else %}
                                 <div class="dropdown">
-                                    <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+                                    <button onclick="myFunction()" class="dropbtn">Add to me games</button>
                                     <div id="addPlayers" class="dropdown-content">
                                         <a href = "/panda/game/{{game.slug}}/add_player?type=casual">Casual</a>
                                         <a href = "/panda/game/{{game.slug}}/add_player?type=comp">Competitive</a>
@@ -121,7 +122,7 @@
                 <ul>
                         {% for comment in game.comments.all %}
                             <li><b>{{comment.player}}</b> : {{comment.comment}}</li>
-                            {% if comment.player.user == user %} <a href = "/panda/game/{{game.slug}}/{{comment.id}}/edit_comment/"> Edit </a><a href = "/panda/game/{{game.slug}}/{{comment.id}}/delete_comment/"> Delete </a> {% endif %}
+                            {% if comment.player.user == user %} <a href = "/panda/game/{{game.slug}}/{{comment.id}}/edit_comment/"> Edit </a> &nbsp;&nbsp;&nbsp;&nbsp; <a href = "/panda/game/{{game.slug}}/{{comment.id}}/delete_comment/"> Delete </a> {% endif %}
                         {% endfor %}
                 </ul>
 
@@ -131,7 +132,9 @@
                 <NL>
                 {% endif %}
                 <a href ="/panda/game/{{game.slug}}/make_comment" >Make a comment</a>
-                </NL>
+                {% if not user.is_authenticated %}
+                 </NL>
+                 {% endif %}
                 </highlight>
 
                 {% if owner %}
