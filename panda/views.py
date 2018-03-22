@@ -1,18 +1,34 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse,JsonResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.auth import logout
+from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, CategoryForm, TopicForm, ForumCommentForm
+from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DetailView, DeleteView, View
+from django.views.generic.edit import FormView
+from django.db.models import Q
 
-from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, ReportingPlayerForm
 
-from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio
+from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio, ForumCategory, STATUS, Topic, ForumComment
 
 from itertools import chain
 
 import requests as r
 import json
+
+def sitemap(request):
+
+    context_dict = { }
+
+    return render(request, 'panda/sitemap.xml', context=context_dict)
+
+def google_veri(request):
+
+    context_dict = { }
+
+    return render(request, 'panda/googleb00694232a77d6d0.html', context=context_dict)
 
 #View for Home page which features top 5 games and players
 def index(request):
@@ -34,9 +50,30 @@ def about(request):
     return render(request, 'panda/about.html', context=context_dict)
 
 def contact_us(request):
-	context_dict = {}
-	return render(request, 'panda/contact_us.html', context = context_dict)
 
+    context_dict = {}
+    return render(request, 'panda/contact_us.html', context = context_dict)
+
+def report_player(request, player_name_slug):
+
+    player = check_player(player_name_slug)
+
+    form = ReportingPlayerForm()
+
+    if request.method == 'POST':
+        form = ReportingPlayerForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.reporter = request.user
+            report.player = player
+
+            report.save()
+
+            return show_player(request, player_name_slug)
+
+    context_dict = {'form': form, 'player': player}
+
+    return render(request, 'panda/report.html', context_dict)
 #View for games page, returns games list sorted by catergory
 def games(request):
     context_dict = {}
@@ -332,34 +369,39 @@ def user_logout(request):
 
 #Sign up view for player
 def sign_up(request):
-	registered = False
-	if request.method == 'POST':
-		user_form = UserForm(data=request.POST)
-		profile_form = PlayerProfileForm(data=request.POST)
-		if user_form.is_valid() and profile_form.is_valid():
-			user = user_form.save()
-			user.set_password(user.password) #Hash users password for safety
-			user.save()
+    registered = False
 
-			profile = profile_form.save(commit=False)
-			profile.user = user
+    if request.method == 'POST':
 
-			if 'picture' in request.FILES:
+        user_form = UserForm(data=request.POST)
+        profile_form = PlayerProfileForm(data=request.POST)
 
-				profile.picture = request.FILES['picture']
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            user.set_password(user.password) #Hash users password for safety
+            user.save()
 
-			profile.save()
+            profile = profile_form.save(commit=False)
+            profile.user = user
 
-			registered=True
+            if 'picture' in request.FILES:
 
-		else:
-			print(user_form.errors, profile_form.errors)
+                profile.picture = request.FILES['picture']
 
-	else:
-		user_form = UserForm()
-		profile_form = PlayerProfileForm()
+            profile.save()
 
-	return render(request, 'panda/sign_up.html', {'user_form': user_form, 'profile_form':profile_form, 'registered': registered, 'player': True})
+            registered=True
+
+        else:
+            print(user_form.errors, profile_form.errors)
+
+    else:
+        user_form = UserForm()
+        profile_form = PlayerProfileForm()
+
+
+    return render(request, 'panda/sign_up.html', {'user_form': user_form, 'profile_form':profile_form, 'registered': registered, 'player': True})
+
 
 #Sign up view for studio
 def studio_sign_up(request):
@@ -478,7 +520,7 @@ def make_player_rating(request,player_name_slug):
 
     return render(request, 'panda/player_rating.html', context_dict)
 
-@login_required
+
 def report_player(request, player_name_slug):
 
     player = check_player(player_name_slug)
@@ -506,7 +548,18 @@ def show_profile(request):
 
     context_dict = {}
 
-    if not request.user.is_superuser:
+    try:
+        player = Player.objects.get(user = request.user)
+        context_dict['player'] = player
+        context_dict['games'] = player.game_set.all()
+        return render(request, 'panda/my_profile_player.html', context_dict)
+
+
+    except Player.DoesNotExist:
+        studio = GameStudio.objects.get(user = request.user)
+        context_dict['studio'] = studio
+        context_dict['games'] = Game.objects.filter(studio=studio)
+        return render(request, 'panda/my_profile_studio.html', context_dict)
 
         try:
             player = Player.objects.get(user = request.user)
@@ -523,6 +576,7 @@ def show_profile(request):
             return render(request, 'panda/my_profile_studio.html', context_dict)
     else:
         return HttpResponse("Please login in at the admin site <a href ='/admin/'>Here</a>")
+
 
 #View to allow studio to register game
 @login_required
@@ -620,6 +674,9 @@ def edit_game_profile(request, game_name_slug):
 
             return show_profile(request)
 
+        else:
+            print(form.errors)
+
     return render(request, 'panda/edit_game_profile.html', {'game': game, 'edit':edit, 'form': form, 'studio':studio})
 
 @login_required
@@ -640,6 +697,445 @@ def delete_profile(request):
     user.delete()
     return HttpResponseRedirect(reverse('index'))
 
+class DashboardView(TemplateView):
+    template_name = 'forum_dashboard/forum_dashboard.html'
+
+
+
+def getout(request):
+    if not request.user.is_superuser:
+        logout(request)
+        return HttpResponseRedirect(reverse('topic_list'))
+    else:
+        logout(request)
+        return HttpResponseRedirect(reverse('forum_dashboard'))
+
+
+
+class CategoryList(ListView):
+    model = ForumCategory
+    template_name = 'forum_dashboard/categories.html'
+    context_object_name = 'categories_list'
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryList, self).get_context_data(**kwargs)
+        categories_list = ForumCategory.objects.filter(parent=None)
+        context['categories_list'] = categories_list
+        return context
+
+    def post(self, request, *args, **kwargs):
+        categories_list = self.model.objects.all()
+
+        if request.POST.get('is_active') == 'True':
+            forum_categories = forum_categories.filter(is_active=True)
+        if request.POST.get('search_text', ''):
+            forum_categories = forum_categories.filter(
+                title_icontains=request.POST.get('search_text')
+            )
+        return render(request, self.template_name, {'categories_list':categories_list})
+
+
+class CategoryDetailView(DetailView):
+    model = ForumCategory
+    template_name = 'forum_dashboard/view_category.html'
+    slug_field = "slug"
+    context_object_name ='category'
+   
+
+    def get_object(self):
+        return get_object_or_404(ForumCategory, slug=self.kwargs['slug'])
+
+
+class CategoryAdd(CreateView):
+    model = ForumCategory
+    form_class = CategoryForm
+    template_name = "forum_dashboard/category_add.html"
+    success_url = '/forum/dashboard/categories/add/'
+
+    def get_form_kwargs(self):
+        kwargs = super(CategoryAdd, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+    def form_valid(self, form):
+        menu = form.save()
+        if self.request.POST.get('parent'):
+            menu.parent_id = self.request.POST.get('parent')
+            menu.save()
+
+        data = {'error': False, 'response': 'Successfully Created Category'}
+        return JsonResponse(data)
+
+    def get_success_url(self):
+        return redirect(reverse('categories'))
+
+    def form_invalid(self, form):
+        data = {'error':True, 'response': form.errors}
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryAdd, self).get_context_data(**kwargs)
+        form = CategoryForm(self.request.GET)
+        menus = ForumCategory.objects.filter(parent=None)
+        context['form'] = form
+        context['menus'] = menus
+        return context
+
+class CategoryDelete(DeleteView):
+    model = ForumCategory
+    slug_field = 'slug'
+    template_name = "forum_dashboard/categories.html"
+    success_url = '/forum/dashboard/categories/'
+
+    def get_object(self):
+        return get_object_or_404(ForumCategory, slug=self.kwargs['slug'])
+
+    def get_success_url(self):
+        return redirect(reverse('django_simple_forum:categories'))
+
+    def post(self, request, *args, **kwargs):
+        category = self.get_object()
+        category.delete()
+        return JsonResponse({'error': False, 'response': 'Successfully Deleted Category'})        
+
+
+class CategoryEdit(UpdateView):
+    model = ForumCategory
+    form_class = CategoryForm
+    template_name = "forum_dashboard/category_add.html"
+    context_object_name = 'category'
+
+    def get_object(self):
+        return get_object_or_404(ForumCategory, slug=self.kwargs['slug'])
+
+    def get_form_kwargs(self):
+        kwargs = super(CategoryEdit, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+    def form_valid(self, form):
+        menu = form.save()
+        if self.request.POST.get('parent'):
+            menu.parent_id = self.request.POST.get('parent')
+            menu.save()
+        data = {'error': False, 'response': 'Successfully Edited Category'}
+        return JsonResponse(data)
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': True, 'response': form.errors})
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryEdit, self).get_context_data(**kwargs)
+        form = CategoryForm(self.request.GET)
+        menus = ForumCategory.objects.filter(parent=None)
+        context['form'] = form
+        context['menus'] = menus
+        return context
+
+class DashboardTopicList(ListView):
+    template_name = 'forum_dashboard/topics.html'
+    context_object_name = "topic_list"
+
+    def get_queryset(self):
+        queryset = Topic.objects.all()
+        search_text = self.request.POST.get('search_text')
+        if search_text:
+            queryset = queryset.filter(
+                Q(title__icontains=search_text) | Q(created_by__username__icontains=search_text)
+            )
+        return queryset
+
+
+class ForumIndexView(FormView):
+    template_name = 'forum/topic_list.html'
+    form_class = UserForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ForumIndexView, self).get_context_data(**kwargs)
+        topics = Topic.objects.filter(status='Publsihed')
+        context['topic_list'] = topics
+        return context
+
+    def form_valid(self, form):
+        user = User.objects.create(
+            username=form.cleaned_data['username'], email=form.cleaned_data['email'])
+        user.set_password(form.cleaned_data['password'])
+        user.is_active = True
+        user.save()
+        UserProfile.objects.create(user=user, user_roles='Publisher')
+        login(self.request, user)
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
+        data = {'error': False, 'response': 'Successfully Created Badge'}
+        return JsonResponse(data)
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': True, 'response': form.errors})
+
+
+class ForumLoginView(FormView):
+    template_name = 'forum/topic_list.html'
+    #form_class = login_form
+
+    def get_context_data(self, **kwargs):
+        context = super(ForumLoginView, self).get_context_data(**kwargs)
+        topics = Topic.objects.filter(status='Published')
+        context['topic_list'] = topics
+        return context
+
+    def form_valid(self, form):
+        login(self.request, form.get_user())
+        data = {'error': False, 'response': 'Successfully user loggedin'}
+        return JsonResponse(data)
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': True, 'response': form.errors})
+
+
+class TopicAdd(CreateView):
+    model = Topic
+    form_class = TopicForm
+    template_name = "forum/new_topic.html"
+    success_url = reverse_lazy('sign_up')
+
+    def get_form_kwargs(self):
+        kwargs = super(TopicAdd, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+    def form_valid(self, form):
+        topic = form.save()
+        if self.request.POST['sub_category']:
+            topic.category_id = self.request.POST['sub_category']
+        topic.save()
+        data = {'error': False, 'response': 'Successfully Created Topic'}
+        return JsonResponse(data)
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': True, 'response': form.errors})
+
+    def get_context_data(self, **kwargs):
+        context = super(TopicAdd, self).get_context_data(**kwargs)
+        form = TopicForm(self.request.GET)
+        context['form'] = form
+        context['status'] = STATUS
+        context['categories'] = ForumCategory.objects.filter(
+            is_active=True, is_votable=True, parent=None)
+        context['sub_categories'] = ForumCategory.objects.filter(
+            is_active=True, is_votable=True).exclude(parent=None)
+        return context
+        
+class TopicList(ListView):
+    template_name = 'forum/topic_list.html'
+    context_object_name = "topic_list"
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated():
+            query = Q(status='Published')|Q(created_by=self.request.user)
+
+        else:
+            query = Q(status='Published')
+        queryset = Topic.objects.filter(query).order_by('created_on')
+        return queryset
+        
+class TopicView(TemplateView):
+    template_name = 'forum/view_topic.html'
+
+    def get_object(self):
+        return get_object_or_404(Topic, slug=self.kwargs['slug'])
+
+    def get_context_data(self, **kwargs):
+        context = super(TopicView, self).get_context_data(**kwargs)
+        context['topic'] = self.get_object()
+        return context
+
+class TopicDeleteView(DeleteView):
+    model = Topic
+    template_name = "forum/topic_delete.html"
+    success_url = reverse_lazy("topic_list")
+
+    def get_object(self):
+        if not hasattr(self, "object"):
+            self.object = super(TopicDeleteView, self).get_object()
+        return self.object
+
+    def delete(self, request, *args, **kwargs):
+        if request.is_ajax():
+            self.object = self.get_object()
+            self.object.delete()
+            return JsonResponse({"error": False, "message": "deleted"})
+        else:
+            return super(TopicDeleteView, self).delete(request, *args, **kwargs)
+            
+
+class CommentVoteUpView(View):
+
+    def get(self, request, *args, **kwargs):
+        comment = get_object_or_404(Comment, pk=kwargs.get("pk"))
+        vote = comment.votes.filter(user=request.user).first()
+        if not vote:
+            vote = Vote.objects.create(user=request.user, type="U")
+            comment.votes.add(vote)
+            comment.save()
+            status = "up"
+        elif vote and vote.type == "D":
+            vote.delete()
+            status = "removed"
+        else:
+            status = "neutral"
+        return JsonResponse({"status": status})
+
+class CommentVoteDownView(View):
+
+    def get(self, request, *args, **kwargs):
+        comment = get_object_or_404(Comment, pk=kwargs.get("pk"))
+        vote = comment.votes.filter(user=request.user).first()
+        if not vote:
+            vote = Vote.objects.create(user=request.user, type="D")
+            comment.votes.add(vote)
+            comment.save()
+            status = "down"
+        elif vote and vote.type == "U":
+            vote.delete()
+            status = "removed"
+        else:
+            status = "neutral"
+        return JsonResponse({"status": status})
+
+class ForumCommentAdd(CreateView):
+    model = Topic
+    form_class = ForumCommentForm
+    template_name = 'forum/view_topic.html'
+    form_class = ForumCommentForm
+
+    def get_form_kwargs(self):
+        kwargs = super(ForumCommentAdd, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+    def form_valid(self, form):
+        comment = form.save()
+        if self.request.POST['parent']:
+            comment.parent_id = self.request.POST['parent']
+            comment.save()
+
+        data = {'error': False, 'response': 'Successfully Created Topic'}
+        return JsonResponse(data)
+
+    def get_success_url(self):
+        return redirect(reverse('sign_up'))
+
+    def form_invalid(self, form):
+        return JsonResponse({'error': True, 'response': form.errors})
+
+    def get_context_data(self, **kwargs):
+        context = super(CommentAdd, self).get_context_data(**kwargs)
+        form = CommentForm(self.request.GET)
+        context['form'] = form
+        return context
+
+class ForumCommentDelete(DeleteView):
+    model = ForumComment
+    slug_field = 'comment_id'
+    template_name = "forum_dashboard/categories.html"
+
+    def get_object(self):
+        return get_object_or_404(ForumComment, id=self.kwargs['comment_id'])
+
+    def get_success_url(self):
+        return redirect(reverse('django_simple_forum:categories'))
+
+    def post(self, request, *args, **kwargs):
+        comment = self.get_object()
+        if self.request.user == comment.commented_by:
+            comment.delete()
+            return JsonResponse({'error': False, 'response': 'Successfully Deleted Your Comment'})
+        else:
+            return JsonResponse({'error': False, 'response': 'Only commented user can delete this comment'})
+
+class ForumCategoryList(ListView):
+    queryset = ForumCategory.objects.filter(
+        is_active=True, is_votable=True).order_by('created_on')
+    template_name = 'forum/categories.html'
+    context_object_name = "categories"
+    paginate_by = '10'
+
+class ForumCategoryView(ListView):
+    template_name = 'forum/topic_list.html'
+
+    def get_queryset(self, queryset=None):
+        if self.request.user.is_authenticated():
+            query = Q(status="Published")
+        else:
+            query = Q(status="Published")
+        category = get_object_or_404(ForumCategory, slug=self.kwargs.get("slug"))
+        topics = category.topic_set.filter(query)
+        return topics
+
+class TopicDetail(TemplateView):
+    template_name = 'forum_dashboard/view_topic.html'
+
+    def get_object(self):
+        return get_object_or_404(Topic, slug=self.kwargs['slug'])
+
+    def get_context_data(self, **kwargs):
+        context = super(TopicDetail, self).get_context_data(**kwargs)
+        context['topic'] = self.get_object()
+        return context
+
+class TopicStatus(View):
+    model = Topic
+    slug_field = 'slug'
+
+    def get_object(self):
+        return get_object_or_404(Topic, slug=self.kwargs['slug'])
+
+    def post(self, request, *args, **kwargs):
+        topic = self.get_object()
+        if topic.status == 'Draft':
+            topic.status = 'Published'
+        elif topic.status == 'Published':
+            topic.status = 'Draft'
+        else:
+            topic.status = 'Disabled'
+        topic.save()
+        return JsonResponse({'error': False, 'response': 'Successfully Updated Topic Status'}) 
+
+
+class TopicVoteUpView(View):
+
+    def get(self, request, *args, **kwargs):
+        topic = get_object_or_404(Topic, slug=kwargs.get("slug"))
+        vote = topic.votes.filter(user=request.user).first()
+        if not vote:
+            vote = Vote.objects.create(user=request.user, type="U")
+            topic.votes.add(vote)
+            topic.save()
+            status = "up"
+        elif vote and vote.type == "D":
+            vote.delete()
+            status = "removed"
+        else:
+            status = "neutral"
+        return JsonResonse({"status": status})
+
+class TopicVoteDownView(View):
+
+    def get(self, request, *args, **kwargs):
+        topic = get_object_or_404(Topic, slug=kwargs.get("slug"))
+        vote = topic.votes.filter(user=request.user).first()
+        if not vote:
+            vote = Vote.objects.create(user=request.user, type="D")
+            topic.votes.add(vote)
+            topic.save()
+            status = "down"
+        elif vote and vote.type == "U":
+            vote.delete()
+            status="removed"
+        else:
+            status = "neutral"
+        return JsonResponse({"status": status})
+
+    
 
 #Helper Functions
 
@@ -716,22 +1212,3 @@ def user_check(request, game_name_slug):  #Get details abouit current user
        player = None
 
     return studio_warning,game,player
-
-
-
-
-#Google search requirements
-
-def sitemap(request):
-
-    context_dict = { }
-
-    return render(request, 'panda/sitemap.xml', context=context_dict)
-
-def google_veri(request):
-
-    context_dict = { }
-
-    return render(request, 'panda/../templates/google/googleb00694232a77d6d0.html', context=context_dict)
-
-

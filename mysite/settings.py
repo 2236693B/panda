@@ -39,7 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'panda.apps.PandaConfig'
+    'panda.apps.PandaConfig',
+	'simple_pagination',
+	'sorl.thumbnail',
+	
 ]
 
 MIDDLEWARE = [
