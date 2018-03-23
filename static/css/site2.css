@@ -2,7 +2,7 @@ html,body{font-family:Lato,sans-serif;font-size:19px;line-height:1.5}html{overfl
 head{font-family:Lato,sans-serif;font-size:24px;line-height:1.5}html{overflow-x:hidden}
 h1{font-size:36px}h2{font-size:30px}h3{font-size:24px}h4{font-size:20px}h5{font-size:18px}h6{font-size:16px}h7{font-size:60px}.Panda-serif{font-family:serif}
 h1,h2,h3,h4,h5,h6{font-family:"Roboto Condensed",Arial,sans-serif;font-weight:400;margin:10px 0}.Panda-wide{letter-spacing:4px}
-h7{font-family:"Roboto Condensed",Arial,sans-serif;font-weight:200;margin:10px 0}.Panda-wide{letter-spacing:4px}
+h7{font-family:"Roboto Condensed",Arial,sans-serif;font-weight:300;margin:200px 0}.Panda-wide{letter-spacing:4px}
 
 hr{border:0;border-top:0px solid #eee;margin:20px 0}
 ol, ul {list-style: none;}
@@ -199,6 +199,7 @@ a img {
     margin-right: auto;
     width: 50%;
 }
+.Panda-teamimage{max-width:100%;height:500px}img{vertical-align:middle}a{color:inherit}
 .Panda-image{max-width:100%;height:auto}img{vertical-align:middle}a{color:inherit}
 .Panda-table,.Panda-table-all{border-collapse:collapse;border-spacing:0;width:100%;display:table}.Panda-table-all{border:1px solid #ccc}
 .Panda-bordered tr,.Panda-table-all tr{border-bottom:1px solid #ddd}.Panda-striped tbody tr:nth-child(even){background-color:#f1f1f1}
