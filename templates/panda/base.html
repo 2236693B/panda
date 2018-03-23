@@ -30,7 +30,8 @@
 					<a id="top2" href="{% url 'games' %}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-gamepad"></i>  Games</a>
 					<a id="top3" href="{% url 'about' %}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-user"></i>  About</a>
 					<a id="top4" href="{% url 'players'%}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-users"></i>  Players</a>
-					
+					<a id="top4" href="{% url 'contact_us'%}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-phone"></i> Contact Us</a>
+
 					{% if user.is_authenticated %}
 					<a id="top5" href="{% url 'my_profile'%}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right Panda-white"><i class="fas fa-user-plus"></i> Welcome {{user.username}} </a>
 					<a id="top6" href="{% url 'logout'%}" class="Panda-bar-item Panda-button Panda-right Panda-white"><i class="fas fa-sign-in-alt"></i>  Log Out</a>
