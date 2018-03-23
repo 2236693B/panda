@@ -19,7 +19,7 @@
 
 		<div class="Panda-left" >
                {% if games %}
-            <ul class="Panda-right" >
+            <ul class="Panda-left" >
                 <strong> Top Five games</strong>
                    {% include 'panda/../Snippets/gameSnippet.html' with games=games class=True %}
             {% else %}
@@ -29,8 +29,8 @@
             </ul>
 			
 			{% if players %}
-			<ul >
-			<strong class="Panda-left"> Top Five Players</strong>
+			<ul class="Panda-right">
+			<strong> Top Five Players</strong>
                 {% if user.is_authenticated %}
                      {% include 'panda/../Snippets/playerSnippet.html' with players=players class=True %}
                 {% else %}
