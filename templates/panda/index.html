@@ -29,7 +29,7 @@
             </ul>
 			
 			{% if players %}
-			<ul class="Panda-right Panda-margin-right" >
+			<ul class="Panda-right" >
 			<strong> Top Five Players</strong>
                 {% if user.is_authenticated %}
                      {% include 'panda/../Snippets/playerSnippet.html' with players=players class=True %}
