@@ -17,7 +17,7 @@
 				Application. <br>
 			</h7>
 
-		<div class="Panda-padding-32" style="width:70%;" >
+		<div class="Panda-padding-32 Panda-margin-left" style="width:70%;" >
                {% if games %}
             <ul class="Panda-left" >
                 <strong> Top Five games</strong>
@@ -37,7 +37,7 @@
                 {% for player in players %}
                     <highlight><NL>
                     <li>{{ player.user.username }} : <i>{{player.rating}}</i> {% if player.approved %}
-             <img src="{% static '/images/approved.png'%}" alt = "Approved Tick" id="approved"/>
+             <img src="{% static '/images/approved.png'%}" class="Panda-right" alt = "Approved Tick" id="approved"/>
          {% endif %} </li>
                     </NL></highlight>
                 {% endfor  %}
