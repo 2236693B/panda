@@ -206,8 +206,8 @@ def populate():
             'game_ratings':{'Elder Scrolls Online':3, 'Team Fortress 2':5},
             'game_comments': {'Elder Scrolls Online':'Not a patch on Skyrim', 'Team Fortress 2':'First'},
             'player_ratings' : {'BegsOnToast':5 , 'MattyBoi':0 , 'Musket_Mosez':2},
-            'plays_casual': ['Elder Scrolls Online', 'CS:GO', 'Minecraft'],
-            'plays_comp' : ['Team Fortress 2','World of Warcraft'],
+            'plays_casual': ['Elder Scrolls Online', 'CS:GO'],
+            'plays_comp' : ['Team Fortress 2','World of Warcraft','Minecraft'],
             'approved' : True,
             },
 
@@ -220,7 +220,7 @@ def populate():
             'game_comments':{'Fifa 18':'Gotta love a bit of footie', 'PLAYERUNKNOWN\'S BATTLEGROUNDS':'Tough game but worth the challenge'},
             'player_ratings' : {'BegsOnToast':5 , 'MattyBoi':2 , 'CrispyDarkMagic':2, 'PhoniX':4 },
             'plays_casual': ['Minecraft'],
-            'plays_comp': ['PLAYERUNKNOWN\'S BATTLEGROUNDS', 'Fifa 18', 'Minecraft'],
+            'plays_comp': ['PLAYERUNKNOWN\'S BATTLEGROUNDS', 'Fifa 18'],
             'approved': True,
             },
 
