@@ -17,7 +17,7 @@
 				Application. <br>
 			</h7>
 
-		<div class="Panda-padding-32 Panda-margin-left" style="width:70%;" >
+		<div class="Panda-padding-32" style="width:70%;" >
                {% if games %}
             <ul class="Panda-left" >
                 <strong> Top Five games</strong>
@@ -29,7 +29,7 @@
             </ul>
 			
 			{% if players %}
-			<ul class="Panda-right" >
+			<ul class="Panda-right Panda-margin-right" >
 			<strong> Top Five Players</strong>
                 {% if user.is_authenticated %}
                      {% include 'panda/../Snippets/playerSnippet.html' with players=players class=True %}
