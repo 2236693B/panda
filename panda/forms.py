@@ -42,6 +42,7 @@ class UserForm(forms.ModelForm):
 
 #Details form for Studio, used for registeration and changing details
 class StudioProfileForm(forms.ModelForm):
+    bio = forms.CharField(required=True, widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
 
     class Meta:
         model = GameStudio

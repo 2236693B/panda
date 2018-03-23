@@ -629,7 +629,7 @@ def edit_studio_profile(request):
     studio = check_studio_user(request.user)
 
     if studio != None:
-         form = StudioProfileForm( {'name':studio.name})
+         form = StudioProfileForm( {'name':studio.name, 'bio':studio.bio, 'TwitterHandle':studio.TwitterHandle, 'picture':studio.picture})
 
     if request.method == 'POST':
         form = StudioProfileForm(request.POST, request.FILES, instance=studio)
