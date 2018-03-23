@@ -5,10 +5,16 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.auth import logout
-from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, ApprovingPlayerForm, CategoryForm, TopicForm, ForumCommentForm
+from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, ApprovingPlayerForm, CategoryForm, TopicForm, ForumCommentForm, ContactForm
 from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DetailView, DeleteView, View
 from django.views.generic.edit import FormView
 from django.db.models import Q
+
+#imports for email on contact us page
+from django.core.mail import EmailMessage, send_mail
+from django.shortcuts import redirect
+from django.template import Context
+from django.template.loader import get_template
 
 
 from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio, ForumCategory, STATUS, Topic, ForumComment
@@ -17,6 +23,7 @@ from itertools import chain
 
 import requests as r
 import json
+
 
 def sitemap(request):
 
@@ -42,11 +49,48 @@ def index(request):
     response = render(request, 'panda/index.html', context_dict)
     return response
 
+
+#view for contact_us page
+def contact_us(request):
+    form_class = ContactForm
+
+    if request.method == 'POST':
+        form = form_class(data=request.POST)
+
+        if form.is_valid():
+            contact_name = request.POST.get(
+                'contact_name'
+            , '')
+            contact_email = request.POST.get(
+                'contact_email'
+            , '')
+            form_content = request.POST.get('content', '')
+
+            # Email the profile with the
+            # contact information
+            template = get_template('contact_template.txt')
+            context = {
+                'contact_name': contact_name,
+                'contact_email': contact_email,
+                'form_content': form_content,
+            }
+            content = template.render(context)
+
+            email = send_mail('Contact Us Message',
+                              form_content,
+                              contact_email,
+                              ['PANDAprojectWAD2@gmail.com'],
+                              fail_silently=False)
+            
+            return redirect('contact us')
+    
+    return render(request, 'panda/contact_us.html', {'form': form_class})
+
 #View for about page, which is static
 def about(request):
 
     context_dict = { }
-
+    
     return render(request, 'panda/about.html', context=context_dict)
 
 def report_player(request, player_name_slug):

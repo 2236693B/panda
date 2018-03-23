@@ -6,6 +6,23 @@ from django.template.defaultfilters import slugify
 
 INTEGER_CHOICES= [tuple([x,x]) for x in range(0,6)] #Limit rating choices from 0-5
 
+
+
+#form for contact us page
+class ContactForm(forms.Form):
+    contact_name = forms.CharField(required=True)
+    contact_email = forms.EmailField(required=True)
+    content = forms.CharField(
+        required=True,
+        widget=forms.Textarea
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(ContactForm, self).__init__(*args, **kwargs)
+        self.fields['contact_name'].label = "Your name:"
+        self.fields['contact_email'].label = "Your email:"
+        self.fields['content'].label ="What do you want to say?"
+
 #Form for Player to rate game
 class GameRatingForm (forms.ModelForm):
 
