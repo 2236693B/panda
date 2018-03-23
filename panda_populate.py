@@ -351,6 +351,8 @@ def add_game(studio,name,game_data):
     g.Mobile = game_data["Mobile"]
     g.steam_id = game_data['id']
 
+    g.save()
+
     return g
 
 def add_player_user(username, email, password, first, last):

@@ -49,11 +49,6 @@ def about(request):
 
     return render(request, 'panda/about.html', context=context_dict)
 
-def contact_us(request):
-
-    context_dict = {}
-    return render(request, 'panda/contact_us.html', context_dict)
-
 def report_player(request, player_name_slug):
 
     player = check_player(player_name_slug)
