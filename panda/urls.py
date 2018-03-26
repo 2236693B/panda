@@ -43,11 +43,11 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^my_profile/approve/$', views.approve_player, name='approve_my_profile'),
 
 
-
+                url(r'^forum/mentioned-users/(?P<topic_id>[-\w]+)/$', views.get_mentioned_user, name="get_mentioned_user"),
 
                 url(r'forum_dashboard/$', views.DashboardView.as_view(), name="forum_dashboard"),
 
-                url(r'^forum/', views.TopicList.as_view(), name="topic_list"),
+                url(r'^forum/$', views.TopicList.as_view(), name="topic_list"),
                 url(r'^forum/topic/add/$', views.TopicAdd.as_view(), name="new_topic"),
                 url(r'^forum/topic/view/(?P<slug>[-\w]+)/$', views.TopicView.as_view(), name="view_topic"),
                 url(r'^forum/topic/votes/(?P<slug>[-\w]+)/up/$', views.TopicVoteUpView.as_view(), name="topic_vote_up"),

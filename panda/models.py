@@ -253,12 +253,12 @@ class Topic(models.Model):
         return self.title
 
 class ForumComment(models.Model):
-    ForumComment = models.TextField(null=True, blank=True)
+    comment = models.TextField(null=True, blank=True)
     commented_by = models.ForeignKey(User, related_name="commented_by")
     topic = models.ForeignKey(Topic, related_name="topic_comments")
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now_add=True)
-    parent = models.ForeignKey("self", blank=True, null=True, related_name="comment_parent")
+    parent = models.ForeignKey("self", blank=True, null=True, related_name="ForumComment_parent")
 
     votes = models.ManyToManyField(Vote)
 
