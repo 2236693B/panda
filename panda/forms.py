@@ -165,11 +165,11 @@ class ForumCommentForm(forms.ModelForm):
 
     class Meta:
         model = ForumComment
-        fields = ('ForumComment', 'topic')
+        fields = ('comment', 'topic')
 
     def clean_comment(self):
-        if self.cleaned_data['ForumComment']:
-            return self.cleaned_data['ForumComment']
+        if self.cleaned_data['comment']:
+            return self.cleaned_data['comment']
         raise forms.ValidationError('This field is required')
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -177,7 +177,7 @@ class ForumCommentForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super(ForumCommentForm, self).save(commit=False)
-        instance.ForumComment = self.cleaned_data['ForumComment']
+        instance.comment = self.cleaned_data['comment']
         instance.topic = self.cleaned_data['topic']
         if not self.instance.id:
             instance.commented_by = self.user

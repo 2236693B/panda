@@ -838,7 +838,7 @@ class CategoryAdd(CreateView):
     model = ForumCategory
     form_class = CategoryForm
     template_name = "forum_dashboard/category_add.html"
-    success_url = '/forum/dashboard/categories/add/'
+    success_url = '/forum_dashboard/categories/add/'
 
     def get_form_kwargs(self):
         kwargs = super(CategoryAdd, self).get_form_kwargs()
@@ -875,7 +875,7 @@ class CategoryDelete(DeleteView):
     model = ForumCategory
     slug_field = 'slug'
     template_name = "forum_dashboard/categories.html"
-    success_url = '/forum/dashboard/categories/'
+    success_url = '/forum_dashboard/categories/'
 
     def get_object(self):
         return get_object_or_404(ForumCategory, slug=self.kwargs['slug'])
@@ -962,30 +962,30 @@ class ForumIndexView(FormView):
         return JsonResponse({'error': True, 'response': form.errors})
 
 
-class ForumLoginView(FormView):
-    template_name = 'forum/topic_list.html'
+#class ForumLoginView(FormView):
+    #template_name = 'forum/topic_list.html'
     #form_class = login_form
 
-    def get_context_data(self, **kwargs):
-        context = super(ForumLoginView, self).get_context_data(**kwargs)
-        topics = Topic.objects.filter(status='Published')
-        context['topic_list'] = topics
-        return context
+    #def get_context_data(self, **kwargs):
+    #    context = super(ForumLoginView, self).get_context_data(**kwargs)
+     #   topics = Topic.objects.filter(status='Published')
+      #  context['topic_list'] = topics
+       # return context
 
-    def form_valid(self, form):
-        login(self.request, form.get_user())
-        data = {'error': False, 'response': 'Successfully user loggedin'}
-        return JsonResponse(data)
+    #def form_valid(self, form):
+        #login(self.request, form.get_user())
+       # data = {'error': False, 'response': 'Successfully user loggedin'}
+       # return JsonResponse(data)
 
-    def form_invalid(self, form):
-        return JsonResponse({'error': True, 'response': form.errors})
+    #def form_invalid(self, form):
+        #return JsonResponse({'error': True, 'response': form.errors})
 
 
 class TopicAdd(CreateView):
     model = Topic
     form_class = TopicForm
     template_name = "forum/new_topic.html"
-    success_url = "panda/sign_up.html"
+    success_url = reverse_lazy('panda:sign_up')
 
     def get_form_kwargs(self):
         kwargs = super(TopicAdd, self).get_form_kwargs()
@@ -1037,6 +1037,19 @@ class TopicView(TemplateView):
         context = super(TopicView, self).get_context_data(**kwargs)
         context['topic'] = self.get_object()
         return context
+
+def get_mentioned_user(request, topic_id):
+    topic = get_object_or_404(Topic, id=topic_id)
+    if request.method == 'GET':
+        topic_users = topic.get_topic_users()
+        list_data = []
+        for user in topic_users:
+            data = {}
+            data['username'] = user.user.email.split('@')[0]
+            # data['avatar'] = user.profile_pic.url if user.profile_pic else ''
+            data['fullname'] = user.user.email
+            list_data.append(data)
+    return JsonResponse({'data': list_data})
 
 class TopicDeleteView(DeleteView):
     model = Topic
