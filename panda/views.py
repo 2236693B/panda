@@ -918,30 +918,30 @@ class ForumIndexView(FormView):
         return JsonResponse({'error': True, 'response': form.errors})
 
 
-class ForumLoginView(FormView):
-    template_name = 'forum/topic_list.html'
+#class ForumLoginView(FormView):
+    #template_name = 'forum/topic_list.html'
     #form_class = login_form
 
-    def get_context_data(self, **kwargs):
-        context = super(ForumLoginView, self).get_context_data(**kwargs)
-        topics = Topic.objects.filter(status='Published')
-        context['topic_list'] = topics
-        return context
+    #def get_context_data(self, **kwargs):
+    #    context = super(ForumLoginView, self).get_context_data(**kwargs)
+     #   topics = Topic.objects.filter(status='Published')
+      #  context['topic_list'] = topics
+       # return context
 
-    def form_valid(self, form):
-        login(self.request, form.get_user())
-        data = {'error': False, 'response': 'Successfully user loggedin'}
-        return JsonResponse(data)
+    #def form_valid(self, form):
+        #login(self.request, form.get_user())
+       # data = {'error': False, 'response': 'Successfully user loggedin'}
+       # return JsonResponse(data)
 
-    def form_invalid(self, form):
-        return JsonResponse({'error': True, 'response': form.errors})
+    #def form_invalid(self, form):
+        #return JsonResponse({'error': True, 'response': form.errors})
 
 
 class TopicAdd(CreateView):
     model = Topic
     form_class = TopicForm
     template_name = "forum/new_topic.html"
-    success_url = '/forum/topic/add/'
+    success_url = reverse_lazy('panda:sign_up')
 
     def get_form_kwargs(self):
         kwargs = super(TopicAdd, self).get_form_kwargs()
@@ -955,9 +955,6 @@ class TopicAdd(CreateView):
         topic.save()
         data = {'error': False, 'response': 'Successfully Created Topic'}
         return JsonResponse(data)
-
-    def get_success_url(self):
-        return redirect(reverse('forum_category_detai'))
 
     def form_invalid(self, form):
         return JsonResponse({'error': True, 'response': form.errors})
