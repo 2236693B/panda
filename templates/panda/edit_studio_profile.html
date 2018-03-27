@@ -7,21 +7,7 @@
 {% if studio %}
     <form method="post" action="" enctype="multipart/form-data">
     {% csrf_token %}
-        {% for hidden in form.hidden_fields %}
-            {{hidden}}
-        {% endfor %}
-
-
-        {% for field in form.visible_fields %}
-
-                    {{err_message}}
-                    <br>
-
-                    <b>{{ field.name}} </b>
-                    {{ field }}
-
-                {% endfor %}
-
+    {{ form.as_p }}
     <input type="submit" value="Update" />
     </form>
 

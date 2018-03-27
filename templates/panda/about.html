@@ -1,4 +1,5 @@
 {% extends 'panda/base.html' %}
+{% load staticfiles %}
 
 {% block title_block %}
     About
@@ -6,16 +7,51 @@
 
 {% block body_block %}
 
-<h1> Welcome to Panda</h1>
-<p>This is a place for you to meet like minded games</p>
-<p>You can find gamers with similar interests to yourself</p>
-<p>and play with them on your chosen platforms!!</p>
-<p> </p>
-<p>You can even rate the other players based on how well</p>
-<p>they performed in game, were they greedy? Or did they share the loot?</p>
-<p> </p>
-<p>Feel free to rate the games as well, let other players know</p>
-<p>what they're getting into before they buy it!!</p>
-<p>Enjoy!</p>
+    <h1> <b>The Team </b> </h1>
+
+     <div class="Panda-left">
+
+         <h2><b>Adam </b> <i>"AJAX"</i>  &nbsp; <b>Christe </b></h2>
+
+         <img src="{% static 'images/AdamTeam.jpg' %}" class = "Panda-teamimage" >
+
+         <h4>Javascript Developer</h4>
+
+         <a href = "/panda/player/crispydarkmagic/">Profile</a>
+    </div>
+
+    <div class="Panda-right">
+
+        <h2><b>Conor </b> <i>"Code Butcher"</i>  &nbsp; Begley</h2>
+
+        <img src="{% static 'images/ConorTeam.jpg' %}" class = "Panda-teamimage" >
+
+        <h4>Main Site developer</h4>
+
+        <a href = "/panda/player/begsontoast/">Profile</a>
+
+    </div>
+
+
+    <div class="Panda-left">
+        <h2><b>Mathew </b> <i>"The Greggs"</i>  &nbsp;<b>McBride</b></h2>
+
+        <img src="{% static 'images/MathewTeam.jpg' %}" class = "Panda-teamimage" >
+
+        <h4>CSS Style</h4>
+
+        <a href = "/panda/player/mattyboi/">Profile</a>
+    </div>
+
+    <div class="Panda-right">
+    <h2>Nathan <i><b>"Moses"</b></i>  &nbsp; <b>Moses</b></h2>
+
+    <img src="{% static 'images/MosesTeam.jpg' %}" class = "Panda-teamimage">
+
+    <h4>Forum Developer</h4>
+
+    <a href = "/panda/player/crispydarkmagic/musket_mosez/">Profile</a>
+    </div>
+
 
 {% endblock %}

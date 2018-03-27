@@ -13,7 +13,7 @@
                 <img src="{% static '/images/approved.png'%}" alt = "Approved Tick" id="approved"/>
             {% endif %}</h1>
 
-            <img src="{{ MEDIA_URL }}{{player.picture}}" alt = "Player Profile image"/>
+            <img src="{{ MEDIA_URL }}{{player.picture}}" style="width:70%" alt = "Player Profile image"/>
 
             <h4>Bio</h4>
             {{player.Bio}}
@@ -51,8 +51,6 @@
                 {% endif %}
             </ul>
 
-            <a href = "/panda/report/{{ player.slug }}/">Report player</a>
-
             <h4>Games : {{casual.count|add:comp.count}}</h4>
 
             {% if casual %}
@@ -78,6 +76,8 @@
             {% endif %}
 
             {%  endif %}
+
+            <a href = "/panda/report/{{ player.slug }}/">Report player</a>
 
 
             {% else %}

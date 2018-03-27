@@ -5,7 +5,7 @@
 {% endif %}
     {% for player in players %}
         <li>
-            <highlight> <a href = "/panda/game/{{ player.slug }}"> {{ player.user.username }} </a> </highlight> :
+            <highlight> <a href = "/panda/player/{{ player.slug }}"> {{ player.user.username }} </a> </highlight> :
             <i>{% if player.rating != -1 %}
                 {{player.rating}}
             {% else %}

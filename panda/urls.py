@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^about/', views.about, name='about'),
+                url(r'^contact_us/', views.contact_us, name = 'contact us'),
                 url(r'^games/', views.games, name='games'),
 				url(r'^players/', views.players, name='players'),
                 url(r'report/(?P<player_name_slug>[\w\-]+)/$', views.report_player, name='report_player'),
@@ -86,5 +87,6 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                    
                 url(r'^googleb00694232a77d6d0.html$', views.google_veri, name='google_veri'),
                 url(r'^sitemap/$', views.sitemap, name='sitemap'),
+
               ]
 

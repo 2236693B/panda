@@ -99,7 +99,7 @@ class Comment(models.Model):
         toString = self.player.user.username +  ' : ' + self.comment
         return toString
 
-class Game(models.Model):  #
+class Game(models.Model):  
 
     NONE = 'NON'
     ACTION = 'ACT'
