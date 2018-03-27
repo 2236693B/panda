@@ -17,7 +17,7 @@ from django.template import Context
 from django.template.loader import get_template
 
 
-from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio, ForumCategory, STATUS, Topic, ForumComment
+from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio, ForumCategory, STATUS, Topic, ForumComment, Vote
 
 from itertools import chain
 
@@ -978,7 +978,7 @@ class TopicAdd(CreateView):
         if self.request.POST['sub_category']:
             topic.category_id = self.request.POST['sub_category']
         topic.save()
-        return redirect(reverse('topics'))
+        return redirect(reverse('topic_list'))
 
     def form_invalid(self, form):
         return JsonResponse({'error': True, 'response': form.errors})
@@ -1055,12 +1055,12 @@ class TopicDeleteView(DeleteView):
 class CommentVoteUpView(View):
 
     def get(self, request, *args, **kwargs):
-        ForumComment = get_object_or_404(ForumComment, pk=kwargs.get("pk"))
-        vote = ForumComment.votes.filter(user=request.user).first()
+        comment = get_object_or_404(ForumComment, pk=kwargs.get("pk"))
+        vote = comment.votes.filter(user=request.user).first()
         if not vote:
             vote = Vote.objects.create(user=request.user, type="U")
-            ForumComment.votes.add(vote)
-            ForumComment.save()
+            comment.votes.add(vote)
+            comment.save()
             status = "up"
         elif vote and vote.type == "D":
             vote.delete()
@@ -1072,12 +1072,12 @@ class CommentVoteUpView(View):
 class CommentVoteDownView(View):
 
     def get(self, request, *args, **kwargs):
-        ForumComment = get_object_or_404(ForumComment, pk=kwargs.get("pk"))
-        vote = ForumComment.votes.filter(user=request.user).first()
+        comment = get_object_or_404(ForumComment, pk=kwargs.get("pk"))
+        vote = comment.votes.filter(user=request.user).first()
         if not vote:
             vote = Vote.objects.create(user=request.user, type="D")
-            ForumComment.votes.add(vote)
-            ForumComment.save()
+            comment.votes.add(vote)
+            comment.save()
             status = "down"
         elif vote and vote.type == "U":
             vote.delete()
@@ -1136,6 +1136,30 @@ class ForumCommentDelete(DeleteView):
             return JsonResponse({'error': False, 'response': 'Successfully Deleted Your Comment'})
         else:
             return JsonResponse({'error': False, 'response': 'Only commented user can delete this comment'})
+
+class ForumCommentEdit(UpdateView):
+    model = ForumComment
+    template_name = "forum_dashboard/categories.html"
+    form_class = ForumCommentForm
+    slug_field = 'slug'
+
+    def get_object(self):
+        return get_object_or_404(ForumComment, id=self.kwargs['comment_id'])
+
+    def form_valid(self, form):
+        comment = self.get_object()
+        if self.request.user == comment.commented_by:
+            self.get_object().mentioned.all().delete()
+            comment = form.save()
+            if self.request.POST['parent']:
+                comment.parent_id = self.request.POST['parent']
+                comment.save()
+            i
+            data = {'error': False, 'response': 'Successfully Edited User'}
+        else:
+            data = {
+                'error': True, 'response': 'Only Commented User Can edit this comment'}
+        return JsonResponse(data)
 
 class ForumCategoryList(ListView):
     queryset = ForumCategory.objects.filter(
@@ -1201,7 +1225,7 @@ class TopicVoteUpView(View):
             status = "removed"
         else:
             status = "neutral"
-        return JsonResonse({"status": status})
+        return JsonResponse({"status": status})
 
 class TopicVoteDownView(View):
 

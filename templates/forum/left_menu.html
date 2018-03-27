@@ -11,7 +11,7 @@
                     {% for category in categories %}
                     <li class="category_item"><a href="{% url "forum_category_detail" category.slug %}" class="disclosure" style="background:{{category.color}}!important;"> {{ category.title }} </a></li>
                     {% endfor %}
-                    <li class="category_item"><a href="{% url "forum_categories" %}" class="disclosure"> All </a></li>
+                    <li class="category_item"><a href="{% url "categories" %}" class="disclosure"> All </a></li>
                   </ul>
                 </div>
               </div>

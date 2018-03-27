@@ -19,7 +19,7 @@ USER_ROLES = (
 
 
 
-User = settings.AUTH_USER_MODEL
+
 
 class GameStudio(models.Model):  #Game Studios that make multiplayer games
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -99,7 +99,7 @@ class Comment(models.Model):
         toString = self.player.user.username +  ' : ' + self.comment
         return toString
 
-class Game(models.Model):  #
+class Game(models.Model):  
 
     NONE = 'NON'
     ACTION = 'ACT'
@@ -285,7 +285,3 @@ class ReportingMessage(models.Model):
 class ApprovalRequest(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     message = models.CharField(max_length=500)
-
-
-
-
