@@ -35,6 +35,10 @@
                     
                     <a href="{% url 'delete_topic' topic.slug %}"> delete </a>
                   {% endif %}
+				 <div class="follow_votes">
+                    
+                    <span class="votes"><a href="#" class="loss vote_topic" id="down_vote" data-href="{% url "topic_vote_down" topic.slug %}"><i class="fa fa-minus"></i><span id="down_votes">{{ topic.down_votes_count }}</span></a>Votes<a href="#" class="gain vote_topic" id="up_vote" data-href="{% url "topic_vote_up" topic.slug %}"><i class="fa fa-plus"></i><span id="up_votes">{{ topic.up_votes_count }}</span></a></span>
+                  </div>
                   <p>{{topic.description|safe}}</p>
               
                 </div>
@@ -171,7 +175,7 @@
                     </div>
                     <div class="modal-body">
                       <div class="new_topic_container">
-                        <form name="editcommentform" id='editcommentform' method="post" class="editcommentform">
+                        <form name="editcommentform" id='editcommentform' method="post" class="editcommentform">{% csrf_token %}
                           <div class="form-group">
                             <label for="exampleInputEmail1">Add Description</label>
                             <textarea class="form-control textareacontents mention" name='comment' id='comment'></textarea>
@@ -225,7 +229,7 @@
                     </div>
                     <div class="modal-body">
                       <div class="new_topic_container">
-                        <form name="editcommentform" id='editcommentform' method="post" class="editcommentform">
+                        <form name="editcommentform" id='editcommentform' method="post" class="editcommentform">{% csrf_token %}
                           <div class="form-group">
                             <label for="exampleInputEmail1">Add Description</label>
                             <textarea class="form-control textareacontents mention" name='comment' id='comment'></textarea>
@@ -253,7 +257,7 @@
 {% endblock %}
 {% block extra_js %}
 <script type="text/javascript">
-      $('form.newcommentform').submit(function(e){
+$('form.newcommentform').submit(function(e){
         e.preventDefault();
         var str = $(this).find('.mention').val();
         var pattern = /\B@[a-z0-9_.-]+/gi;

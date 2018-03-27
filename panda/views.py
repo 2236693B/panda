@@ -1033,6 +1033,8 @@ class TopicView(TemplateView):
     def get_object(self):
         return get_object_or_404(Topic, slug=self.kwargs['slug'])
 
+    
+
     def get_context_data(self, **kwargs):
         context = super(TopicView, self).get_context_data(**kwargs)
         context['topic'] = self.get_object()
@@ -1108,7 +1110,7 @@ class ForumCommentAdd(CreateView):
     model = Topic
     form_class = ForumCommentForm
     template_name = 'forum/view_topic.html'
-    form_class = ForumCommentForm
+    #form_class = ForumCommentForm
 
     def get_form_kwargs(self):
         kwargs = super(ForumCommentAdd, self).get_form_kwargs()
@@ -1148,7 +1150,7 @@ class ForumCommentDelete(DeleteView):
         return redirect(reverse('categories'))
 
     def post(self, request, *args, **kwargs):
-        Forumomment = self.get_object()
+        ForumComment = self.get_object()
         if self.request.user == ForumComment.commented_by:
             ForumComment.delete()
             return JsonResponse({'error': False, 'response': 'Successfully Deleted Your Comment'})
