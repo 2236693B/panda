@@ -209,6 +209,10 @@ class ForumCategory(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwaargs):
+        self.slug = slugify(self.title)
+        super(ForumCategory, self).save(*args, **kwaargs)
+
 class Vote(models.Model):
     TYPES = (
         ("U", "Up"),
@@ -242,12 +246,15 @@ class Topic(models.Model):
         comments = ForumComment.objects.filter(topic=self)
         return comments
 
-
     def up_votes_count(self):
         return self.votes.filter(type="U").count()
 
     def down_votes_count(self):
-        return self.votes.filter(type="D").count()  
+        return self.votes.filter(type="D").count()
+
+    def save(self, *args, **kwaargs):
+        self.slug = slugify(self.title)
+        super(Topic, self).save(*args, **kwaargs)
 
     def __str__(self):
         return self.title
@@ -271,6 +278,10 @@ class ForumComment(models.Model):
 
     def down_votes_count(self):
         return self.votes.filter(type="D").count()
+
+    def save(self, *args, **kwaargs):
+        self.slug = slugify(self.id)
+        super(ForumComment, self).save(*args, **kwaargs)
 
 class ReportingMessage(models.Model):
     reporter = models.ForeignKey(User, on_delete=models.CASCADE)

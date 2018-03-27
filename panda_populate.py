@@ -4,7 +4,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 import django
 django.setup()
 
-from panda.models import GameStudio, Game, Player, Comment
+from panda.models import GameStudio, Game, Player, Comment, ForumCategory, Topic, ForumComment
 from django.contrib.auth.models import User
 import datetime
 
@@ -264,16 +264,55 @@ def populate():
             },
         }
 
-    Recommend = {'Overwatch': ['Team Fortress 2', 'CS:GO', "PLAYERUNKNOWN'S BATTLEGROUNDS"], 'World of Warcraft': ['Elder Scrolls Online'], 'Star Wars Battlefront II': ['Battlefield 1', 'Titanfall 2'], 'Fifa 18': [],'Titanfall 2': ['Battlefield 1', 'Star Wars Battlefront II'],
+    recommend = {'Overwatch': ['Team Fortress 2', 'CS:GO', "PLAYERUNKNOWN'S BATTLEGROUNDS"], 'World of Warcraft': ['Elder Scrolls Online'], 'Star Wars Battlefront II': ['Battlefield 1', 'Titanfall 2'], 'Fifa 18': [],'Titanfall 2': ['Battlefield 1', 'Star Wars Battlefront II'],
                  'Battlefield 1': ['Titanfall 2', 'Star Wars Battlefront II'], "PLAYERUNKNOWN'S BATTLEGROUNDS" : ['Overwatch'], 'Team Fortress 2': ['Overwatch', 'CS:GO'], 'CS:GO': ['Overwatch', 'Team Fortress 2'],
                  'Elder Scrolls Online': ['World of Warcraft'], 'Minecraft' : [], 'Fortnite Battle Royal': [], 'League of Legends' :[] }
 
-    #Create admin users
+    categories = {"Action": {'creator': 'm0j@ng', "colour":'#ff0000', 'description': "Forum for discussing all things Action" ,
+                             'topics' :[
+                                        {'title' : 'What games are good to play for a beginner', 'description': 'HJust a n00b looking for advice','creator':'MattyBoi','status' : 'Published', 'comments': [{'commented': 'CrispyDarkMagic', 'comment':'Try Tomb Raider. New movie was lit', 'parent': None} ]},
+                                        {'title': 'What do you think of Unchartered 4','description': 'Craaaaaaaaazy, am I right?', 'creator': 'BegsOnToast', 'status': 'Published', 'comments':{}}
+                                        ]},
+
+                 "Adventure": {'creator':'epic', "colour":'#80ff00', 'description': "Formum for discussing all things Adventure",
+                               'topics' : [{'title' : "Need someone to play A Way Out", 'description':'Good gamer on PC looking for a buddy, don\'t even need to buy game','creator':'CrispyDarkMagic','status': 'Published',
+                                            'comments':[
+                                                {'commented':'BegsOnToast', 'comment': 'I\'m game', 'parent': None},
+                                                {'commented': 'MattyBoi', 'comment': 'Ignore him, play with me','parent': ('BegsOnToast', 'I\'m game')},
+                                                {'commented': 'Musket_Mosez', 'comment': 'Deffo should play, good game','parent':None}]
+                                            }
+                                           ]
+                               },
+
+    "Roleplaying": {'creator':'Zen1m@x', "colour":'#ffff00', 'description': "Formum for discussing all things Roleplaying",
+                    'topics' :[{'title' :'What do you think of the new Elder Scrolls Online announcement', 'description': 'I am buzzing, are you?','creator':'Zen1m@x','status' : 'Published',
+                                 'comments': [{'commented':'T0bbl3r', 'comment':'Looooooooool', 'parent':None}]}]},
+
+    "FPS": {'creator':'bli55ard', "colour":'#0040ff', 'description': "Forum for discussing all things FPS",
+            'topics' :[{'title' :'Whats the best FPS out there', 'description':'No trolling please','creator':'PhoniX','status' : 'Published',
+                       'comments': [{'commented': 'PhoniX', 'comment': 'Clearly CS:GO, why\'d I ask' ,'parent': None}]}]},
+
+    "MOBA": {'creator':'LoL', "colour":'#aa00ff', 'description': "Forum for discussing all things MOBA",
+             'topics' :[{'title' :'Whats better League of Legends or Dota 2', 'description':'We all know which one to pick','creator':'LoL','status' : 'Published',
+                         'comments': [{'commented':'PhoniX', 'comment':'Riot, what you at?', 'parent':None} , {'commented': 'BegsOnToast', 'comment': 'Tryna beef up rating scores, lol', 'parent': ('PhoniX', 'Riot, what you at?')}]}]},
+
+    "Sport": {'creator':'EA', "colour":'#ff6a00', 'description':"Forum for discussing all things Sport",
+              'topics' :[{'title' :'Who\'s looking forward to new Mario and Sonic Olypics', 'description':'Can\'t wait','creator':'Amiek88','status' : 'Published',
+                          'comments': [{'commented':'Tobbl3r', 'comment':'Should be good', 'parent':None}], 'comments': [{'commented':'MattyBoi', 'comment':'Is there a new one', 'parent':None}]}]},
+
+    "General": {'creator':'BegsOnToast', 'colour':'#000000','description':'Forum for discussing everything about games',
+                  'topics' :[{'title' :'Which is better consoloe or PC?', 'description':'Trolling welcome, lol','creator':'Musket_Mosez','status' : 'Published',
+                              'comments': [{'commented':'PhoniX', 'comment':'Is it even a debate', 'parent':None},
+                                           {'commented':'BegsOnToast', 'comment':'I\'m going to get my popcorn', 'parent':None},
+                                           {'commented':'Musket_Mosez', 'comment':'Hahahahaha', 'parent':('BegsOnToast', 'I\'m going to get my popcorn')}] }]}}
+
+    #Create admin users,
+    print('Creating SuperUser...')
     if not User.objects.filter(username='admin').exists():
         User.objects.create_superuser('admin', 'admin@test.com', 'ProjectPanda123')
 
     #Create users for studio, studio and games owned by that studio
-
+    print ('Creating Studios and Games...')
     for studio, studio_data in studios.items():
         u = add_studio_user(studio_data["username"], studio_data["password"], studio_data["email"])
         s = add_studio(studio, studio_data, u)
@@ -282,11 +321,13 @@ def populate():
             add_game(s,game, game_data)
 
     #Create users and create player from user
+    print ('Creating Players...')
     for player, player_data in players.items():
         u = add_player_user(player_data["username"], player_data["email"], player_data["password"],player_data["First"],player_data["Last"])
         add_player(u, player_data)
 
     #Make Ratings
+    print('Creating Player and Game ratings...')
     for player, player_data in players.items():
         p = Player.objects.get(user=User.objects.get(username=player))
 
@@ -299,20 +340,29 @@ def populate():
             p.make_player_rating(rated_p,rating)
 
     #Make Comments
+    print('Creating Game comments...')
     for player, player_data in players.items():
         p = Player.objects.get(user=User.objects.get(username=player))
 
         for game,comment in player_data["game_comments"].items():
             make_comment(p, game, comment)
 
+    #Make game recommendations
+    print('Creating Game Recommendations...')
     for g in Game.objects.all():
-        game_data = Recommend[g.name]
+        game_data = recommend[g.name]
         for game in game_data:
-            print(game)
             g.recommend.add(Game.objects.get(name=game))
         g.save()
 
+    print('Creating Forum Posts...')
+    for category in categories:
+        cat = add_category(category, categories[category])
+        for topic in categories[category]['topics']:
+            add_topic(topic, cat)
+
     #Pretty print games
+    print("\n \n \n")
     print("\n Games:")
     for s in GameStudio.objects.all():
         for g in Game.objects.filter(studio=s):
@@ -389,8 +439,35 @@ def make_comment (player, game, comment):
     g = Game.objects.get(name=game)
     g.comments.add(c)
 
+def add_category(name, data):
+    c = ForumCategory.objects.get_or_create(title=name)[0]
+    c.color = data['colour']
+    c.description = data['description']
+    c.created_by = User.objects.get(username = data['creator'])
+
+    c.save()
+
+    return c
+
+def add_topic(topic, category):
+    t = Topic.objects.get_or_create(title= topic['title'], category = category, created_by=User.objects.get(username = topic['creator']))[0]
+    t.description = topic['description']
+    t.status = topic['status']
+
+    for comment in topic['comments']:
+        add_comment(comment,t)
+
+    t.save()
+
+def add_comment(data, topic):
+    c = ForumComment.objects.get_or_create(comment=data['comment'], commented_by=User.objects.get(username=data['commented']), topic = topic)[0]
+    if data['parent'] != None:
+        c.parent = ForumComment.objects.get(commented_by = User.objects.get(username=data['parent'][0]), comment=data['parent'][1], topic =topic)
+
+    c.save()
+
 
 if __name__ == '__main__':
-    print("Starting Panda population script...")
+    print(" \n \nStarting Panda population script... \n(May take a while as a lot of models to populate) \n \n \n")
     populate()
 
