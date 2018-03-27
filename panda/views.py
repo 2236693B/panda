@@ -68,7 +68,7 @@ def contact_us(request):
 
             # Email the profile with the
             # contact information
-            template = get_template('contact_template.txt')
+            template = get_template('panda/contact_template.txt')
             context = {
                 'contact_name': contact_name,
                 'contact_email': contact_email,
@@ -962,25 +962,6 @@ class ForumIndexView(FormView):
         return JsonResponse({'error': True, 'response': form.errors})
 
 
-#class ForumLoginView(FormView):
-    #template_name = 'forum/topic_list.html'
-    #form_class = login_form
-
-    #def get_context_data(self, **kwargs):
-    #    context = super(ForumLoginView, self).get_context_data(**kwargs)
-     #   topics = Topic.objects.filter(status='Published')
-      #  context['topic_list'] = topics
-       # return context
-
-    #def form_valid(self, form):
-        #login(self.request, form.get_user())
-       # data = {'error': False, 'response': 'Successfully user loggedin'}
-       # return JsonResponse(data)
-
-    #def form_invalid(self, form):
-        #return JsonResponse({'error': True, 'response': form.errors})
-
-
 class TopicAdd(CreateView):
     model = Topic
     form_class = TopicForm
@@ -997,8 +978,7 @@ class TopicAdd(CreateView):
         if self.request.POST['sub_category']:
             topic.category_id = self.request.POST['sub_category']
         topic.save()
-        data = {'error': False, 'response': 'Successfully Created Topic'}
-        return JsonResponse(data)
+        return redirect(reverse('topics'))
 
     def form_invalid(self, form):
         return JsonResponse({'error': True, 'response': form.errors})
@@ -1203,7 +1183,7 @@ class TopicStatus(View):
         else:
             topic.status = 'Disabled'
         topic.save()
-        return JsonResponse({'error': False, 'response': 'Successfully Updated Topic Status'}) 
+        return JsonResponse({'error': False, 'response': 'Successfully Updated Topic Status'})
 
 
 class TopicVoteUpView(View):
