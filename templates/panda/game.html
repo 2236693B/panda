@@ -83,10 +83,11 @@
                     {%if game.Mobile %}
                     <li>Playstation</li>
                     {% endif %}
+                </ul>
 
                 <h4> Players : {{game.players.count|add:game.comp_players.count}}</h4>
-                <h4> Casual Players : {{game.players.count }}</h4>
-                <h4> Competitive Players : {{game.comp_players.count}}</h4>
+                <h5> Casual Players : {{game.players.count }}</h5>
+                <h5> Competitive Players : {{game.comp_players.count}}</h5>
                     {% if user.is_authenticated %}
                         {% if game.players %}
                          <button type="button" onclick="loadPlayers('{{ game.slug }}', 'all')">Show All Players</button>

@@ -11,13 +11,26 @@
 {% block body_block %}
 		
 			<h7>Player
-			    and <br>
+			    and 
 				Networking <br>
-				Database   <br>
-				Application. <br>
+				Database   
+				Application.
+				
 			</h7>
+			<h3>
+			Welcome to Panda <br>
+			This is a place for you to meet like minded games <br>
+			You can find gamers with similar interests to yourself <br>
+			and play with them on your chosen platforms!! <br>
+			You can even rate the other players based on how well <br>
+			they performed in game, were they greedy? Or did they share the loot? <br>
+			Feel free to rate the games as well, let other players know <br>
+			what they're getting into before they buy it!! <br>
+			
+			Enjoy!
+			</h3>
 
-		<div class="Panda-padding-32 Panda-margin-left" style="width:70%;" >
+		<div class="Panda-padding-32 Panda-left" >
                {% if games %}
             <ul class="Panda-left" >
                 <strong> Top Five games</strong>
@@ -29,14 +42,14 @@
             </ul>
 			
 			{% if players %}
-			<ul class="Panda-right Panda-margin-right" >
+			<ul class="Panda-right">
 			<strong> Top Five Players</strong>
                 {% if user.is_authenticated %}
                      {% include 'panda/../Snippets/playerSnippet.html' with players=players class=True %}
                 {% else %}
                 {% for player in players %}
                     <highlight><NL>
-                    <li>{{ player.user.username }} : <i>{{player.rating}}</i> {% if player.approved %}
+                    <li >{{ player.user.username }} : <i>{{player.rating}}</i> {% if player.approved %}
              <img src="{% static '/images/approved.png'%}" alt = "Approved Tick" id="approved"/>
          {% endif %} </li>
                     </NL></highlight>

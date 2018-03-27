@@ -7,7 +7,7 @@
         <script src='{% static "js/googleCSE.js" %}'></script>
         <script src='{% static "ajax/jquery-2.1.0.min.js" %}'></script>
         <script src='{% static "ajax/app.js"%} '></script>
-		<link rel="stylesheet" href="{% static 'css\site2.css' %}">
+		<link rel="stylesheet" href="{% static 'css\site.css' %}">
 		<script src='{% static "js/index.js" %}'></script>
 		<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 		<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
@@ -30,7 +30,8 @@
 					<a id="top2" href="{% url 'games' %}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-gamepad"></i>  Games</a>
 					<a id="top3" href="{% url 'about' %}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-user"></i>  About</a>
 					<a id="top4" href="{% url 'players'%}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-users"></i>  Players</a>
-					
+					<a id="top4" href="{% url 'contact us'%}" class="Panda-bar-item Panda-button Panda-hide-small"><i class="fas fa-phone"></i> Contact Us</a>
+
 					{% if user.is_authenticated %}
 					<a id="top5" href="{% url 'my_profile'%}" class="Panda-bar-item Panda-button Panda-hide-small Panda-right Panda-white"><i class="fas fa-user-plus"></i> Welcome {{user.username}} </a>
 					<a id="top6" href="{% url 'logout'%}" class="Panda-bar-item Panda-button Panda-right Panda-white"><i class="fas fa-sign-in-alt"></i>  Log Out</a>
@@ -54,9 +55,9 @@
 		<footer class="Panda-center Panda-padding-64">
 		  <a href="#home" class="Panda-button Panda-light-grey" onclick="topFunction()"><i class="fas fa-arrow-up Panda-margin-right"></i>To the top</a>
 		  <div class="panda-xlarge panda-section">
-			<a href="https://www.facebook.com/PANDA-1801254259936705/"><i style="height:40px" class="fab fa-facebook-f Panda-padding-8"></i></a>
-			<a href="https://www.instagram.com/PlayerAndNetworkDatabaseApp/?hl=en"> <i style="height:40px" class="fab fa-instagram Panda-padding-8"></i></a>
-			<a href="https://twitter.com/PANDA38427164" ><i style="height:40px" class="fab fa-twitter Panda-padding-8"></i></a>
+			<a href="https://www.facebook.com/PANDA-1801254259936705/" ><i target="_blank" style="height:40px" class="fab fa-facebook-f Panda-padding-8"></i></a>
+			<a href="https://www.instagram.com/PlayerAndNetworkDatabaseApp/?hl=en" > <i target="_blank" style="height:40px" class="fab fa-instagram Panda-padding-8"></i></a>
+			<a href="https://twitter.com/PANDA38427164"><i target="_blank" style="height:40px" class="fab fa-twitter Panda-padding-8"></i></a>
 
 		  </div>
             <div class="Panda-content" style=""> <gcse:searchbox-only></gcse:searchbox-only></div>
