@@ -35,8 +35,23 @@
                     
                     <a href="{% url 'delete_topic' topic.slug %}"> delete </a>
                   {% endif %}
+				 <div class="follow_votes">
+                    
+                    <span class="votes"><a href="#" class="loss vote_topic" id="down_vote" data-href="{% url "topic_vote_down" topic.slug %}"><i class="fa fa-minus"></i><span id="down_votes">{{ topic.down_votes_count }}</span></a>Votes<a href="#" class="gain vote_topic" id="up_vote" data-href="{% url "topic_vote_up" topic.slug %}"><i class="fa fa-plus"></i><span id="up_votes">{{ topic.up_votes_count }}</span></a></span>
+                  </div>
                   <p>{{topic.description|safe}}</p>
-              
+                  <div class="other_views">
+                    <ul class="users_list">
+                      {% for user in topic.get_topic_users %}
+                        <li><a href="#" title="{{ user.user.username }}"></a></li>
+                      {% endfor %}
+                      <div class="clearfix"></div>
+                    </ul>
+                    <ul>
+                      <li><a href="#"> <span class="text">Created By<small>{{ topic.created_by.username }}, {{ topic.created_on }}</small></span></a></li>
+                      <div class="clearfix"></div>
+                    </ul>
+                  </div>
                 </div>
                 <div class="topic_options">
                   <div class="topic_count">
@@ -91,6 +106,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="myModalLabel">Write Reply For {{ topic.title }}</h4>
                           </div>
+						  
                           <div class="modal-body">
                             <div class="new_topic_container">
                               <form name="newcommentform" id='newcommentform' class="newcommentform" method="post"> {% csrf_token %}
@@ -171,7 +187,7 @@
                     </div>
                     <div class="modal-body">
                       <div class="new_topic_container">
-                        <form name="editcommentform" id='editcommentform' method="post" class="editcommentform">
+                        <form name="editcommentform" id='editcommentform' method="post" class="editcommentform">{% csrf_token %}
                           <div class="form-group">
                             <label for="exampleInputEmail1">Add Description</label>
                             <textarea class="form-control textareacontents mention" name='comment' id='comment'></textarea>
@@ -202,9 +218,7 @@
                 </div>
                 <div class="topic_options">
                   {% if comment.commented_by == request.user %}
-                  <div class="topic_count">
-                    <span class="reply"><i class="fa fa-reply"></i>Edit </span>
-                  </div>
+                  
                   <div class="topic_count">
                     <a href="#" id="comment_{{ comment.id }}" class="delete-comment" data-href="{% url "comment_delete" comment.id %}"><span class="reply"><i class="fa fa-reply"></i>Delete</span></a>
                   </div>
@@ -225,7 +239,7 @@
                     </div>
                     <div class="modal-body">
                       <div class="new_topic_container">
-                        <form name="editcommentform" id='editcommentform' method="post" class="editcommentform">
+                        <form name="editcommentform" id='editcommentform' method="post" class="editcommentform">{% csrf_token %}
                           <div class="form-group">
                             <label for="exampleInputEmail1">Add Description</label>
                             <textarea class="form-control textareacontents mention" name='comment' id='comment'></textarea>
@@ -253,7 +267,7 @@
 {% endblock %}
 {% block extra_js %}
 <script type="text/javascript">
-      $('form.newcommentform').submit(function(e){
+$('form.newcommentform').submit(function(e){
         e.preventDefault();
         var str = $(this).find('.mention').val();
         var pattern = /\B@[a-z0-9_.-]+/gi;

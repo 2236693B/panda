@@ -19,7 +19,7 @@ USER_ROLES = (
 
 
 
-User = settings.AUTH_USER_MODEL
+
 
 class GameStudio(models.Model):  #Game Studios that make multiplayer games
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -99,7 +99,7 @@ class Comment(models.Model):
         toString = self.player.user.username +  ' : ' + self.comment
         return toString
 
-class Game(models.Model):  #
+class Game(models.Model):  
 
     NONE = 'NON'
     ACTION = 'ACT'
@@ -246,6 +246,13 @@ class Topic(models.Model):
         comments = ForumComment.objects.filter(topic=self)
         return comments
 
+    def get_topic_users(self):
+        comment_user_ids = ForumComment.objects.filter(topic=self).values_list('commented_by', flat=True)
+        
+        all_users = list(comment_user_ids) + [self.created_by.id]
+        users = Player.objects.filter(user_id__in=set(all_users))
+        return users
+
     def up_votes_count(self):
         return self.votes.filter(type="U").count()
 
@@ -291,7 +298,3 @@ class ReportingMessage(models.Model):
 class ApprovalRequest(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     message = models.CharField(max_length=500)
-
-
-
-

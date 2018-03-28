@@ -54,18 +54,23 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^forum/topic/votes/(?P<slug>[-\w]+)/up/$', views.TopicVoteUpView.as_view(), name="topic_vote_up"),
                 url(r'^forum/topic/votes/(?P<slug>[-\w]+)/down/$', views.TopicVoteDownView.as_view(), name="topic_vote_down"),
 
-                url(r'^comment/delete/(?P<comment_id>[-\w]+)/$',
+                url(r'^forum/comment/delete/(?P<comment_id>[-\w]+)/$',
                     views.ForumCommentDelete.as_view(), name="comment_delete"),
                 
 
-                url(r'^forum/categories/$', views.ForumCategoryList.as_view(), name="forum_categories"),
+                url(r'^forum/categories/$', views.ForumCategoryList.as_view(), name="categories"),
                 url(r'^forum/category/(?P<slug>[-\w]+)/$', views.ForumCategoryView.as_view(), name="forum_category_detail"),
 
-                url(r'^comment/add/$', views.ForumCommentAdd.as_view(), name="new_comment"),
-                url(r'^comment/votes/(?P<pk>[-\w]+)/up/$', views.CommentVoteUpView.as_view(), name="comment_vote_up"),
-                url(r'^comment/votes/(?P<pk>[-\w]+)/down/$', views.CommentVoteDownView.as_view(), name="comment_vote_down"),
 
-                url(r'^forum_dashboard/category/list/$', views.CategoryList.as_view(), name="categories"),
+
+                url(r'^forum/comment/add/$', views.ForumCommentAdd.as_view(), name="new_comment"),
+                url(r'^forum/comment/votes/(?P<pk>[-\w]+)/up/$', views.CommentVoteUpView.as_view(), name="comment_vote_up"),
+
+                url(r'^forum/comment/edit/(?P<comment_id>[-\w]+)/$', views.ForumCommentEdit.as_view(), name="comment_edit"),
+
+                url(r'^forum/comment/votes/(?P<pk>[-\w]+)/down/$', views.CommentVoteDownView.as_view(), name="comment_vote_down"),
+
+                url(r'^forum_dashboard/category/list/$', views.CategoryList.as_view(), name="forum_categories"),
                 url(r'^forum_dashboard/category/add/$', views.CategoryAdd.as_view(), name="add_category"),
                 url(r'^forum_dashboard/category/delete/(?P<slug>[-\w]+)/$',
                     views.CategoryDelete.as_view(), name="delete_category"),
@@ -79,7 +84,7 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                 url(r'^forum_dashboard/topic/view/(?P<slug>[-\w]+)/$', views.TopicDetail.as_view(), name="topic_detail"),
                 url(r'^forum_dashboard/topic/status/(?P<slug>[-\w]+)/$', views.TopicStatus.as_view(), name="topic_status"),
 
-                
+             
 
                 url(r'^register/$', views.ForumIndexView.as_view(), name="signup"),
 
