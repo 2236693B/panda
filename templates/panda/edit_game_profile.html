@@ -1,3 +1,4 @@
+<!-- Allows studios to edit their games' details -->
 {% extends 'panda/base.html' %}
 
 {% block title_block %} Edit - {{name}}{% endblock %}
@@ -14,7 +15,7 @@
                 {% endfor %}
 
                 {% for field in form.visible_fields %}
-                    {% if not field.value == name %}
+                    {% if not field.value == name %}   <!-- Ignore game already exists erro, if the game name is the game name of game being edited -->
                         {{ field.errors}}
                     {% endif %}
                     {{ field.help_text }}

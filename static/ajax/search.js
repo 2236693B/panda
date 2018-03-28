@@ -1,3 +1,4 @@
+//Search results for model provided (Game or Player
 function search(model) {
    var query = document.getElementById("searchtext").value;
    var xhttp = new XMLHttpRequest();
@@ -10,6 +11,7 @@ function search(model) {
   xhttp.send();
 }
 
+//Load players with given condition e.g all, competitive etc
 function loadPlayers(game, types) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -22,6 +24,7 @@ function loadPlayers(game, types) {
   xhttp.send();
 }
 
+//Clear search results
 function hide() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {

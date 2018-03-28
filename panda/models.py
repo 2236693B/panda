@@ -20,12 +20,12 @@ USER_ROLES = (
 
 
 
-
+#Game Studio user model
 class GameStudio(models.Model):  #Game Studios that make multiplayer games
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, unique = True)
     bio = models.CharField(max_length=500, null = True, blank= True)
-    TwitterHandle = models.CharField(max_length=15, null=True, blank=True)
+    TwitterHandle = models.CharField(max_length=15, null=True, blank=True)  #Username for Twitter widget on Studio page
     picture = models.ImageField(upload_to='studio_images', blank=True)
 
     slug = models.SlugField(unique=True)
@@ -38,6 +38,7 @@ class GameStudio(models.Model):  #Game Studios that make multiplayer games
         return self.name
 
 
+#Player user model
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     Bio = models.CharField(max_length=500, null = True, blank= True)
@@ -50,7 +51,7 @@ class Player(models.Model):
     user_votes = models.IntegerField(default='0')
     user_roles = models.CharField(choices=USER_ROLES, max_length=10)
 
-    approved = models.BooleanField(default = False)
+    approved = models.BooleanField(default = False)  #Field to indicate if player is recognised part of community eg. pro-gamer etc
 
     slug = models.SlugField(unique = True)
 
@@ -90,6 +91,7 @@ class Player(models.Model):
         self.save()
         return self.rating
 
+# Game Comment model
 class Comment(models.Model):
 
     player = models.ForeignKey(Player, on_delete=models.CASCADE,)
@@ -98,7 +100,7 @@ class Comment(models.Model):
     def __str__(self):
         toString = self.player.user.username +  ' : ' + self.comment
         return toString
-
+#Game model
 class Game(models.Model):  
 
     NONE = 'NON'
@@ -130,7 +132,7 @@ class Game(models.Model):
     catergory = models.CharField(max_length=3, choices=CATERGORY, default = NONE)
     picture = models.ImageField(upload_to='game_images', blank=True)
 
-    steam_id = models.IntegerField(default = None, null=True, blank= True)
+    steam_id = models.IntegerField(default = None, null=True, blank= True) #Steam ID used to get API information
 
     rating = models.FloatField(default = -1)
     comments = models.ManyToManyField(Comment, blank= True)
@@ -143,7 +145,7 @@ class Game(models.Model):
 
     slug = models.SlugField(unique = True)
 
-    recommend = models.ManyToManyField("self", blank=True)
+    recommend = models.ManyToManyField("self", blank=True)  #List of games similar to or recommended by other users
 
     def save(self, *args, **kwaargs):
         self.slug = slugify(self.name)
@@ -158,6 +160,7 @@ class Game(models.Model):
         self.save()
         return self.rating
 
+#Game rating model
 class GameRating(models.Model):
 
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
@@ -168,6 +171,7 @@ class GameRating(models.Model):
         toString = self.player.user.username +  ' : ' + str(self.value)
         return toString
 
+#Player to Player rating model
 class PlayerRating(models.Model):
 
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='player')
@@ -178,6 +182,7 @@ class PlayerRating(models.Model):
         toString = self.rating_user.user.username +  ' : ' + str(self.value)
         return toString
 
+#Helper function to get Player/Game rating
 def average(query):
     count = 0
     sum = 0
@@ -191,6 +196,8 @@ def average(query):
     return average
 
 
+
+#Forum models
 class ForumCategory(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
     title = models.CharField(max_length=1000)
@@ -198,7 +205,7 @@ class ForumCategory(models.Model):
     color = models.CharField(max_length=20, default="#999999")
     created_on = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(max_length=1000)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     description = models.TextField()
     parent = models.ForeignKey('self', blank=True, null=True)
 

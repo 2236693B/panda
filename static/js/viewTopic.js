@@ -1,4 +1,4 @@
- $('form.newcommentform').submit(function(e){
+$('form.newcommentform').submit(function(e){
         e.preventDefault();
         var str = $(this).find('.mention').val();
         var pattern = /\B@[a-z0-9_.-]+/gi;

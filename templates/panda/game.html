@@ -1,3 +1,4 @@
+<!-- Game view page -->
 {% extends 'panda/base.html' %}
 {% load staticfiles %}
 
@@ -19,16 +20,14 @@
     <div>
             {%  if game %}
 
-                <h7 class="panda-center" font-family="Lato-Black">{{ game.name }}</h7>
-				{% if request.user.is_superuser %}
-    
+                <!-- Allows admin to acess forum dashboard and create new categories -->
+                {% if request.user.is_superuser %}
                      <a href ="{% url 'forum_dashboard'%}" >Forum </a>
-   
-                  {% else %}
+                {% else %}
 				  <a href ="{% url 'topic_list'%}" >Forum </a>
                   {% endif %}
 				
-
+                <h1 class="panda-center" font-family="Lato-Black">{{ game.name }}</h1>
                 <h2><a href = "/panda/studio/{{ game.studio.slug }}">{{game.studio.name}}</a></h2>
 
                 <img src="{{ MEDIA_URL }}{{game.picture}}" style="width:70%" class="Panda-animate-left" alt = "Game cover art"/>
@@ -91,6 +90,7 @@
                     {% endif %}
                 </ul>
 
+                <!-- Display both competive and casual pplayers using AJAX -->
                 <h4> Players : {{game.players.count|add:game.comp_players.count}}</h4>
                 <h5> Casual Players : {{game.players.count }}</h5>
                 <h5> Competitive Players : {{game.comp_players.count}}</h5>
@@ -110,7 +110,7 @@
                                 </highlight>
                             {% else %}
                                 <div class="dropdown">
-                                    <button onclick="myFunction()" class="dropbtn">Add to me games</button>
+                                    <button onclick="myFunction()" class="dropbtn">Add to my games</button>
                                     <div id="addPlayers" class="dropdown-content">
                                         <a href = "/panda/game/{{game.slug}}/add_player?type=casual">Casual</a>
                                         <a href = "/panda/game/{{game.slug}}/add_player?type=comp">Competitive</a>
@@ -131,6 +131,8 @@
                 <ul>
                         {% for comment in game.comments.all %}
                             <li><b>{{comment.player}}</b> : {{comment.comment}}</li>
+
+                            <!-- Allows user to edit their own comments -->
                             {% if comment.player.user == user %} <a href = "/panda/game/{{game.slug}}/{{comment.id}}/edit_comment/"> Edit </a> &nbsp;&nbsp;&nbsp;&nbsp; <a href = "/panda/game/{{game.slug}}/{{comment.id}}/delete_comment/"> Delete </a> {% endif %}
                         {% endfor %}
                 </ul>
@@ -154,6 +156,7 @@
         </div>
         <br>
 
+    <!-- Steam API details-->
          {% if world_players %}
              <strong>World Players : </strong> {{world_players}} <br>
          {% endif %}
@@ -170,6 +173,7 @@
     {% include 'panda/../Snippets/gameSnippet.html' with games=game.recommend.all %}
     </div>
 
+    <!-- Recommednign games using AJAX -->
     {%  if player %}
     <div id="options">
         <select id="recommending">

@@ -92,7 +92,24 @@ class GameRegisterForm (forms.ModelForm):
             raise forms.ValidationError("The date cannot be in the future!")
         return date
 
+#Form for reporting toxic player
+class ReportingPlayerForm(forms.ModelForm):
+    message = forms.CharField(widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
 
+    class Meta:
+        model = ReportingMessage
+        fields = ('message',)
+
+#Form seeking approval, for pro-gamers etc, similar to verifeid by twitter for celebrities
+class ApprovingPlayerForm(forms.ModelForm):
+    message = forms.CharField(widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
+
+    class Meta:
+        model = ApprovalRequest
+        fields = ('message',)
+
+
+#Forum models
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = ForumCategory
@@ -186,18 +203,3 @@ class ForumCommentForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
-
-class ReportingPlayerForm(forms.ModelForm):
-    message = forms.CharField(widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
-
-    class Meta:
-        model = ReportingMessage
-        fields = ('message',)
-
-class ApprovingPlayerForm(forms.ModelForm):
-    message = forms.CharField(widget=forms.Textarea(attrs={'cols': 100, 'rows': 10}))
-
-    class Meta:
-        model = ApprovalRequest
-        fields = ('message',)
-

@@ -1,14 +1,11 @@
 {% extends 'forum/base.html' %}
+{% load staticfiles %}
 {% block stage %}
 <style type="text/css">
   .sub_category{
     display: none;
   }
 </style>
-<div class="main_container">
-     <div class="container">
-        <div class="row middle_container">
-          {% include 'forum/left_menu.html' %}
           <div class="main_left_container col-md-9 col-md-pull-3 col-sm-9 col-sm-pull-3 col-sm-8 col-xs-12">
             <div class="panel panel-default">
               <div class="panel-body">
@@ -42,48 +39,7 @@
               </div>
             </div>
           </div>
-        </div>
-     </div>
-   </div>
 {% endblock %}
 {% block extra_js %}
-<script type="text/javascript">
-  $('.tags').tagsInput({width:'auto'});
-   CKEDITOR.replace( 'description',
-   {
-   // toolbar :
-   // [
-   // { name: 'basicstyles', items : [ 'Bold','Italic' ] },
-   // { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','CreateDiv',
-   // '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
-   // ],
-   // skin : 'office2003',
-   uiColor: '#ffffff',
-     height:260,
-   //width: 700,
-   });
-  
-
-  $('form#newtopicform').submit(function(e){
-        e.preventDefault();
-        desc = CKEDITOR.instances.id_description.getData();
-        $("[name='description']").val(desc);
-        $.post('', $('form#newtopicform').serialize(), function(data){
-          console.log(data)
-	      	console.log(data.error)
-	        if (data.error == false) {
-	          alert(data.response);
-	          window.location = "{% url 'topic_list' %}";
-	        } else {
-	          $('div.error').remove();
-	          for (var key in data.response) {
-	            $('#' + key).after('<div class="error">' + data.response[key] + '</div>');
-	          }
-	        }
-        }, 'json');
-      });
-/*    $('#category').change(function(e){
-      $('#sub_category').parent('div').removeClass('sub_category');
-    });
-*/   </script>
+<script src = '{% static "js/newTopic.js" %}'</script>
 {% endblock %}

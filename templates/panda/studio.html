@@ -1,3 +1,4 @@
+<!-- Studio page for users to view other studio, includes twitter-->
 {% extends 'panda/base.html' %}
 
 {% block title_block %}
@@ -17,6 +18,7 @@
 
     {% if studio.TwitterHandle %}
         <h3>Twitter</h3>
+        <!-- Twitter Iframe -->
         <a class="twitter-timeline" data-width="1000" data-height="1000" data-theme="dark" data-link-color="#2B7BB9" href="https://twitter.com/{{ studio.TwitterHandle }}">
             Tweets by @{{ studio.TwitterHandle }}
         </a>
