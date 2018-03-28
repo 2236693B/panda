@@ -10,14 +10,14 @@
 
 {% block body_block %}
 		
-			<h7>Player
+			<h7 class="Panda-animate-left">Player
 			    and 
 				Networking <br>
 				Database   
 				Application.
 				
 			</h7>
-			<h3>
+			<h3 class="Panda-animate-right">
 			Welcome to Panda <br>
 			This is a place for you to meet like minded games <br>
 			You can find gamers with similar interests to yourself <br>
@@ -30,9 +30,9 @@
 			Enjoy!
 			</h3>
 
-		<div class="Panda-padding-32 Panda-left" >
+		<div>
                {% if games %}
-            <ul class="Panda-left" >
+            <ul class="Panda-left">
                 <strong> Top Five games</strong>
                    {% include 'panda/../Snippets/gameSnippet.html' with games=games class=True %}
             {% else %}
