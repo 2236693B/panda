@@ -10,10 +10,7 @@
     margin-left: 40px;
   } 
 </style>
-<div class="main_container">
-  <div class="container">
-    <div class="row middle_container">
-      {% include 'forum/left_menu.html' %}
+
       <div class="main_left_container col-md-9 col-md-pull-3 col-sm-9 col-sm-pull-3 col-sm-8 col-xs-12">
         <div class="panel panel-default">
           <div class="panel-body">
@@ -32,11 +29,11 @@
                 <div class="view_content_description">
                   <h3 class="create_topic_heading">{{ topic.title|capfirst }}</h3>
                   {% if topic.created_by == request.user %}
-                    
+
                     <a href="{% url 'delete_topic' topic.slug %}"> delete </a>
                   {% endif %}
 				 <div class="follow_votes">
-                    
+
                     <span class="votes"><a href="#" class="loss vote_topic" id="down_vote" data-href="{% url "topic_vote_down" topic.slug %}"><i class="fa fa-minus"></i><span id="down_votes">{{ topic.down_votes_count }}</span></a>Votes<a href="#" class="gain vote_topic" id="up_vote" data-href="{% url "topic_vote_up" topic.slug %}"><i class="fa fa-plus"></i><span id="up_votes">{{ topic.up_votes_count }}</span></a></span>
                   </div>
                   <p>{{topic.description|safe}}</p>
@@ -48,7 +45,7 @@
                       <div class="clearfix"></div>
                     </ul>
                     <ul>
-                      <li><a href="#"> <span class="text">Created By<small>{{ topic.created_by.username }}, {{ topic.created_on }}</small></span></a></li>
+                      <li> <span class="text">Created By<small>{{ topic.created_by.username }}, {{ topic.created_on }}</small></span></li>
                       <div class="clearfix"></div>
                     </ul>
                   </div>
@@ -57,13 +54,11 @@
                   <div class="topic_count">
                     <span class="category"><a href="#" class="disclosure">{{ topic.category.title }} </a></span>
                     <span class="reply"><i class="fa fa-reply"></i>Replies {{ topic.get_all_comments|length }} </span>
-                    <span class="views"><i class="fa fa-eye"></i> Views {{ topic.no_of_views }} </span>
                     <span class="users"><i class="fa fa-users" aria-hidden="true"></i> Users <span class="no_of_users">{{ topic.get_topic_users|length }}</span> </span>
                   </div>
                   <div class="user_options pull-right">
                   {% if request.user.is_authenticated %}
                     <ul>
-                      <li><a href="#" data-toggle="popover" data-container="body" data-placement="top" type="button" data-html="true"><i class="fa fa-share-alt"></i></a></li>
                       <li><a href="#" data-toggle="modal" data-target="#reply_comment"><i class="fa fa-reply"></i>Reply</a></li>
                     </ul>
                   {% endif %}
@@ -78,17 +73,13 @@
                             <div class="modal-body">
                               <div class="new_topic_container">
                                 <form name="editcommentform" id='editcommentform_{{ comment.id }}' class="edit_comment_form" method="POST" > {% csrf_token %}
-								 
+
                                   <div class="form-group">
                                     <label for="exampleInputEmail1">Add Description</label>
                                     <textarea class="form-control textareacontents mention" name='comment' id='comment'>{{ comment.comment }}</textarea>
                                     <input type="hidden" name="parent" id="parent" value="{{ comment.parent.id }}"/>
                                     <input type="hidden" name="topic" id="topic" value="{{ comment.topic.id }}"/>
                                   </div>
-                                  <!--<div class="form-group">
-                                    <label for="exampleInputEmail1">Add Description</label>
-                                    <input type="hidden" name="attachment" id="attachment" value=""/>
-                                  </div>-->
                                   <button type="submit" class="btn btn-default">Comment</button>
                                   <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">Cancel</button>
                                 </form>
@@ -106,7 +97,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="myModalLabel">Write Reply For {{ topic.title }}</h4>
                           </div>
-						  
+
                           <div class="modal-body">
                             <div class="new_topic_container">
                               <form name="newcommentform" id='newcommentform' class="newcommentform" method="post"> {% csrf_token %}
@@ -116,10 +107,6 @@
                                   <input type="hidden" name="topic" id="topic" value="{{ topic.id }}"/>
                                   <input type="hidden" name="parent" id="parent" value=""/>
                                 </div>
-                                <!--<div class="form-group">
-                                  <label for="exampleInputEmail1">Add Description</label>
-                                  <input type="hidden" name="attachment" id="attachment" value=""/>
-                                </div>-->
                                 <button type="submit" class="btn btn-default">Comment</button>
                                 <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">Cancel</button>
                               </form>
@@ -127,17 +114,6 @@
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <!-- reply modal ends here-->
-                    <div id="popover-content" class="hide">
-                      <ul class="list-inline">
-
-                <!--<li><a href=="mailto:?subject=Peeljobs%20Job%20post%20sharing&body={{ minified_url }}" target="_blank" class="envelope social"><i class="fa fa-envelope"></i></a></li>-->
-                        <li><a href="https://www.facebook.com/sharer/sharer.php?u={{ minified_url }}&t={{ topic.title }}" target="_blank" class="facebook"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href="https://twitter.com/intent/tweet?text={{ job.title }}&url={{ minified_url }}&via=PeelJobs" target="_blank" class="twitter"><i class="fa fa-twitter"></i></a></li>
-                        <li><a href="https://plus.google.com/share?hl=en-US&url={{ minified_url }}" target="_blank" class="google"><i class="fa fa-google-plus"></i></a></li>
-                        <li><a href="https://www.linkedin.com/cws/share?url={{ minified_url }}&token=&isFramed=true" target="_blank" class="youtube"><i class="fa fa-linkedin"></i></a></li>
-                      </ul>
                     </div>
                   </div>
                 </div>
@@ -157,26 +133,6 @@
                   <p class="auto_link">{{ comment.comment|safe }}
                   </p>
                 </div>
-                <div class="topic_options">
-                  {% if comment.get_comments %}
-                  <div class="topic_count">
-                    <span class="reply"><i class="fa fa-reply"></i>Replies {{ comment.get_comments|length }} </span>
-                  </div>
-                  {% endif %}
-                  {% if comment.commented_by == request.user %}
-                  <div class="topic_count">
-                    <a href="#" data-toggle="modal" data-target="#modal_comment_{{ comment.id }}"><i class="fa fa-reply"></i><span class="reply">Edit</span></a>
-                  </div>
-                  <div class="topic_count">
-                    <a href="#" class="delete-comment" id="comment_{{ comment.id }}" data-href="{% url "comment_delete" comment.id %}"><span class="reply"><i class="fa fa-reply"></i>Delete</span></a>
-                  </div>
-                  {% endif %}
-                  <div class="user_options pull-right">
-                    <ul>
-                      <li><a href="#" data-toggle="modal" data-target=".bs-example-modal-lg-{{ comment.id }}"><i class="fa fa-reply"></i>Reply</a></li>
-                    </ul>
-                  </div>
-                </div>
               </div>
               <div class="modal fade bs-example-modal-lg-{{ comment.id }}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
                 <div class="modal-dialog modal-lg">
@@ -202,68 +158,11 @@
                   </div>
                 </div>
               </div>
-                {% for comment in comment.comment_parent.all %}
-                {% for comment in comment|sub_comments %}
-
-                <div class="main_view_container reply_view_container reply_comments">
-                <div class="view_content_description">
-                  <div class="other_views">
-                    <ul>
-                      <li><a href="#"> <span class="text">Replied By<small>{{ comment.commented_by.username }}</small></span></a></li>
-                    </ul>
-                  </div>
-                  <!--  <div class="topic_img_block"><img src="http://www.hdwallpapers.in/walls/ice_age_collision_course_5k-wide.jpg" /></div> -->
-                  <p class="auto_link">{{ comment.comment|safe }}
-                  </p>
-                </div>
-                <div class="topic_options">
-                  {% if comment.commented_by == request.user %}
-                  
-                  <div class="topic_count">
-                    <a href="#" id="comment_{{ comment.id }}" class="delete-comment" data-href="{% url "comment_delete" comment.id %}"><span class="reply"><i class="fa fa-reply"></i>Delete</span></a>
-                  </div>
-                  {% endif %}
-                  <div class="user_options pull-right">
-                    <ul>
-                      <li><a href="#" data-toggle="modal" data-target=".bs-example-modal-lg-{{ comment.id }}"><i class="fa fa-reply"></i>Reply</a></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="modal fade bs-example-modal-lg-{{ comment.id }}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-                <div class="modal-dialog modal-lg">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title" id="myModalLabel">Write Reply For {{ topic.title }}</h4>
-                    </div>
-                    <div class="modal-body">
-                      <div class="new_topic_container">
-                        <form name="editcommentform" id='editcommentform' method="post" class="editcommentform">{% csrf_token %}
-                          <div class="form-group">
-                            <label for="exampleInputEmail1">Add Description</label>
-                            <textarea class="form-control textareacontents mention" name='comment' id='comment'></textarea>
-                            <input type="hidden" name="topic" id="topic" value="{{ topic.id }}"/>
-                            <input type="hidden" name="parent" id="parent" value="{{ comment.id }}"/>
-                          </div>
-                          <button type="submit" class="btn btn-default">Comment</button>
-                          <button type="submit" class="btn btn-default" data-dismiss="modal" aria-label="Close">Cancel</button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-                {% endfor %}
-                {% endfor %}
               {% endfor %}
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
 {% endblock %}
 {% block extra_js %}
 <script type="text/javascript">

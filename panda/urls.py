@@ -58,7 +58,7 @@ urlpatterns = [ url(r'^$', views.index, name='index'),
                     views.ForumCommentDelete.as_view(), name="comment_delete"),
                 
 
-                url(r'^forum/categories/$', views.ForumCategoryList.as_view(), name="categories"),
+                url(r'^forum/categories/$', views.category_view, name="categories"),
                 url(r'^forum/category/(?P<slug>[-\w]+)/$', views.ForumCategoryView.as_view(), name="forum_category_detail"),
 
 
