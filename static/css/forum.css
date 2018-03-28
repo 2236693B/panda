@@ -38,7 +38,7 @@ a:hover {
   text-decoration: none; }
 
 header .navbar-default {
-  background: #967766;
+  background: #000000;
   border: none; }
   @media (min-width: 240px) and (max-width: 767px) {
     header .navbar-default .navbar-header {
@@ -97,7 +97,7 @@ header .navbar-default {
         height: 34px;
         line-height: 34px;
         text-align: center;
-        color: #967766;
+        color: #000000;
         left: initial;
         font-size: 14px; }
     header .navbar-default .nav_right .header_right .login_block {
@@ -269,7 +269,7 @@ header .navbar-default {
           padding: 5px 10px;
           margin-right: 5px;
           margin-top: 5px;
-          color: #967766;
+          color: #000000;
           background: #DAC7A9;
           font-size: 12px;
           font-weight: 500;
@@ -279,7 +279,7 @@ header .navbar-default {
             margin: 0 4px;
             color: #fff; }
           .main_container .middle_container .main_left_container .tags_container .discussion-Tags-container .tags-block .tag-list a:hover {
-            background: #967766;
+            background: #000000;
             color: #fff;
             text-decoration: none; }
             .main_container .middle_container .main_left_container .tags_container .discussion-Tags-container .tags-block .tag-list a:hover small {
@@ -313,7 +313,7 @@ header .navbar-default {
         margin-top: 5 px;
         color: #676767; }
         .main_container .middle_container .main_left_container .Users_container .badges_row .badge_content .content a {
-          color: #967766; }
+          color: #000000; }
       .main_container .middle_container .main_left_container .Users_container .badges_row .badge_content .count {
         position: absolute;
         bottom: 0;
@@ -429,7 +429,7 @@ header .navbar-default {
     .main_container .middle_container .main_left_container .new_topic_container .form-group .select2-selection--single .select2-selection__arrow {
       top: 10px; }
   .main_container .middle_container .main_left_container .new_topic_container .btn {
-    background: #967766;
+    background: #000000;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 0.6px;
@@ -894,7 +894,7 @@ header .navbar-default {
           .main_container .middle_container .main_right_container .fixed_right .right_panel .panel-body .category_items li.category_item a.school {
             background: #9c28b1; }
           .main_container .middle_container .main_right_container .fixed_right .right_panel .panel-body .category_items li.category_item a.all {
-            background: #967766; }
+            background: #000000; }
     .main_container .middle_container .main_right_container .fixed_right .right_panel .panel-body .badges {
       margin: 0px;
       padding: 0; }
@@ -955,7 +955,7 @@ header .navbar-default {
       font-size: 12px;
       border: 1px solid #e8e8e8; }
     .login_modal .modal-content .modal-body .login_row .login_form .btn {
-      background: #967766;
+      background: #000000;
       color: #fff;
       text-transform: uppercase;
       letter-spacing: 0.6px;

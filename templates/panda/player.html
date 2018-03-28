@@ -74,11 +74,9 @@
                 <a href="{% url 'approve_my_profile' %}">Get approval for my account</a>
                 </highlight>
             {% endif %}
-
+             {% else %}
+                <a href = "/panda/report/{{ player.slug }}/">Report player</a>
             {%  endif %}
-
-            <a href = "/panda/report/{{ player.slug }}/">Report player</a>
-
 
             {% else %}
 
