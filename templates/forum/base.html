@@ -188,6 +188,7 @@
       <script src='{% static "ajax/jquery-2.1.0.min.js" %}'></script>
      <script src='{% static "ajax/app.js"%} '></script>
 	 <script src='{% static "js/index.js" %}'></script>
+	 <script src = '{% static "js/forum-base.js" %}'</script>
 		<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
    <!-- Latest compiled and minified JavaScript -->
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
@@ -198,20 +199,7 @@
     <script type="text/javascript" src="{% static 'js/jquery.tagsinput.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap-suggest.js' %}"></script>
    <!-- select2 -->
-   <script>
-    $( document ).ready(function() {
-      $('#myModal').modal('hide');
-      $('#myModal').on('hidden', function () {
-        // Load up a new modal...
-        $('#myModal1').modal('show')
-      });
-      $(".select2").select2({
-        tags: true
-      });
-      $(".js-example-basic-single, .js-example-basic-single1").select2();
-    });
-   </script>
-
+   
 
     {% block extra_js %}
     {% endblock %}
