@@ -1,5 +1,5 @@
 {% extends 'forum_dashboard/forum_dashboard_base.html' %}
-
+{% load staticfiles %}
 {% block stage %}
 <div class="content">
   <div class="list">
@@ -80,21 +80,7 @@
 </div>
 {% endblock %}
 {% block extra_js %}
-<script type="text/javascript">
-  $('.delete-category').click(function(e){
-  e.preventDefault();
-  href = $(this).attr('data-href');
-  if (!confirm('Do you want to delete Category?'))
-    return;
-  $.post(href, $("form#jobform").serialize(), function(data) {
-          if (data.error) {
-            alert(data.response);
-          } else {
-            alert("Category Deleted Successfully")
-            window.location = '.';
-          }
-        }, 'json');
-  });
+<script src = '{% static "js/dashboardDeleteCat.js" %}'</script>
 
-</script>
+
 {% endblock %}
