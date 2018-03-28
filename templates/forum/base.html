@@ -1,5 +1,7 @@
 
 {% load static forum_tags thumbnail  %}
+{% load forum_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -175,8 +177,16 @@
         </div>
       </div>
     </div>
+
+   <div class="main_container">
+    <div class="container">
+        <div class="row middle_container">
+      {% get_categories %}
     {% block stage %}
     {% endblock %}
+        </div>
+    </div>
+   </div>
 
    </body>
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
