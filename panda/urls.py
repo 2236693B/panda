@@ -56,21 +56,14 @@ urlpatterns = [
 
                 #Forum urls
 
-
-                url(r'^forum/mentioned-users/(?P<topic_id>[-\w]+)/$', views.get_mentioned_user, name="get_mentioned_user"),
-
-
                 url(r'^forum/$', views.TopicList.as_view(), name="topic_list"),
                 url(r'^forum/topic/add/$', views.TopicAdd.as_view(), name="new_topic"),
                 url(r'^forum/topic/view/(?P<slug>[-\w]+)/$', views.TopicView.as_view(), name="view_topic"),
                 url(r'^forum/topic/votes/(?P<slug>[-\w]+)/up/$', views.TopicVoteUpView.as_view(), name="topic_vote_up"),
                 url(r'^forum/topic/votes/(?P<slug>[-\w]+)/down/$', views.TopicVoteDownView.as_view(), name="topic_vote_down"),
 
-                
-
                 url(r'^forum/categories/$', views.category_view, name="categories"),
                 url(r'^forum/category/(?P<slug>[-\w]+)/$', views.ForumCategoryView.as_view(), name="forum_category_detail"),
-
 
                 url(r'^forum/comment/delete/(?P<comment_id>[-\w]+)/$',
                     views.ForumCommentDelete.as_view(), name="comment_delete"),
@@ -79,8 +72,6 @@ urlpatterns = [
                 url(r'^forum/comment/votes/(?P<pk>[-\w]+)/up/$', views.CommentVoteUpView.as_view(), name="comment_vote_up"),
                 url(r'^forum/comment/edit/(?P<comment_id>[-\w]+)/$', views.ForumCommentEdit.as_view(), name="comment_edit"),
                 url(r'^forum/comment/votes/(?P<pk>[-\w]+)/down/$', views.CommentVoteDownView.as_view(), name="comment_vote_down"),
-
-
 
                 #forum dashboard links are for superuser
                 url(r'forum_dashboard/$', views.DashboardView.as_view(), name="forum_dashboard"),

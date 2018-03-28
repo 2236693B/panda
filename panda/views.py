@@ -790,6 +790,7 @@ def update_game(request, game_name_slug):
         response = render(request, 'ajax_results/options.txt',{'others': Game.objects.exclude(pk__in=game.recommend.all())})
         return response
 
+#Forum views
 def category_view(request):
     categories_list = ForumCategory.objects.filter(parent=None)
     return render(request, 'forum/categories.html', {'categories': categories_list})
@@ -824,7 +825,7 @@ class CategoryList(ListView):
         categories_list = self.model.objects.all()
 
         if request.POST.get('is_active') == 'True':
-            forum_categories = forum_categories.filter(is_active=True)
+            forum_categories = ForumCategory.filter(is_active=True)
         if request.POST.get('search_text', ''):
             forum_categories = forum_categories.filter(
                 title_icontains=request.POST.get('search_text')
@@ -862,11 +863,10 @@ class CategoryAdd(CreateView):
             menu.parent_id = self.request.POST.get('parent')
             menu.save()
 
-        data = {'error': False, 'response': 'Successfully Created Category'}
-        return JsonResponse(data)
+        return redirect(reverse('forum_categories'))
 
     def get_success_url(self):
-        return redirect(reverse('categories'))
+        return redirect(reverse('forum_categories'))
 
     def form_invalid(self, form):
         data = {'error':True, 'response': form.errors}
@@ -990,7 +990,7 @@ class TopicAdd(CreateView):
         return redirect(reverse('topic_list'))
 
     def form_invalid(self, form):
-        return JsonResponse({'error': True, 'response': form.errors})
+        return HttpResponse("<h1> Something went wrong </h1> <br> Perhaps you used a title that already exists <br> <a href = '/panda/forum/topic/add/'")
 
     def get_context_data(self, **kwargs):
         context = super(TopicAdd, self).get_context_data(**kwargs)
