@@ -190,6 +190,7 @@ def show_game(request, game_name_slug):
 
     return render(request, 'panda/game.html', context_dict)
 
+#Display studio page
 def show_studio(request, studio_name_slug):
 
     context_dict = {}
@@ -202,10 +203,8 @@ def show_studio(request, studio_name_slug):
     return render(request,'panda/studio.html', context_dict)
 
 @login_required
+#Get player for a game, uses search
 def get_game_players(request, game_name_slug):
-    """
-    returns an XML of the most latest posts
-    """
     context_dict = {}
     game = check_game(game_name_slug)
     if game != None:
@@ -221,14 +220,14 @@ def get_game_players(request, game_name_slug):
 
     return render(request, 'ajax_results/results.txt', context_dict)
 
+#Blank page used for AJAX requests
 def reset(request):
-    """
-    returns an XML of the most latest posts
-    """
+
     context_dict = {}
 
     return render(request, 'ajax_results/results.txt', context_dict)
 
+#Response for AJAX requests
 def games_search(request):
     search = request.GET.get('query', '')
     game_list = Game.objects.filter(name__icontains=search)
@@ -299,6 +298,7 @@ def make_game_comment(request,game_name_slug):
     return render(request, 'panda/game_comment.html', context_dict)
 
 @login_required
+#Enables users to edit their comments
 def edit_game_comment(request, game_name_slug, comment_id):
 
     form = None
@@ -562,6 +562,7 @@ def make_player_rating(request,player_name_slug):
 
     return render(request, 'panda/player_rating.html', context_dict)
 
+#View for studios and player to reporet toxic players
 @login_required
 def report_player(request, player_name_slug):
 
@@ -647,6 +648,7 @@ def register_game(request):
 
     return render(request, 'panda/register_game.html', context_dict)
 
+#Allows players to edit their own profile
 @login_required
 def edit_player_profile(request):
 
@@ -665,6 +667,7 @@ def edit_player_profile(request):
 
     return render(request, 'panda/edit_player_profile.html', {'player': player, 'form': form})
 
+#Allows studio to edit their own profile
 @login_required
 def edit_studio_profile(request):
 
@@ -686,6 +689,7 @@ def edit_studio_profile(request):
 
     return render(request, 'panda/edit_studio_profile.html', {'studio': studio, 'form': form,})
 
+#Allows studios to edit the game profiles the own
 @login_required
 def edit_game_profile(request, game_name_slug):
 
@@ -720,6 +724,7 @@ def edit_game_profile(request, game_name_slug):
 
     return render(request, 'panda/edit_game_profile.html', {'game': game, 'name':name, 'edit':edit, 'form': form, 'studio':studio})
 
+#Allows game studios to delte games they own
 @login_required
 def delete_game_profile(request,game_name_slug):
 
@@ -731,12 +736,14 @@ def delete_game_profile(request,game_name_slug):
 
     return show_profile(request)
 
+#Allows studio or player to delete their profile
 def delete_profile(request):
     user = request.user
     logout(request)
     user.delete()
     return HttpResponseRedirect(reverse('index'))
 
+#View for reqeusting player approval
 @login_required
 def approve_player(request):
 
@@ -757,6 +764,7 @@ def approve_player(request):
 
     return render(request, 'panda/requestApproval.html', context_dict)
 
+#View to allow players to recommend other games
 @login_required
 def recommend_game(request, game_name_slug):
     game = check_game(game_name_slug)
@@ -773,17 +781,18 @@ def recommend_game(request, game_name_slug):
         response = render(request, 'ajax_results/results.txt', context_dict)  # Return to game page after making rating
         return response
 
+
 @login_required
+#Udpates game recommend view, used in AJAX request
 def update_game(request, game_name_slug):
     game = check_game(game_name_slug)
-
     if game !=None:
-        response = render(request, 'ajax_results/options.txt',{'others': Game.objects.exclude(pk__in=game.recommend.all())})  # Return to game page after making rating
+        response = render(request, 'ajax_results/options.txt',{'others': Game.objects.exclude(pk__in=game.recommend.all())})
         return response
 
-
-
-
+def category_view(request):
+    categories_list = ForumCategory.objects.filter(parent=None)
+    return render(request, 'forum/categories.html', {'categories': categories_list})
 
 class DashboardView(TemplateView):
     template_name = 'forum_dashboard/forum_dashboard.html'
@@ -1154,7 +1163,6 @@ class ForumCommentEdit(UpdateView):
             if self.request.POST['parent']:
                 comment.parent_id = self.request.POST['parent']
                 comment.save()
-            i
             data = {'error': False, 'response': 'Successfully Edited User'}
         else:
             data = {
@@ -1243,8 +1251,6 @@ class TopicVoteDownView(View):
         else:
             status = "neutral"
         return JsonResponse({"status": status})
-
-    
 
 #Helper Functions
 
