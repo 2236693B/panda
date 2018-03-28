@@ -1,3 +1,5 @@
+//Make links change colour on hover
+
 $(document).ready( function() {
 
     $("highlight").hover( function() {
@@ -11,6 +13,7 @@ $(document).ready( function() {
 
     });
 
+//Generate warning when player not logged in
     $("NL").click( function() {
         alert("Please log in");
     });

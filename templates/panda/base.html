@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 
+<!-- Base file that all main site templates inherit from -->
+
 <head>
         {% load staticfiles %}
         <script src='{% static "js/jquery.min.js" %}'></script>
@@ -7,6 +9,7 @@
         <script src='{% static "js/googleCSE.js" %}'></script>
         <script src='{% static "ajax/jquery-2.1.0.min.js" %}'></script>
         <script src='{% static "ajax/app.js"%} '></script>
+        <script src='{% static "js/to_top.js"%} '></script>
 		<link rel="stylesheet" href="{% static 'css\site.css' %}">
 		<script src='{% static "js/index.js" %}'></script>
 		<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
@@ -20,6 +23,7 @@
         </title>
     </head>
 
+<!-- Nav bar links -->
     <body class="Panda-dark-gray ">
       
 		<div id="navbar" class=" Panda-white " style="padding-top:20px;padding-bottom:64px">
@@ -50,8 +54,8 @@
         {% block body_block %}
         {% endblock %}
         </div>
-		
-      
+
+        <!-- Social media files -->
 		<footer class="Panda-center Panda-padding-64">
 		  <a href="#home" class="Panda-button Panda-light-grey" onclick="topFunction()"><i class="fas fa-arrow-up Panda-margin-right"></i>To the top</a>
 		  <div class="panda-xlarge panda-section">
@@ -63,16 +67,7 @@
             <div class="Panda-content" style=""> <gcse:searchbox-only></gcse:searchbox-only></div>
 			
 		</footer>
-		
-		
- <script>
 
- function topFunction() {
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-}
-</script>
     </body>
-
 
 </html>

@@ -1,3 +1,5 @@
+//Drop down list for chosing to play comp/casual
+
 function myFunction() {
     document.getElementById("addPlayers").classList.toggle("show");
 }
