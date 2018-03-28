@@ -1,19 +1,17 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse,JsonResponse
-from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.auth import logout
-from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, ApprovingPlayerForm, CategoryForm, TopicForm, ForumCommentForm, ContactForm
+from panda.forms import UserForm, PlayerProfileForm, GameRatingForm, GameCommentForm , PlayerRatingForm, GameRegisterForm, StudioProfileForm, ApprovingPlayerForm, ReportingPlayerForm, CategoryForm, TopicForm, ForumCommentForm, ContactForm
 from django.views.generic import TemplateView, UpdateView, ListView, CreateView, DetailView, DeleteView, View
 from django.views.generic.edit import FormView
 from django.db.models import Q
 
 #imports for email on contact us page
-from django.core.mail import EmailMessage, send_mail
+from django.core.mail import send_mail
 from django.shortcuts import redirect
-from django.template import Context
 from django.template.loader import get_template
 
 
@@ -23,19 +21,6 @@ from itertools import chain
 
 import requests as r
 import json
-
-
-def sitemap(request):
-
-    context_dict = { }
-
-    return render(request, 'panda/sitemap.xml', context=context_dict)
-
-def google_veri(request):
-
-    context_dict = { }
-
-    return render(request, 'panda/googleb00694232a77d6d0.html', context=context_dict)
 
 #View for Home page which features top 5 games and players
 def index(request):
@@ -48,7 +33,6 @@ def index(request):
 
     response = render(request, 'panda/index.html', context_dict)
     return response
-
 
 #view for contact_us page
 def contact_us(request):
@@ -81,38 +65,18 @@ def contact_us(request):
                               contact_email,
                               ['PANDAprojectWAD2@gmail.com'],
                               fail_silently=False)
-            
+
             return redirect('contact us')
-    
+
     return render(request, 'panda/contact_us.html', {'form': form_class})
 
 #View for about page, which is static
 def about(request):
 
     context_dict = { }
-    
+
     return render(request, 'panda/about.html', context=context_dict)
 
-def report_player(request, player_name_slug):
-
-    player = check_player(player_name_slug)
-
-    form = ReportingPlayerForm()
-
-    if request.method == 'POST':
-        form = ReportingPlayerForm(request.POST)
-        if form.is_valid():
-            report = form.save(commit=False)
-            report.reporter = request.user
-            report.player = player
-
-            report.save()
-
-            return show_player(request, player_name_slug)
-
-    context_dict = {'form': form, 'player': player}
-
-    return render(request, 'panda/report.html', context_dict)
 #View for games page, returns games list sorted by catergory
 def games(request):
     context_dict = {}
@@ -164,7 +128,7 @@ def show_game(request, game_name_slug):
                 context_dict['news'] = news
                 context_dict['world_players'] = str(world_players)
 
-            except KeyError:
+            except KeyError: #If invalid steam API ignore
                 context_dict['news'] = None
                 context_dict['world_players'] = None
 
@@ -210,7 +174,7 @@ def get_game_players(request, game_name_slug):
     if game != None:
         type = request.GET.get('type', '')
         if type =='all':
-            player_list = list(chain(game.players.all(), game.comp_players.all()))
+            player_list = list(chain(game.players.all(), game.comp_players.all()))  #List of both casual and competivie players
         elif type =="comp":
             player_list = game.comp_players.all()
         elif type =="casual":
@@ -349,7 +313,7 @@ def add_player(request, game_name_slug):
     if game != None:
         if request.user.is_authenticated():
             if types == "casual":
-                if (not game.players.filter(user=request.user).exists()) and (not game.comp_players.filter(user=request.user).exists()):
+                if (not game.players.filter(user=request.user).exists()) and (not game.comp_players.filter(user=request.user).exists()):  #If player doesnt play casual or competitive
                         player = Player.objects.get(user=request.user)
                         if player != None:
                             game.players.add(player)
@@ -370,11 +334,37 @@ def remove_player(request, game_name_slug):
     context_dict['game'] = game
 
     if request.user.is_authenticated():
-        if game.players.filter(user=request.user).exists():
+        if game.players.filter(user=request.user).exists(): #If user play game casually
                 player = Player.objects.get(user=request.user)
                 game.players.remove(player)
+        elif game.comp_players.filter(user=request.user).exists(): #If user plays game competitively
+                player = Player.objects.get(user=request.user)
+                game.comp_players.remove(player)
 
     return show_game(request, game_name_slug)
+
+#Report players for being toxic/foulplay
+@login_required
+def report_player(request, player_name_slug):
+
+    player = check_player(player_name_slug)
+
+    form = ReportingPlayerForm()
+
+    if request.method == 'POST':
+        form = ReportingPlayerForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.reporter = request.user
+            report.player = player
+
+            report.save()
+
+            return show_player(request, player_name_slug)
+
+    context_dict = {'form': form, 'player': player}
+
+    return render(request, 'panda/report.html', context_dict)
 
 #Generic user login in view
 def user_login(request):
@@ -498,7 +488,7 @@ def show_player(request, player_name_slug):
     player = check_player(player_name_slug)
 
     if player != None:
-        if player.user == request.user:
+        if player.user == request.user:  #If player is user , go to profile page
             return HttpResponseRedirect(reverse('my_profile'))
         else:
             context_dict['player'] = player
@@ -507,9 +497,10 @@ def show_player(request, player_name_slug):
 
     return render(request, 'panda/player.html', context_dict)
 
+#Searh player database for AJAX response
 def player_search(request):
     search = request.GET.get('query', '')
-    player_list = Player.objects.filter(user__username__icontains=search)
+    player_list = Player.objects.filter(user__username__icontains=search) #Filter based on search result
     context_dict = {'results': player_list, 'game': False, 'Valid': True, 'Search':True}
 
     response = render(request, 'ajax_results/results.txt', context_dict)  # Return to game page after making rating
@@ -591,35 +582,22 @@ def show_profile(request):
 
     context_dict = {}
 
-    try:
-        player = Player.objects.get(user=request.user)
+    player = check_player_user(request.user)
+    studio = check_studio_user(request.user)
+
+    if player != None:  #If player, send to player profile
         context_dict['player'] = player
         context_dict['casual'] = player.casual.all()
         context_dict['comp'] = player.comp.all()
         context_dict['profile'] = True
         return render(request, 'panda/player.html', context_dict)
 
-
-    except Player.DoesNotExist:
-        studio = GameStudio.objects.get(user = request.user)
+    elif studio != None: #If not player, but studio, send to studio profile
         context_dict['studio'] = studio
         context_dict['games'] = Game.objects.filter(studio=studio)
         return render(request, 'panda/my_profile_studio.html', context_dict)
 
-        try:
-            player = Player.objects.get(user = request.user)
-            context_dict['player'] = player
-            context_dict['casual'] = player.casual.all()
-            context_dict['comp'] = player.comp.all()
-            context_dict['profile'] = True
-            return render(request, 'panda/player.html', context_dict)
-
-        except Player.DoesNotExist:
-            studio = GameStudio.objects.get(user = request.user)
-            context_dict['studio'] = studio
-            context_dict['games'] = Game.objects.filter(studio=studio)
-            return render(request, 'panda/my_profile_studio.html', context_dict)
-    else:
+    else:   #If admin, redirect
         return HttpResponse("Please login in at the admin site <a href ='/admin/'>Here</a>")
 
 #View to allow studio to register game
@@ -654,14 +632,14 @@ def edit_player_profile(request):
 
     player = check_player_user(request.user)
 
-    if player != None:
+    if player != None: #Check if player
         form = PlayerProfileForm( {'Bio': player.Bio, 'Steam': player.Steam, 'PSN' : player.PSN, 'Xbox': player.Xbox, 'Nintendo':player.Nintendo, 'picture':player.picture})
 
     if request.method == 'POST':
         form = PlayerProfileForm(request.POST, request.FILES, instance=player)
         if form.is_valid():
             form.save(commit=True)
-            return show_profile(request)
+            return HttpResponseRedirect(reverse('my_profile'))
         else:
             print(form.errors)
 
@@ -675,17 +653,17 @@ def edit_studio_profile(request):
 
     studio = check_studio_user(request.user)
 
-    if studio != None:
+    if studio != None: #Check if studio
          form = StudioProfileForm( {'name':studio.name, 'bio':studio.bio, 'TwitterHandle':studio.TwitterHandle, 'picture':studio.picture})
 
     if request.method == 'POST':
         form = StudioProfileForm(request.POST, request.FILES, instance=studio)
         if form.is_valid():
             form.save(commit=True)
-            return show_profile(request)
+            return HttpResponseRedirect(reverse('my_profile'))
         else:
-                err_message = "Studio name already in use"
-                return render(request, 'panda//edit_studio_profile.html',{'studio': studio, 'form': form, 'err_message':err_message})
+                err_message = "Invalid details"
+                return render(request, 'panda/edit_studio_profile.html',{'studio': studio, 'form': form, 'err_message':err_message})
 
     return render(request, 'panda/edit_studio_profile.html', {'studio': studio, 'form': form,})
 
@@ -698,19 +676,19 @@ def edit_game_profile(request, game_name_slug):
 
     try:
        game = Game.objects.get(slug = game_name_slug)
-       name = game.name #Keeps track of old game name for form
+       name = game.name                                    #Keeps track of old game name for form
        form = GameRegisterForm( {'studio':game.studio, 'name':game.name, 'extract':game.extract, 'site':game.site,'date':game.date,'catergory':game.catergory,'picture':game.picture, 'Playstation':game.Playstation, 'Xbox':game.Xbox, 'PC':game.PC, 'Nintendo':game.Nintendo, 'Mobile':game.Mobile})
 
-    except Game.DoesNotExist:
+    except Game.DoesNotExist: #Invlaid game url
        game = None
        edit = False
 
     try:
        studio = GameStudio.objects.get(user=request.user)
-       if game.studio.name == studio.name:
+       if game.studio.name == studio.name:     #Check if studio owns game
            edit = True
 
-    except GameStudio.DoesNotExist:
+    except GameStudio.DoesNotExist:   # If player
        studio = None
        game = None
        edit = False
@@ -736,7 +714,9 @@ def delete_game_profile(request,game_name_slug):
 
     return show_profile(request)
 
+
 #Allows studio or player to delete their profile
+@login_required
 def delete_profile(request):
     user = request.user
     logout(request)
@@ -751,14 +731,14 @@ def approve_player(request):
 
     form = ApprovingPlayerForm()
 
-    if request.method == 'POST':
-        form = ApprovingPlayerForm(request.POST)
-        if form.is_valid():
-            report = form.save(commit=False)
-            report.player = player
-            report.save()
-
-            return show_profile(request)
+    if player != None:    #If the player exists send aproval request
+        if request.method == 'POST':
+            form = ApprovingPlayerForm(request.POST)
+            if form.is_valid():
+                report = form.save(commit=False)
+                report.player = player
+                report.save()
+                return HttpResponseRedirect(reverse('my_profile'))
 
     context_dict = {'form': form, 'player': player}
 
@@ -769,11 +749,11 @@ def approve_player(request):
 def recommend_game(request, game_name_slug):
     game = check_game(game_name_slug)
 
-    if game !=None:
-        rec = request.GET.get('suggestion', '')
+    if game !=None: # If game exists
+        rec = request.GET.get('suggestion', '')  # Get game suggestion
         recGame = check_game(rec)
 
-        if recGame != None and recGame != game:
+        if recGame != None and recGame != game: # If game suggestion exists and is not the game
             game.recommend.add(recGame)
             recGame.recommend.add(game)
         context_dict = {'results': game.recommend.all(), 'game': True, 'Valid': True}
@@ -782,13 +762,103 @@ def recommend_game(request, game_name_slug):
         return response
 
 
+#Updates game recommend view, used in AJAX request
 @login_required
-#Udpates game recommend view, used in AJAX request
 def update_game(request, game_name_slug):
     game = check_game(game_name_slug)
-    if game !=None:
+    if game !=None: #If game exists, update recommend list
         response = render(request, 'ajax_results/options.txt',{'others': Game.objects.exclude(pk__in=game.recommend.all())})
         return response
+
+
+
+
+
+#Helper Functions
+def check_comment(comment_id):
+    try:
+        comment = Comment.objects.get(id = comment_id)
+
+    except Comment.DoesNotExist:
+        comment = None
+
+    return comment
+
+def check_player_user(user):
+    try:
+        player = Player.objects.get(user=user)
+
+    except Player.DoesNotExist:
+       player = None
+
+    return player
+
+def check_studio_user(user):
+    try:
+       studio = GameStudio.objects.get(user = user)
+
+    except GameStudio.DoesNotExist:
+       studio = None
+
+    return studio
+
+def check_player(player_name_slug): #Check if trying to acces valid user page
+    try:
+        player = Player.objects.get(slug = player_name_slug)
+
+    except Player.DoesNotExist:
+        player = None
+
+    return player
+
+def check_game(game_name_slug): #Check if trying to valid access game page
+    try:
+        game = Game.objects.get(slug = game_name_slug)
+
+    except Game.DoesNotExist:
+        game = None
+
+    return game
+
+def check_studio(studio_name_slug): #Check if trying to acces valid user page
+    try:
+        studio = GameStudio.objects.get(slug = studio_name_slug)
+
+    except GameStudio.DoesNotExist:
+        studio = None
+
+    return studio
+
+def user_check(request, game_name_slug):  #Get details abouit current user
+    studio_warning = False #Indicator if studio attempting to rate
+
+    try:
+        game = Game.objects.get(slug= game_name_slug)
+
+    except Game.DoesNotExist:
+       game = None
+
+    try:
+         player = Player.objects.get(user = request.user)
+
+    except Player.DoesNotExist:
+       studio_warning = True
+       game = None
+       player = None
+
+    return studio_warning,game,player
+
+
+
+
+
+
+
+
+
+
+
+
 
 #Forum views
 def category_view(request):
@@ -797,7 +867,6 @@ def category_view(request):
 
 class DashboardView(TemplateView):
     template_name = 'forum_dashboard/forum_dashboard.html'
-
 
 
 def getout(request):
@@ -838,7 +907,7 @@ class CategoryDetailView(DetailView):
     template_name = 'forum_dashboard/view_category.html'
     slug_field = "slug"
     context_object_name ='category'
-   
+
 
     def get_object(self):
         return get_object_or_404(ForumCategory, slug=self.kwargs['slug'])
@@ -895,7 +964,7 @@ class CategoryDelete(DeleteView):
     def post(self, request, *args, **kwargs):
         category = self.get_object()
         category.delete()
-        return JsonResponse({'error': False, 'response': 'Successfully Deleted Category'})        
+        return redirect(reverse('django_simple_forum:categories'))
 
 
 class CategoryEdit(UpdateView):
@@ -944,33 +1013,6 @@ class DashboardTopicList(ListView):
             )
         return queryset
 
-
-class ForumIndexView(FormView):
-    template_name = 'forum/topic_list.html'
-    form_class = UserForm
-
-    def get_context_data(self, **kwargs):
-        context = super(ForumIndexView, self).get_context_data(**kwargs)
-        topics = Topic.objects.filter(status='Published')
-        context['topic_list'] = topics
-        return context
-
-    def form_valid(self, form):
-        user = User.objects.create(
-            username=form.cleaned_data['username'], email=form.cleaned_data['email'])
-        user.set_password(form.cleaned_data['password'])
-        user.is_active = True
-        user.save()
-        UserProfile.objects.create(user=user, user_roles='Publisher')
-        login(self.request, user)
-        user.backend = 'django.contrib.auth.backends.ModelBackend'
-        data = {'error': False, 'response': 'Successfully Created Badge'}
-        return JsonResponse(data)
-
-    def form_invalid(self, form):
-        return JsonResponse({'error': True, 'response': form.errors})
-
-
 class TopicAdd(CreateView):
     model = Topic
     form_class = TopicForm
@@ -1002,7 +1044,7 @@ class TopicAdd(CreateView):
         context['sub_categories'] = ForumCategory.objects.filter(
             is_active=True, is_votable=True).exclude(parent=None)
         return context
-        
+
 class TopicList(ListView):
     template_name = 'forum/topic_list.html'
     context_object_name = "topic_list"
@@ -1015,14 +1057,14 @@ class TopicList(ListView):
             query = Q(status='Published')
         queryset = Topic.objects.filter(query).order_by('created_on')
         return queryset
-        
+
 class TopicView(TemplateView):
     template_name = 'forum/view_topic.html'
 
     def get_object(self):
         return get_object_or_404(Topic, slug=self.kwargs['slug'])
 
-    
+
 
     def get_context_data(self, **kwargs):
         context = super(TopicView, self).get_context_data(**kwargs)
@@ -1059,7 +1101,7 @@ class TopicDeleteView(DeleteView):
             return JsonResponse({"error": False, "message": "deleted"})
         else:
             return super(TopicDeleteView, self).delete(request, *args, **kwargs)
-            
+
 
 class CommentVoteUpView(View):
 
@@ -1252,78 +1294,17 @@ class TopicVoteDownView(View):
             status = "neutral"
         return JsonResponse({"status": status})
 
-#Helper Functions
 
-def check_comment(comment_id):
-    try:
-        comment = Comment.objects.get(id = comment_id)
+#Register for google search
 
-    except Comment.DoesNotExist:
-        comment = None
+def sitemap(request):
 
-    return comment
+    context_dict = { }
 
-def check_player_user(user):
-    try:
-        player = Player.objects.get(user=user)
+    return render(request, 'panda/sitemap.xml', context=context_dict)
 
-    except Player.DoesNotExist:
-       player = None
+def google_veri(request):
 
-    return player
+    context_dict = { }
 
-def check_studio_user(user):
-    try:
-       studio = GameStudio.objects.get(user = user)
-
-    except GameStudio.DoesNotExist:
-       studio = None
-
-    return studio
-
-
-def check_player(player_name_slug): #Check if trying to acces valid user page
-    try:
-        player = Player.objects.get(slug = player_name_slug)
-
-    except Player.DoesNotExist:
-        player = None
-
-    return player
-
-def check_game(game_name_slug): #Check if trying to valid access game page
-    try:
-        game = Game.objects.get(slug = game_name_slug)
-
-    except Game.DoesNotExist:
-        game = None
-
-    return game
-
-def check_studio(studio_name_slug): #Check if trying to acces valid user page
-    try:
-        studio = GameStudio.objects.get(slug = studio_name_slug)
-
-    except GameStudio.DoesNotExist:
-        studio = None
-
-    return studio
-
-def user_check(request, game_name_slug):  #Get details abouit current user
-    studio_warning = False #Indicator if studio attempting to rate
-
-    try:
-        game = Game.objects.get(slug= game_name_slug)
-
-    except Game.DoesNotExist:
-       game = None
-
-    try:
-         player = Player.objects.get(user = request.user)
-
-    except Player.DoesNotExist:
-       studio_warning = True
-       game = None
-       player = None
-
-    return studio_warning,game,player
+    return render(request, 'panda/googleb00694232a77d6d0.html', context=context_dict)
