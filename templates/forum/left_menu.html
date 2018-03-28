@@ -1,4 +1,3 @@
-{% load forum_tags %}
 <div class="main_right_container col-md-3 col-md-push-9 col-sm-3 col-sm-push-9 col-sm-4  col-xs-12 ">
              <div class="fixed_right">
                <div class="panel panel-default right_panel">
@@ -7,9 +6,8 @@
                 </div>
                 <div class="panel-body off">
                   <ul class="category_items">
-                    {% get_categories as categories %}
                     {% for category in categories %}
-                    <li class="category_item"><a href="{% url "forum_category_detail" category.slug %}" class="disclosure" style="background:{{category.color}}!important;"> {{ category.title }} </a></li>
+                    <li class="category_item"><a href="/panda/forum/category/{{ category.slug }}/" class="disclosure" style="background:{{category.color}}!important;"> {{ category.title }} </a></li>
                     {% endfor %}
                     <li class="category_item"><a href="{% url "categories" %}" class="disclosure"> All </a></li>
                   </ul>

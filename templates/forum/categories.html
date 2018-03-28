@@ -1,15 +1,11 @@
 {% extends 'forum/base.html' %}
 {% block stage %}
-<div class="main_container">
-  <div class="container">
-    <div class="row middle_container">
-      {% include 'forum/left_menu.html' %}
       <div class="main_left_container col-md-9 col-md-pull-3 col-sm-9 col-sm-pull-3 col-sm-8 col-xs-12">
         <div class="panel panel-default">
           <div class="panel-body">
             <!-- category section starts here-->
             <div class="Users_container  row">
-              <h3 class="create_topic_heading">All Categories</h3>
+              <h3 class="create_topic_heading">All Categories </h3>
               <div class="user_table_row category_row">
                 <div class="table-responsive">
                 {% if categories %}
@@ -24,7 +20,7 @@
                     <tbody>
                     {% for category in categories %}
                       <tr>
-                        <td><a href="{% url "forum_category_detail" category.slug %}" class="disclosure" style='background:{{ category.color }}!important;'>{{category.title}}</a></td>
+                        <td><a href="/panda/forum/category/{{ category.slug }}/" class="disclosure" style='background:{{ category.color }}!important;'>{{category.title}}</a></td>
                         <td>{{category.description|safe}}</td>
                         <td><a href="#">{{ category.get_topics|length }}</a></td>
                       </tr>
@@ -41,7 +37,4 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
 {% endblock %}
