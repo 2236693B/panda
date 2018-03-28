@@ -33,7 +33,7 @@
               <ul class="login_block">
               {% if not request.user.is_authenticated %}
                 <li><a href="{% url 'login' %}?next={{ request.path|urlencode }}" ><i class="fa fa-sign-in"></i> <span>Sign In</span></a></li>
-                <li><a href="{% url 'signup'%}" ><i class="fa fa-plus-circle"></i> <span>Sign Up</span></a></li>
+                <li><a href="{% url 'sign_up'%}" ><i class="fa fa-plus-circle"></i> <span>Sign Up</span></a></li>
               {% else %}
                 <a id="top6" href="{% url 'logout'%}" class="Panda-bar-item Panda-button Panda-right"><i class="fas fa-sign-in-alt"></i>  Log Out</a>
               {% endif %}

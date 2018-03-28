@@ -200,14 +200,18 @@ def average(query):
 #Forum models
 class ForumCategory(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True)
-    title = models.CharField(max_length=1000)
+    title = models.CharField(max_length=1000, unique = True)
     is_votable = models.BooleanField(default=False)
     color = models.CharField(max_length=20, default="#999999")
     created_on = models.DateTimeField(auto_now_add=True)
-    slug = models.SlugField(max_length=1000)
+    slug = models.SlugField(unique=True)
     is_active = models.BooleanField(default=True)
     description = models.TextField()
     parent = models.ForeignKey('self', blank=True, null=True)
+
+    def save(self, *args, **kwaargs):
+        self.slug = slugify(self.id)
+        super(ForumCategory, self).save(*args, **kwaargs)
 
     def get_topics(self):
         topics = Topic.objects.filter(category=self, status='Published')
@@ -215,10 +219,6 @@ class ForumCategory(models.Model):
 
     def __str__(self):
         return self.title
-
-    def save(self, *args, **kwaargs):
-        self.slug = slugify(self.title)
-        super(ForumCategory, self).save(*args, **kwaargs)
 
 class Vote(models.Model):
     TYPES = (
@@ -233,7 +233,7 @@ class Vote(models.Model):
         return self.user
 
 class Topic(models.Model):
-    title = models.CharField(max_length=2000)
+    title = models.CharField(max_length=2000, unique = True)
     description = models.TextField()
     created_by = models.ForeignKey(User)
     status = models.CharField(choices=STATUS, max_length=10)
@@ -241,9 +241,13 @@ class Topic(models.Model):
     created_on = models.DateTimeField(auto_now=True)
     updated_on = models.DateTimeField(auto_now=True)
     no_of_views = models.IntegerField(default='0')
-    slug = models.SlugField(max_length=1000)
+    slug = models.SlugField(unique=True)
     no_of_likes = models.IntegerField(default='0')
     votes = models.ManyToManyField(Vote)
+
+    def save(self, *args, **kwaargs):
+        self.slug = slugify(self.id)
+        super(Topic, self).save(*args, **kwaargs)
 
     def get_comments(self):
         comments = ForumComment.objects.filter(topic=self, parent=None)
@@ -266,10 +270,6 @@ class Topic(models.Model):
     def down_votes_count(self):
         return self.votes.filter(type="D").count()
 
-    def save(self, *args, **kwaargs):
-        self.slug = slugify(self.title)
-        super(Topic, self).save(*args, **kwaargs)
-
     def __str__(self):
         return self.title
 
@@ -283,6 +283,10 @@ class ForumComment(models.Model):
 
     votes = models.ManyToManyField(Vote)
 
+    def save(self, *args, **kwaargs):
+        self.slug = slugify(self.id)
+        super(ForumComment, self).save(*args, **kwaargs)
+
     def get_comments(self):
         comments = self.ForumComment_parent.all()
         return comments
@@ -292,10 +296,6 @@ class ForumComment(models.Model):
 
     def down_votes_count(self):
         return self.votes.filter(type="D").count()
-
-    def save(self, *args, **kwaargs):
-        self.slug = slugify(self.id)
-        super(ForumComment, self).save(*args, **kwaargs)
 
 class ReportingMessage(models.Model):
     reporter = models.ForeignKey(User, on_delete=models.CASCADE)

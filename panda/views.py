@@ -14,6 +14,8 @@ from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.template.loader import get_template
 
+from django.template.defaultfilters import slugify
+
 
 from .models import Game, Player,GameRating, Comment, PlayerRating, GameStudio, ForumCategory, STATUS, Topic, ForumComment, Vote
 
@@ -1026,13 +1028,14 @@ class TopicAdd(CreateView):
 
     def form_valid(self, form):
         topic = form.save()
+        topic.slug = slugify(topic.title)
         if self.request.POST['sub_category']:
             topic.category_id = self.request.POST['sub_category']
         topic.save()
         return redirect(reverse('topic_list'))
 
     def form_invalid(self, form):
-        return HttpResponse("<h1> Something went wrong </h1> <br> Perhaps you used a title that already exists <br> <a href = '/panda/forum/topic/add/'")
+        return HttpResponse("<h1> Something went wrong </h1> <br> Perhaps you used a title that already exists <br> <a href ='/panda/forum/topic/add/'>Return</a>")
 
     def get_context_data(self, **kwargs):
         context = super(TopicAdd, self).get_context_data(**kwargs)
@@ -1141,7 +1144,6 @@ class ForumCommentAdd(CreateView):
     model = Topic
     form_class = ForumCommentForm
     template_name = 'forum/view_topic.html'
-    #form_class = ForumCommentForm
 
     def get_form_kwargs(self):
         kwargs = super(ForumCommentAdd, self).get_form_kwargs()
